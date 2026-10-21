@@ -6,6 +6,9 @@ use Illuminate\Support\Facades\Route;
 
 Route::inertia('/', 'welcome')->name('home');
 
+// Public self-registration is disabled; send direct visits back to the clinic homepage.
+Route::redirect('/register', '/', 302)->name('register.disabled');
+
 // Public website pages share the dynamic clinic identity, metadata, navigation, and footer.
 Route::inertia('/about', 'public/about')->name('public.about');
 Route::inertia('/services', 'public/services')->name('public.services');

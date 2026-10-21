@@ -26,6 +26,12 @@ class PublicPagesTest extends TestCase
         }
     }
 
+
+    public function test_registration_url_redirects_to_the_homepage(): void
+    {
+        $this->get('/register')->assertRedirect('/');
+    }
+
     public function test_legal_pages_receive_the_correct_document_key(): void
     {
         $this->get('/privacy')->assertInertia(fn (Assert $page) => $page->where('pageKey', 'privacy'));

@@ -1,6 +1,5 @@
-// Components
 import { Form, Head } from '@inertiajs/react';
-import { LoaderCircle } from 'lucide-react';
+import { ArrowLeft, MailCheck, ShieldCheck } from 'lucide-react';
 import InputError from '@/components/input-error';
 import TextLink from '@/components/text-link';
 import { Button } from '@/components/ui/button';
@@ -9,61 +8,73 @@ import { Label } from '@/components/ui/label';
 import { login } from '@/routes';
 import { email } from '@/routes/password';
 
-export default function ForgotPassword({ status }: { status?: string }) {
+type Props = { status?: string };
+
+export default function ForgotPassword({ status }: Props) {
     return (
         <>
             <Head title="Forgot password" />
-
-            {status && (
-                <div className="mb-4 text-center text-sm font-medium text-green-600">
-                    {status}
+            <section className="space-y-6">
+                <div className="space-y-3 text-center">
+                    <div className="mx-auto flex size-14 items-center justify-center rounded-2xl border border-emerald-700/15 bg-emerald-700/10 text-emerald-800 dark:text-emerald-300">
+                        {status ? <MailCheck className="size-6" aria-hidden="true" /> : <ShieldCheck className="size-6" aria-hidden="true" />}
+                    </div>
+                    <p className="text-sm leading-6 text-muted-foreground">
+                        Enter the email address associated with your staff account. If an account is eligible for password recovery, we’ll send instructions to that address.
+                    </p>
                 </div>
-            )}
 
-            <div className="space-y-6">
-                <Form {...email.form()}>
+                {status && (
+                    <div role="status" aria-live="polite" className="rounded-xl border border-emerald-700/20 bg-emerald-700/5 px-4 py-3 text-sm leading-6 text-emerald-800 dark:text-emerald-300">
+                        {status}
+                    </div>
+                )}
+
+                <Form {...email.form()} className="space-y-5">
                     {({ processing, errors }) => (
                         <>
                             <div className="grid gap-2">
-                                <Label htmlFor="email">Email address</Label>
+                                <Label htmlFor="email">Work email address</Label>
                                 <Input
                                     id="email"
                                     type="email"
                                     name="email"
-                                    autoComplete="off"
+                                    required
                                     autoFocus
-                                    placeholder="email@example.com"
+                                    autoComplete="email"
+                                    inputMode="email"
+                                    autoCapitalize="none"
+                                    spellCheck={false}
+                                    placeholder="you@clinic.org"
+                                    aria-invalid={Boolean(errors.email)}
+                                    aria-describedby={errors.email ? 'email-error' : undefined}
                                 />
-
-                                <InputError message={errors.email} />
+                                <InputError id="email-error" message={errors.email} />
                             </div>
 
-                            <div className="my-6 flex items-center justify-start">
-                                <Button
-                                    className="w-full"
-                                    disabled={processing}
-                                    data-test="email-password-reset-link-button"
-                                >
-                                    {processing && (
-                                        <LoaderCircle className="h-4 w-4 animate-spin" />
-                                    )}
-                                    Email password reset link
-                                </Button>
-                            </div>
+                            <Button className="h-11 w-full" type="submit" disabled={processing}>
+                                {processing ? 'Sending instructions…' : 'Send password reset link'}
+                            </Button>
                         </>
                     )}
                 </Form>
 
-                <div className="space-x-1 text-center text-sm text-muted-foreground">
-                    <span>Or, return to</span>
-                    <TextLink href={login()}>log in</TextLink>
+                <div className="flex justify-center border-t border-border pt-5">
+                    <TextLink href={login()} className="inline-flex items-center gap-2 text-sm font-medium">
+                        <ArrowLeft className="size-4" aria-hidden="true" />
+                        Back to staff login
+                    </TextLink>
                 </div>
-            </div>
+
+                <p className="text-center text-xs leading-5 text-muted-foreground">
+                    For account access issues, contact your clinic system administrator. Never share your password or reset link with anyone.
+                </p>
+            </section>
         </>
     );
 }
 
 ForgotPassword.layout = {
-    title: 'Forgot password',
-    description: 'Enter your email to receive a password reset link',
+    title: 'Recover your account',
+    description: 'Securely reset your staff account password',
 };
