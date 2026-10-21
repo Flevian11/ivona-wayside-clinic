@@ -75,6 +75,6 @@ SystemVersionController.head = (options?: RouteQueryOptions): RouteDefinition<'h
                     }),
             method: 'get',
         })
-
+    
     SystemVersionController.form = SystemVersionControllerForm
 export default SystemVersionController

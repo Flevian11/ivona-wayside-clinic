@@ -9,3 +9,5 @@
 /.github export-ignore
 CHANGELOG.md export-ignore
 .styleci.yml export-ignore
+resources/js/actions/** text eol=lf whitespace=-blank-at-eol
+resources/js/routes/** text eol=lf whitespace=-blank-at-eol

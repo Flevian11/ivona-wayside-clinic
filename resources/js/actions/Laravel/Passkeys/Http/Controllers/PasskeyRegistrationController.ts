@@ -75,7 +75,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
                     }),
             method: 'get',
         })
-
+    
     index.form = indexForm
 /**
 * @see \Laravel\Passkeys\Http\Controllers\PasskeyRegistrationController::store
@@ -130,7 +130,7 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
             action: store.url(options),
             method: 'post',
         })
-
+    
     store.form = storeForm
 /**
 * @see \Laravel\Passkeys\Http\Controllers\PasskeyRegistrationController::destroy
@@ -160,7 +160,7 @@ destroy.url = (args: { passkey: number | { id: number } } | [passkey: number | {
             if (typeof args === 'object' && !Array.isArray(args) && 'id' in args) {
             args = { passkey: args.id }
         }
-
+    
     if (Array.isArray(args)) {
         args = {
                     passkey: args[0],
@@ -219,7 +219,7 @@ destroy.delete = (args: { passkey: number | { id: number } } | [passkey: number 
                     }),
             method: 'post',
         })
-
+    
     destroy.form = destroyForm
 const PasskeyRegistrationController = { index, store, destroy }
 

@@ -75,7 +75,7 @@ version.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
                     }),
             method: 'get',
         })
-
+    
     version.form = versionForm
 const system = {
     version: Object.assign(version, version),

@@ -75,7 +75,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
                     }),
             method: 'get',
         })
-
+    
     index.form = indexForm
 /**
 * @see \App\Http\Controllers\Admin\SystemReleaseController::store
@@ -130,7 +130,7 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
             action: store.url(options),
             method: 'post',
         })
-
+    
     store.form = storeForm
 /**
 * @see \App\Http\Controllers\Admin\SystemReleaseController::show
@@ -160,7 +160,7 @@ show.url = (args: { systemRelease: number | { id: number } } | [systemRelease: n
             if (typeof args === 'object' && !Array.isArray(args) && 'id' in args) {
             args = { systemRelease: args.id }
         }
-
+    
     if (Array.isArray(args)) {
         args = {
                     systemRelease: args[0],
@@ -232,7 +232,7 @@ show.head = (args: { systemRelease: number | { id: number } } | [systemRelease: 
                     }),
             method: 'get',
         })
-
+    
     show.form = showForm
 /**
 * @see \App\Http\Controllers\Admin\SystemReleaseController::update
@@ -262,7 +262,7 @@ update.url = (args: { systemRelease: number | { id: number } } | [systemRelease:
             if (typeof args === 'object' && !Array.isArray(args) && 'id' in args) {
             args = { systemRelease: args.id }
         }
-
+    
     if (Array.isArray(args)) {
         args = {
                     systemRelease: args[0],
@@ -321,7 +321,7 @@ update.put = (args: { systemRelease: number | { id: number } } | [systemRelease:
                     }),
             method: 'post',
         })
-
+    
     update.form = updateForm
 /**
 * @see \App\Http\Controllers\Admin\SystemReleaseController::publish
@@ -351,7 +351,7 @@ publish.url = (args: { systemRelease: number | { id: number } } | [systemRelease
             if (typeof args === 'object' && !Array.isArray(args) && 'id' in args) {
             args = { systemRelease: args.id }
         }
-
+    
     if (Array.isArray(args)) {
         args = {
                     systemRelease: args[0],
@@ -400,7 +400,7 @@ publish.post = (args: { systemRelease: number | { id: number } } | [systemReleas
             action: publish.url(args, options),
             method: 'post',
         })
-
+    
     publish.form = publishForm
 /**
 * @see \App\Http\Controllers\Admin\SystemReleaseController::withdraw
@@ -430,7 +430,7 @@ withdraw.url = (args: { systemRelease: number | { id: number } } | [systemReleas
             if (typeof args === 'object' && !Array.isArray(args) && 'id' in args) {
             args = { systemRelease: args.id }
         }
-
+    
     if (Array.isArray(args)) {
         args = {
                     systemRelease: args[0],
@@ -479,7 +479,7 @@ withdraw.post = (args: { systemRelease: number | { id: number } } | [systemRelea
             action: withdraw.url(args, options),
             method: 'post',
         })
-
+    
     withdraw.form = withdrawForm
 const releases = {
     index: Object.assign(index, index),

@@ -75,7 +75,7 @@ about.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
                     }),
             method: 'get',
         })
-
+    
     about.form = aboutForm
 /**
 * @see \Inertia\Controller::__invoke
@@ -153,7 +153,7 @@ services.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
                     }),
             method: 'get',
         })
-
+    
     services.form = servicesForm
 /**
 * @see \Inertia\Controller::__invoke
@@ -231,7 +231,7 @@ blog.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
                     }),
             method: 'get',
         })
-
+    
     blog.form = blogForm
 /**
 * @see \Inertia\Controller::__invoke
@@ -309,7 +309,7 @@ careers.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
                     }),
             method: 'get',
         })
-
+    
     careers.form = careersForm
 /**
 * @see \Inertia\Controller::__invoke
@@ -387,7 +387,7 @@ contact.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
                     }),
             method: 'get',
         })
-
+    
     contact.form = contactForm
 /**
 * @see \Inertia\Controller::__invoke
@@ -465,7 +465,7 @@ privacy.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
                     }),
             method: 'get',
         })
-
+    
     privacy.form = privacyForm
 /**
 * @see \Inertia\Controller::__invoke
@@ -543,7 +543,7 @@ terms.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
                     }),
             method: 'get',
         })
-
+    
     terms.form = termsForm
 /**
 * @see \Inertia\Controller::__invoke
@@ -621,7 +621,7 @@ gdpr.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
                     }),
             method: 'get',
         })
-
+    
     gdpr.form = gdprForm
 const publicMethod = {
     about: Object.assign(about, about),

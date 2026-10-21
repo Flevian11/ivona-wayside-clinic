@@ -75,7 +75,7 @@ Controller980bb49ee7ae63891f1d891d2fbcf1c9.head = (options?: RouteQueryOptions):
                     }),
             method: 'get',
         })
-
+    
     Controller980bb49ee7ae63891f1d891d2fbcf1c9.form = Controller980bb49ee7ae63891f1d891d2fbcf1c9Form
     /**
 * @see \Inertia\Controller::__invoke
@@ -153,7 +153,7 @@ Controller535fd093ca1d5254af5dc12ac208e8d5.head = (options?: RouteQueryOptions):
                     }),
             method: 'get',
         })
-
+    
     Controller535fd093ca1d5254af5dc12ac208e8d5.form = Controller535fd093ca1d5254af5dc12ac208e8d5Form
     /**
 * @see \Inertia\Controller::__invoke
@@ -231,7 +231,7 @@ Controllerbbee0fd5659320176905772cd001770a.head = (options?: RouteQueryOptions):
                     }),
             method: 'get',
         })
-
+    
     Controllerbbee0fd5659320176905772cd001770a.form = Controllerbbee0fd5659320176905772cd001770aForm
     /**
 * @see \Inertia\Controller::__invoke
@@ -309,7 +309,7 @@ Controller0281689d11c3db12eb0f0bc21b3e4ed4.head = (options?: RouteQueryOptions):
                     }),
             method: 'get',
         })
-
+    
     Controller0281689d11c3db12eb0f0bc21b3e4ed4.form = Controller0281689d11c3db12eb0f0bc21b3e4ed4Form
     /**
 * @see \Inertia\Controller::__invoke
@@ -387,7 +387,7 @@ Controller03d31eb80a178b8caec7a6c184c0169b.head = (options?: RouteQueryOptions):
                     }),
             method: 'get',
         })
-
+    
     Controller03d31eb80a178b8caec7a6c184c0169b.form = Controller03d31eb80a178b8caec7a6c184c0169bForm
     /**
 * @see \Inertia\Controller::__invoke
@@ -465,7 +465,7 @@ Controller36402f3b102b68b92616e946647e00cf.head = (options?: RouteQueryOptions):
                     }),
             method: 'get',
         })
-
+    
     Controller36402f3b102b68b92616e946647e00cf.form = Controller36402f3b102b68b92616e946647e00cfForm
     /**
 * @see \Inertia\Controller::__invoke
@@ -543,7 +543,7 @@ Controllera2c058616aeb0c9393ca03a98bc05c02.head = (options?: RouteQueryOptions):
                     }),
             method: 'get',
         })
-
+    
     Controllera2c058616aeb0c9393ca03a98bc05c02.form = Controllera2c058616aeb0c9393ca03a98bc05c02Form
     /**
 * @see \Inertia\Controller::__invoke
@@ -621,7 +621,7 @@ Controller619dc3a99425f668ea9cab64e6648cb4.head = (options?: RouteQueryOptions):
                     }),
             method: 'get',
         })
-
+    
     Controller619dc3a99425f668ea9cab64e6648cb4.form = Controller619dc3a99425f668ea9cab64e6648cb4Form
     /**
 * @see \Inertia\Controller::__invoke
@@ -699,7 +699,7 @@ Controller028eb6892d7d803e535375c2e6ab13f3.head = (options?: RouteQueryOptions):
                     }),
             method: 'get',
         })
-
+    
     Controller028eb6892d7d803e535375c2e6ab13f3.form = Controller028eb6892d7d803e535375c2e6ab13f3Form
     /**
 * @see \Inertia\Controller::__invoke
@@ -777,7 +777,7 @@ Controller42a740574ecbfbac32f8cc353fc32db9.head = (options?: RouteQueryOptions):
                     }),
             method: 'get',
         })
-
+    
     Controller42a740574ecbfbac32f8cc353fc32db9.form = Controller42a740574ecbfbac32f8cc353fc32db9Form
     /**
 * @see \Inertia\Controller::__invoke
@@ -855,7 +855,7 @@ Controllere19ee86e9cf603ce1a59a1ec5d21dec5.head = (options?: RouteQueryOptions):
                     }),
             method: 'get',
         })
-
+    
     Controllere19ee86e9cf603ce1a59a1ec5d21dec5.form = Controllere19ee86e9cf603ce1a59a1ec5d21dec5Form
 
 /**

@@ -75,6 +75,6 @@ HealthCheck.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
                     }),
             method: 'get',
         })
-
+    
     HealthCheck.form = HealthCheckForm
 export default HealthCheck
