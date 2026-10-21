@@ -75,7 +75,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
                     }),
             method: 'get',
         })
-    
+
     index.form = indexForm
 /**
 * @see \Inertia\DevTools\Http\EntriesController::show
@@ -102,7 +102,7 @@ show.url = (args: { id: string | number } | [id: string | number ] | string | nu
         args = { id: args }
     }
 
-    
+
     if (Array.isArray(args)) {
         args = {
                     id: args[0],
@@ -172,7 +172,7 @@ show.head = (args: { id: string | number } | [id: string | number ] | string | n
                     }),
             method: 'get',
         })
-    
+
     show.form = showForm
 const EntriesController = { index, show }
 

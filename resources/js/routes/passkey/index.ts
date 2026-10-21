@@ -75,7 +75,7 @@ loginOptions.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
                     }),
             method: 'get',
         })
-    
+
     loginOptions.form = loginOptionsForm
 /**
 * @see \Laravel\Passkeys\Http\Controllers\PasskeyLoginController::login
@@ -130,7 +130,7 @@ login.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
             action: login.url(options),
             method: 'post',
         })
-    
+
     login.form = loginForm
 /**
 * @see \Laravel\Passkeys\Http\Controllers\PasskeyConfirmationController::confirmOptions
@@ -208,7 +208,7 @@ confirmOptions.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => 
                     }),
             method: 'get',
         })
-    
+
     confirmOptions.form = confirmOptionsForm
 /**
 * @see \Laravel\Passkeys\Http\Controllers\PasskeyConfirmationController::confirm
@@ -263,7 +263,7 @@ confirm.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
             action: confirm.url(options),
             method: 'post',
         })
-    
+
     confirm.form = confirmForm
 /**
 * @see \Laravel\Passkeys\Http\Controllers\PasskeyRegistrationController::registrationOptions
@@ -341,7 +341,7 @@ registrationOptions.head = (options?: RouteQueryOptions): RouteDefinition<'head'
                     }),
             method: 'get',
         })
-    
+
     registrationOptions.form = registrationOptionsForm
 /**
 * @see \Laravel\Passkeys\Http\Controllers\PasskeyRegistrationController::store
@@ -396,7 +396,7 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
             action: store.url(options),
             method: 'post',
         })
-    
+
     store.form = storeForm
 /**
 * @see \Laravel\Passkeys\Http\Controllers\PasskeyRegistrationController::destroy
@@ -426,7 +426,7 @@ destroy.url = (args: { passkey: number | { id: number } } | [passkey: number | {
             if (typeof args === 'object' && !Array.isArray(args) && 'id' in args) {
             args = { passkey: args.id }
         }
-    
+
     if (Array.isArray(args)) {
         args = {
                     passkey: args[0],
@@ -485,7 +485,7 @@ destroy.delete = (args: { passkey: number | { id: number } } | [passkey: number 
                     }),
             method: 'post',
         })
-    
+
     destroy.form = destroyForm
 const passkey = {
     loginOptions: Object.assign(loginOptions, loginOptions),

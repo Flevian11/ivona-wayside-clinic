@@ -68,7 +68,7 @@ passkeys.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
                     }),
             method: 'get',
         })
-    
+
     passkeys.form = passkeysForm
 const wellKnown = {
     passkeys: Object.assign(passkeys, passkeys),

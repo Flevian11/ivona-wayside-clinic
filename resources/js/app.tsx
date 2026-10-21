@@ -5,15 +5,25 @@ import { initializeTheme } from '@/hooks/use-appearance';
 import AppLayout from '@/layouts/app-layout';
 import AuthLayout from '@/layouts/auth-layout';
 import SettingsLayout from '@/layouts/settings/layout';
+import PublicLayout from '@/layouts/public-layout';
 
-const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
+const appName = import.meta.env.VITE_APP_NAME || 'Hospital';
+
+function getSiteName() {
+    if (typeof document === 'undefined') return appName;
+    return document.querySelector<HTMLMetaElement>('meta[name="application-name"]')?.content || appName;
+}
 
 void createInertiaApp({
-    title: (title) => (title ? `${title} - ${appName}` : appName),
+    title: (title) => {
+        if (!title) return getSiteName();
+        const siteName = getSiteName();
+        return title.includes(siteName) ? title : `${title} - ${siteName}`;
+    },
     layout: (name) => {
         switch (true) {
-            case name === 'welcome':
-                return null;
+            case name.startsWith('public/') || name === 'welcome':
+                return PublicLayout;
             case name.startsWith('auth/'):
                 return AuthLayout;
             case name.startsWith('settings/'):
@@ -32,7 +42,7 @@ void createInertiaApp({
         );
     },
     progress: {
-        color: '#4B5563',
+        color: '#18794e',
     },
 });
 

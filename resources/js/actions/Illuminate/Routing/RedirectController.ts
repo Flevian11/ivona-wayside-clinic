@@ -208,6 +208,6 @@ RedirectController.query = (options?: RouteQueryOptions): RouteDefinition<'query
                     }),
             method: 'post',
         })
-    
+
     RedirectController.form = RedirectControllerForm
 export default RedirectController
