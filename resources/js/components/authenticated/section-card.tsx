@@ -11,7 +11,7 @@ export function AuthenticatedSectionCard({
 }: {
     title: string;
     description?: string;
-    icon?: ComponentType<{ className?: string }>; 
+    icon?: ComponentType<{ className?: string }>;
     action?: ReactNode;
     children: ReactNode;
     className?: string;
