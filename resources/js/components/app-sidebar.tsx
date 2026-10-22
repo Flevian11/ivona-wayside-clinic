@@ -82,11 +82,14 @@ export function AppSidebar() {
     ];
 
     const administrationItems: NavItem[] = [
-        { title: 'Users & staff', href: '#users', icon: Users, permission: 'users.view', comingSoon: true },
-        { title: 'Roles & permissions', href: '#roles-permissions', icon: ShieldCheck, permission: 'roles.view', comingSoon: true },
-        { title: 'Facility settings', href: '#facility-settings', icon: Hospital, permission: 'settings.view', comingSoon: true },
-        { title: 'System configuration', href: '#system-configuration', icon: Settings2, permission: 'settings.view', comingSoon: true },
-
+        { title: 'User accounts', href: '/admin/administration/users', icon: Users, permission: 'users.manage' },
+        { title: 'Staff directory', href: '/admin/administration/staff', icon: UserRoundPlus, permission: 'staff.manage' },
+        { title: 'Roles', href: '/admin/administration/roles', icon: ShieldCheck, permission: 'roles.manage' },
+        { title: 'Role assignments', href: '/admin/administration/role-assignments', icon: CircleUserRound, permission: 'roles.manage' },
+        { title: 'Permissions', href: '/admin/administration/permissions', icon: LockKeyhole, permission: 'roles.manage' },
+        { title: 'Access history', href: '/admin/administration/access-history', icon: Activity, permission: 'audit.view' },
+        { title: 'Facility settings', href: '/admin/administration/facility-settings', icon: Hospital, permission: 'settings.view' },
+        { title: 'System configuration', href: '/admin/administration/system-configuration', icon: Settings2, permission: 'settings.view' },
     ];
 
     const accountItems: NavItem[] = [

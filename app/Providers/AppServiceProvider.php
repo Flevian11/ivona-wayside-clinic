@@ -55,6 +55,7 @@ class AppServiceProvider extends ServiceProvider
             'audit.view',
             'roles.manage',
             'users.manage',
+            'staff.manage',
             'integrations.view',
             'integrations.manage',
         ];
