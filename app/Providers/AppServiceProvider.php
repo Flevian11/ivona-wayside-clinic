@@ -55,6 +55,8 @@ class AppServiceProvider extends ServiceProvider
             'audit.view',
             'roles.manage',
             'users.manage',
+            'integrations.view',
+            'integrations.manage',
         ];
 
         foreach ($permissions as $permission) {

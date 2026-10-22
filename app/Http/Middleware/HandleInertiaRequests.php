@@ -43,10 +43,60 @@ class HandleInertiaRequests extends Middleware
             'site' => fn () => $this->publicSiteData(),
             'auth' => [
                 'user' => $request->user(),
+                'roles' => fn () => $this->activeRoleSummaries($request),
+                'permissions' => fn () => $this->activePermissions($request),
             ],
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
         ];
     }
+    /**
+     * Share only active role labels needed to personalize the authenticated workspace.
+     *
+     * @return array<int, array{name: string, slug: string}>
+     */
+    protected function activeRoleSummaries(Request $request): array
+    {
+        $user = $request->user();
+
+        if (! $user) {
+            return [];
+        }
+
+        return $user->roles()
+            ->where('roles.is_active', true)
+            ->get(['roles.id', 'roles.name', 'roles.slug'])
+            ->map(fn ($role): array => [
+                'name' => $role->name,
+                'slug' => $role->slug,
+            ])
+            ->values()
+            ->all();
+    }
+
+    /**
+     * Share the effective permission names for UI navigation only.
+     * Backend routes and policies remain the actual security boundary.
+     *
+     * @return array<int, string>
+     */
+    protected function activePermissions(Request $request): array
+    {
+        $user = $request->user();
+
+        if (! $user) {
+            return [];
+        }
+
+        return $user->roles()
+            ->where('roles.is_active', true)
+            ->with('permissions:id,name')
+            ->get(['roles.id'])
+            ->flatMap(fn ($role) => $role->permissions->pluck('name'))
+            ->unique()
+            ->values()
+            ->all();
+    }
+
     /**
      * Return only explicitly public site settings for public layouts and SEO.
      * Missing settings or an unavailable settings table must never break rendering.
