@@ -124,7 +124,7 @@ export function AppSidebar() {
                 </SidebarMenu>
             </SidebarHeader>
 
-            <SidebarContent className="gap-1 overflow-x-hidden bg-sidebar px-0.5">
+            <SidebarContent className="gap-0.5 overflow-x-hidden bg-sidebar px-0.5">
                 <NavMain items={visibleItems(workspaceItems)} label="Workspace" />
                 <NavMain items={patientItems} label="Patient care" collapsible defaultOpen />
                 <NavMain items={operationsItems} label="Operations" collapsible defaultOpen />

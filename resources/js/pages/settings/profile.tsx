@@ -12,7 +12,7 @@ import type { Auth } from '@/types';
 import { send } from '@/routes/verification';
 
 type PageProps = {
-    auth: Auth;
+    auth: Auth & { roles?: { name: string; slug: string }[] };
 };
 
 export default function Profile({
@@ -123,7 +123,7 @@ export default function Profile({
                 </Form>
             </div>
 
-            <DeleteUser />
+            {auth.roles?.some((role) => role.slug === 'super-administrator') && <DeleteUser />}
         </>
     );
 }

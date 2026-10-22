@@ -48,6 +48,8 @@ class ProfileController extends Controller
      */
     public function destroy(ProfileDeleteRequest $request): RedirectResponse
     {
+        abort_unless($request->user()->roles()->where('roles.slug', 'super-administrator')->where('roles.is_active', true)->exists(), 403, 'Only an active super-administrator may delete an account.');
+
         $user = $request->user();
 
         Auth::logout();

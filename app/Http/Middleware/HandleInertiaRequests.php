@@ -41,6 +41,7 @@ class HandleInertiaRequests extends Middleware
             ...parent::share($request),
             'name' => config('app.name'),
             'site' => fn () => $this->publicSiteData(),
+            'siteIdentity' => fn () => $this->publicSiteData(),
             'auth' => [
                 'user' => $request->user(),
                 'roles' => fn () => $this->activeRoleSummaries($request),

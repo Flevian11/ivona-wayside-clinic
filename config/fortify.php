@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 use Laravel\Fortify\Features;
 
@@ -143,8 +143,12 @@ return [
     */
 
     'passkeys' => [
-        'relying_party_id' => parse_url(config('app.url'), PHP_URL_HOST),
-        'allowed_origins' => [config('app.url')],
+        'relying_party_id' => in_array(parse_url(config('app.url'), PHP_URL_HOST), ['127.0.0.1', 'localhost'], true) ? 'localhost' : parse_url(config('app.url'), PHP_URL_HOST),
+        'allowed_origins' => array_values(array_unique(array_filter([
+            config('app.url'),
+            config('app.env') === 'local' ? 'http://localhost:8000' : null,
+            config('app.env') === 'local' ? 'http://localhost:5173' : null,
+        ]))),
         'user_handle_secret' => env('PASSKEYS_USER_HANDLE_SECRET', config('app.key')),
         'timeout' => 60000,
     ],
@@ -174,3 +178,4 @@ return [
     ],
 
 ];
+
