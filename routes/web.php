@@ -40,7 +40,24 @@ Route::inertia('/gdpr', 'public/legal', [
 Route::get('/api/system/version', SystemVersionController::class)
     ->name('api.system.version');
 
+// Email OTP challenge for accounts with Fortify two-factor authentication enabled.
+Route::middleware(['throttle:email-otp'])->group(function () {
+    Route::get('/email-otp/challenge', [\App\Http\Controllers\Auth\EmailOtpChallengeController::class, 'show'])
+        ->name('email-otp.challenge');
+    Route::post('/email-otp/challenge', [\App\Http\Controllers\Auth\EmailOtpChallengeController::class, 'verify'])
+        ->name('email-otp.verify');
+    Route::post('/email-otp/resend', [\App\Http\Controllers\Auth\EmailOtpChallengeController::class, 'resend'])
+        ->name('email-otp.resend');
+});
+
 Route::middleware(['auth', 'verified'])->group(function () {
+    Route::post('/settings/security/email-2fa/send', [\App\Http\Controllers\Auth\EmailOtpTwoFactorSetupController::class, 'send'])
+        ->middleware('throttle:email-otp')
+        ->name('email-otp.setup.send');
+    Route::post('/settings/security/email-2fa/confirm', [\App\Http\Controllers\Auth\EmailOtpTwoFactorSetupController::class, 'confirm'])
+        ->middleware('throttle:email-otp')
+        ->name('email-otp.setup.confirm');
+
     // Staff dashboard and release announcements.
     Route::get('/dashboard', DashboardController::class)
         ->name('dashboard');
