@@ -80,7 +80,7 @@ class FacilityBrandingUploadTest extends TestCase
         Storage::fake('public');
         $admin = $this->settingsAdmin();
 
-        $this->actingAs($admin)->post(route('admin.administration.facility-settings.logo'), [
+        $this->actingAs($admin)->put(route('admin.administration.facility-settings.logo'), [
             'logo_file' => UploadedFile::fake()->image('clinic-logo.png', 360, 120),
         ])->assertRedirect()->assertSessionHasNoErrors();
 
@@ -96,7 +96,7 @@ class FacilityBrandingUploadTest extends TestCase
         Storage::fake('public');
         $admin = $this->settingsAdmin();
 
-        $this->actingAs($admin)->post(route('admin.administration.facility-settings.favicon'), [
+        $this->actingAs($admin)->put(route('admin.administration.facility-settings.favicon'), [
             'favicon_file' => UploadedFile::fake()->image('clinic-icon.png', 64, 64),
         ])->assertRedirect()->assertSessionHasNoErrors();
 

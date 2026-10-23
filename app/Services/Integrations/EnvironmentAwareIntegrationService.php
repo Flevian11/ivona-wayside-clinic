@@ -220,8 +220,41 @@ class EnvironmentAwareIntegrationService
     {
         $seed = (string) config('integrations.mock_seed', 'ivona-wayside-clinic-dev-v1');
         $reference = strtoupper(substr(hash('sha256', $seed . '|' . $slug . '|' . $operation . '|' . json_encode($payload)), 0, 12));
+        // These two operations return the provider-shaped body documented by DHA portals.
+        // Development fixtures are clearly marked and never represent a live provider response.
+        if ($operation === 'eligibility.check') {
+            return [
+                'age' => null, 'dateOfBirth' => null, 'facilityBiometricsEnforced' => false,
+                'fullName' => 'DEVELOPMENT FIXTURE — NOT A REAL BENEFICIARY', 'gender' => 'unknown',
+                'isAlive' => true, 'memberCrNumber' => null,
+                'requestIdNumber' => (string) ($payload['identification_number'] ?? ''),
+                'requestIdType' => null, 'schemes' => [], 'statusCode' => 'DEV_MOCK',
+                'statusDesc' => 'Deterministic development fixture. No SHA service was contacted.',
+                'whitelistedForOTP' => false, 'mock' => true,
+            ];
+        }
+        if ($operation === 'patient.lookup_by_identifier') {
+            $fixtures = ['10101010' => 'CR9014415608676-3', '10101019' => 'CR5015831888427-7', '10101018' => 'CR2722380514578-8', '10101017' => 'CR5970479227718-0', '10101016' => 'CR6941625828551-0', '10101015' => 'CR9228267061815-4', '10101011' => 'CR6569173309531-2', '10101012' => 'CR8461749944156-1', '10101013' => 'CR5656731245389-3', '10101014' => 'CR9774986931283-6'];
+            $idNumber = (string) ($payload['identification_number'] ?? '');
+            $result = isset($fixtures[$idNumber]) ? [[
+                'id' => $fixtures[$idNumber], 'resourceType' => 'Patient',
+                'meta' => ['versionId' => 'DEV', 'creationTime' => null, 'lastUpdated' => null, 'source' => 'development-fixture'],
+                'identification_type' => $payload['identification_type'] ?? 'National ID',
+                'identification_number' => $idNumber,
+            ]] : [];
+            return ['message' => ['total' => count($result), 'result' => $result], 'mock' => true, 'fixture' => true, 'note' => 'Publicly documented AfyaLink test identifiers only. No provider was contacted; no additional demographics are invented.'];
+        }
         return ['mock' => true, 'provider' => $slug, 'operation' => $operation, 'reference' => 'DEV-' . $reference, 'message' => 'Deterministic development fixture. No external provider was contacted and no live record was created.', 'data' => match ($operation) {
-            'eligibility.check' => ['eligible' => true, 'status' => 'MOCK_ELIGIBLE', 'member_reference' => 'DEV-MEMBER-0001'],
+            'eligibility.check' => [
+                'age' => null, 'dateOfBirth' => null, 'facilityBiometricsEnforced' => false,
+                'fullName' => 'DEVELOPMENT FIXTURE — NOT A REAL BENEFICIARY', 'gender' => 'unknown',
+                'isAlive' => true, 'memberCrNumber' => null,
+                'requestIdNumber' => (string) ($payload['identification_number'] ?? ''),
+                'requestIdType' => null, 'schemes' => [], 'statusCode' => 'DEV_MOCK',
+                'statusDesc' => 'Deterministic development fixture. No SHA service was contacted.',
+                'whitelistedForOTP' => false, 'mock' => true,
+            ],
+            'patient.lookup_by_identifier' => ['message' => ['total' => 0, 'result' => []], 'mock' => true, 'note' => 'Client Registry response envelope; no matching fixture was configured and no provider was contacted.'],
             'service.verify' => ['verified' => true, 'status' => 'MOCK_VERIFIED'],
             'claim.submit' => ['accepted' => true, 'claim_reference' => 'DEV-CLAIM-' . $reference, 'status' => 'MOCK_RECEIVED'],
             'claim.status' => ['claim_reference' => 'DEV-CLAIM-' . $reference, 'status' => 'MOCK_ADJUDICATED'],

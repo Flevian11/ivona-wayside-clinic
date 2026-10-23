@@ -8,6 +8,8 @@ use App\Models\SystemSetting;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
+use Throwable;
 use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -32,8 +34,10 @@ class ClinicSettingsController extends Controller
             'email' => ['nullable', 'email', 'max:255'],
             'address' => ['nullable', 'string', 'max:500'],
             'opening_hours' => ['nullable', 'string', 'max:255'],
-            'logo_url' => ['nullable', 'url', 'max:2048'],
-            'favicon_url' => ['nullable', 'url', 'max:2048'],
+            'logo_file' => ['nullable', 'image', 'mimes:png,jpg,jpeg,webp', 'max:4096'],
+            'favicon_file' => ['nullable', 'image', 'mimes:png,jpg,jpeg,webp', 'dimensions:ratio=1/1', 'max:2048'],
+            'remove_logo' => ['sometimes', 'boolean'],
+            'remove_favicon' => ['sometimes', 'boolean'],
             'social_links' => ['nullable', 'array'],
             'social_links.whatsapp' => ['nullable', 'url', 'max:255'],
             'social_links.facebook' => ['nullable', 'url', 'max:255'],
@@ -50,9 +54,109 @@ class ClinicSettingsController extends Controller
             'public_links.google_maps' => ['nullable', 'url', 'max:2048'],
         ]);
 
-        $this->saveSetting($request, 'site.identity', 'site', true, $data, 'settings.facility.updated');
+        $current = $this->settingValue('site.identity', $this->facilityDefaults());
+        $data['logo_url'] = $current['logo_url'] ?? null;
+        $data['favicon_url'] = $current['favicon_url'] ?? null;
+        $newPaths = [];
+
+        try {
+            if ($request->boolean('remove_logo')) {
+                $data['logo_url'] = null;
+            } elseif ($request->hasFile('logo_file')) {
+                $path = $request->file('logo_file')->storePublicly('site/branding', 'public');
+                $newPaths[] = $path;
+                $data['logo_url'] = '/storage/'.$path;
+            }
+
+            if ($request->boolean('remove_favicon')) {
+                $data['favicon_url'] = null;
+            } elseif ($request->hasFile('favicon_file')) {
+                $path = $request->file('favicon_file')->storePublicly('site/branding', 'public');
+                $newPaths[] = $path;
+                $data['favicon_url'] = '/storage/'.$path;
+            }
+
+            unset($data['logo_file'], $data['favicon_file'], $data['remove_logo'], $data['remove_favicon']);
+            $this->saveSetting($request, 'site.identity', 'site', true, $data, 'settings.facility.updated');
+        } catch (Throwable $exception) {
+            foreach ($newPaths as $path) {
+                Storage::disk('public')->delete($path);
+            }
+
+            throw $exception;
+        }
+
+        foreach (['logo_url', 'favicon_url'] as $assetKey) {
+            $oldUrl = $current[$assetKey] ?? null;
+            $newUrl = $data[$assetKey] ?? null;
+
+            if ($oldUrl && $oldUrl !== $newUrl) {
+                $this->deleteManagedBrandingAsset($oldUrl);
+            }
+        }
 
         return back()->with('success', 'Facility identity and contact information saved.');
+    }
+
+    public function updateLogo(Request $request): RedirectResponse
+    {
+        return $this->updateBrandingAsset($request, 'logo_file', 'remove_logo', 'logo_url', ['nullable', 'image', 'mimes:png,jpg,jpeg,webp', 'max:4096'], 'settings.facility.logo.updated');
+    }
+
+    public function updateFavicon(Request $request): RedirectResponse
+    {
+        return $this->updateBrandingAsset($request, 'favicon_file', 'remove_favicon', 'favicon_url', ['nullable', 'image', 'mimes:png,jpg,jpeg,webp', 'dimensions:ratio=1/1', 'max:2048'], 'settings.facility.favicon.updated');
+    }
+
+    /** Save one branding asset without requiring unrelated facility fields such as the clinic name. */
+    private function updateBrandingAsset(Request $request, string $fileKey, string $removeKey, string $assetKey, array $fileRules, string $auditAction): RedirectResponse
+    {
+        $data = $request->validate([
+            $fileKey => $fileRules,
+            $removeKey => ['sometimes', 'boolean'],
+        ]);
+
+        $remove = $request->boolean($removeKey);
+        if (!$request->hasFile($fileKey) && !$remove) {
+            return back()->withErrors([$fileKey => 'Choose an image or select Remove image before saving.']);
+        }
+
+        $current = $this->settingValue('site.identity', $this->facilityDefaults());
+        $oldUrl = $current[$assetKey] ?? null;
+        $newPath = null;
+
+        try {
+            if ($remove) {
+                $current[$assetKey] = null;
+            } elseif ($request->hasFile($fileKey)) {
+                $newPath = $request->file($fileKey)->storePublicly('site/branding', 'public');
+                $current[$assetKey] = '/storage/'.$newPath;
+            }
+
+            $this->saveSetting($request, 'site.identity', 'site', true, $current, $auditAction);
+        } catch (Throwable $exception) {
+            if ($newPath) {
+                Storage::disk('public')->delete($newPath);
+            }
+
+            throw $exception;
+        }
+
+        $newUrl = $current[$assetKey] ?? null;
+        if ($oldUrl && $oldUrl !== $newUrl) {
+            $this->deleteManagedBrandingAsset($oldUrl);
+        }
+
+        return back()->with('success', $assetKey === 'logo_url' ? 'Clinic logo updated.' : 'Site favicon updated.');
+    }
+
+    private function deleteManagedBrandingAsset(string $url): void
+    {
+        $path = parse_url($url, PHP_URL_PATH);
+
+        if (is_string($path) && str_starts_with($path, '/storage/site/branding/')) {
+            Storage::disk('public')->delete(substr($path, strlen('/storage/')));
+        }
     }
 
     public function system(): Response

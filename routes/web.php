@@ -113,6 +113,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 });
 
+require __DIR__.'/patients.php';
+
 require __DIR__.'/developer-tools.php';
 
 require __DIR__.'/administration.php';

@@ -26,14 +26,16 @@ import {
     SlidersHorizontal,
     FileText,
     ClipboardCheck,
+    ChevronRight,
 } from 'lucide-react';
 import AppLogo from '@/components/app-logo';
-import { NavMain } from '@/components/nav-main';
 import { NavUser } from '@/components/nav-user';
 import {
     Sidebar,
     SidebarContent,
     SidebarFooter,
+    SidebarGroup,
+    SidebarGroupLabel,
     SidebarHeader,
     SidebarMenu,
     SidebarMenuButton,
@@ -45,16 +47,19 @@ import { edit as profileEdit } from '@/routes/profile';
 import { edit as securityEdit } from '@/routes/security';
 import { edit as appearanceEdit } from '@/routes/appearance';
 import type { NavItem } from '@/types';
-
-type SidebarAuthorization = {
-    auth: {
-        permissions?: string[];
-    };
-};
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+import { useState } from 'react';
 
 export function AppSidebar() {
-    const { auth } = usePage().props as SidebarAuthorization;
-    const effectivePermissions = new Set(auth.permissions ?? []);
+    // FIX: Cast to any first to bypass the strict overlap check, 
+    // then cast to your custom type to keep autocomplete.
+    const page = usePage();
+    const { auth, site } = page.props as any as {
+        auth: { permissions?: string[] };
+        site: { name?: string };
+    };
+
+    const effectivePermissions = new Set(auth?.permissions ?? []);
     const visibleItems = (items: NavItem[]) =>
         items.filter((item) => !item.permission || effectivePermissions.has(item.permission));
 
@@ -93,52 +98,124 @@ export function AppSidebar() {
     ];
 
     const accountItems: NavItem[] = [
-        {
-            title: 'My profile',
-            href: profileEdit(),
-            icon: CircleUserRound,
-        },
-        {
-            title: 'Security',
-            href: securityEdit(),
-            icon: LockKeyhole,
-        },
-        {
-            title: 'Appearance',
-            href: appearanceEdit(),
-            icon: Palette,
-        },
+        { title: 'My profile', href: profileEdit(), icon: CircleUserRound },
+        { title: 'Security', href: securityEdit(), icon: LockKeyhole },
+        { title: 'Appearance', href: appearanceEdit(), icon: Palette },
     ];
 
+    const devToolsItems: NavItem[] = [
+        { title: 'Integration overview', href: '/developer-tools', icon: Code2, permission: 'integrations.view' },
+        { title: 'Partner API access', href: '/developer-tools/inbound-keys', icon: KeyRound, permission: 'integrations.view' },
+        { title: 'Connected services', href: '/developer-tools/integrations', icon: Cable, permission: 'integrations.view' },
+        { title: 'Environment settings', href: '/developer-tools/environments', icon: SlidersHorizontal, permission: 'integrations.view' },
+        { title: 'SHA & DHA HIE guidance', href: '/developer-tools/hie', icon: FileText, permission: 'integrations.view' },
+        { title: 'API testing console', href: '/developer-tools/testing', icon: ClipboardCheck, permission: 'integrations.view' },
+        { title: 'API activity history', href: '/developer-tools/activity', icon: Activity, permission: 'integrations.view' },
+    ];
+
+    const SidebarGroupWrapper = ({ 
+        label, 
+        items, 
+        collapsible = false, 
+        defaultOpen = true 
+    }: { 
+        label: string; 
+        items: NavItem[]; 
+        collapsible?: boolean; 
+        defaultOpen?: boolean 
+    }) => {
+        const [isOpen, setIsOpen] = useState(defaultOpen);
+        const visible = visibleItems(items);
+        if (visible.length === 0) return null;
+
+        const renderItems = () => (
+            <SidebarMenu>
+                {visible.map((item) => {
+                    const Icon = item.icon;
+                    const isDisabled = item.comingSoon;
+                    
+                    return (
+                        <SidebarMenuItem key={item.title}>
+                            {isDisabled ? (
+                                <div className="flex w-full cursor-not-allowed items-center gap-3 rounded-md px-2 py-1.5 text-muted-foreground opacity-50">
+                                    {Icon && <Icon className="h-4 w-4 shrink-0" />}
+                                    <span className="truncate text-sm">{item.title}</span>
+                                    <span className="ml-auto text-[9px] font-semibold uppercase tracking-wider text-muted-foreground bg-muted/50 px-1.5 py-0.5 rounded-sm">
+                                        Soon
+                                    </span>
+                                </div>
+                            ) : (
+                                <SidebarMenuButton asChild tooltip={item.title}>
+                                    <Link href={item.href} className="flex items-center gap-3 w-full">
+                                        {Icon && <Icon className="h-4 w-4 shrink-0" />}
+                                        <span className="truncate group-data-[collapsible=icon]:hidden">{item.title}</span>
+                                    </Link>
+                                </SidebarMenuButton>
+                            )}
+                        </SidebarMenuItem>
+                    );
+                })}
+            </SidebarMenu>
+        );
+
+        if (!collapsible) {
+            return (
+                <SidebarGroup>
+                    <SidebarGroupLabel className="group-data-[collapsible=icon]:hidden">{label}</SidebarGroupLabel>
+                    {renderItems()}
+                </SidebarGroup>
+            );
+        }
+
+        return (
+            <Collapsible open={isOpen} onOpenChange={setIsOpen} asChild className="group/collapsible">
+                <SidebarGroup>
+                    <SidebarGroupLabel asChild className="group-data-[collapsible=icon]:hidden">
+                        <CollapsibleTrigger className="flex w-full items-center justify-between hover:bg-sidebar-accent hover:text-sidebar-accent-foreground rounded-md px-2 py-1.5 text-sm transition-colors">
+                            {label}
+                            <ChevronRight className="h-4 w-4 transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+                        </CollapsibleTrigger>
+                    </SidebarGroupLabel>
+                    <CollapsibleContent>
+                        {renderItems()}
+                    </CollapsibleContent>
+                </SidebarGroup>
+            </Collapsible>
+        );
+    };
+
     return (
-        <Sidebar collapsible="icon" variant="inset" className="border-sidebar-border/80 bg-sidebar">
-            <SidebarHeader>
+        <Sidebar 
+            collapsible="icon" 
+            variant="inset" 
+            className="border-emerald-100/50 dark:border-slate-800 bg-emerald-50/30 dark:bg-[#08131a]"
+        >
+            <SidebarHeader className="pt-2 pb-0">
                 <SidebarMenu>
                     <SidebarMenuItem>
-                        <SidebarMenuButton size="lg" asChild>
-                            <Link href={dashboard()} prefetch>
-                                <AppLogo />
+                        <SidebarMenuButton size="lg" asChild tooltip={site?.name || 'Clinic Workspace'}>
+                            <Link href={dashboard()} prefetch className="flex items-center gap-2 w-full">
+                                {/* Logo without background fill */}
+                                <div className="flex aspect-square size-8 items-center justify-center">
+                                    <AppLogo />
+                                </div>
+                                {/* Dynamic site name with truncation for long text */}
+                                <span className="truncate font-semibold group-data-[collapsible=icon]:hidden">
+                                    {site?.name || 'Clinic Workspace'}
+                                </span>
                             </Link>
                         </SidebarMenuButton>
                     </SidebarMenuItem>
                 </SidebarMenu>
             </SidebarHeader>
 
-            <SidebarContent className="gap-0.5 overflow-x-hidden bg-sidebar px-0.5">
-                <NavMain items={visibleItems(workspaceItems)} label="Workspace" />
-                <NavMain items={patientItems} label="Patient care" collapsible defaultOpen />
-                <NavMain items={operationsItems} label="Operations" collapsible defaultOpen />
-                <NavMain items={visibleItems(administrationItems)} label="Administration" collapsible defaultOpen />
-                <NavMain items={visibleItems([
-                    { title: 'Integration overview', href: '/developer-tools', icon: Code2, permission: 'integrations.view' },
-                    { title: 'Partner API access', href: '/developer-tools/inbound-keys', icon: KeyRound, permission: 'integrations.view' },
-                    { title: 'Connected services', href: '/developer-tools/integrations', icon: Cable, permission: 'integrations.view' },
-                    { title: 'Environment settings', href: '/developer-tools/environments', icon: SlidersHorizontal, permission: 'integrations.view' },
-                    { title: 'SHA & DHA HIE guidance', href: '/developer-tools/hie', icon: FileText, permission: 'integrations.view' },
-                    { title: 'API testing console', href: '/developer-tools/testing', icon: ClipboardCheck, permission: 'integrations.view' },
-                    { title: 'API activity history', href: '/developer-tools/activity', icon: Activity, permission: 'integrations.view' },
-                ])} label="Developer Tools & Integrations" collapsible defaultOpen={false} />
-                <NavMain items={visibleItems(accountItems)} label="My account" collapsible defaultOpen={false} />
+            <SidebarContent className="gap-0 overflow-y-auto overflow-x-hidden [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:'none'] px-0">
+                <SidebarGroupWrapper label="Workspace" items={workspaceItems} />
+                <SidebarGroupWrapper label="Patient care" items={patientItems} collapsible defaultOpen />
+                <SidebarGroupWrapper label="Operations" items={operationsItems} collapsible defaultOpen />
+                <SidebarGroupWrapper label="Administration" items={administrationItems} collapsible defaultOpen />
+                <SidebarGroupWrapper label="Developer Tools & Integrations" items={devToolsItems} collapsible defaultOpen={false} />
+                <SidebarGroupWrapper label="My account" items={accountItems} collapsible defaultOpen={false} />
             </SidebarContent>
 
             <SidebarFooter>

@@ -4,6 +4,7 @@ import DashboardController from './DashboardController'
 import ReleaseChangelogController from './ReleaseChangelogController'
 import DashboardReleaseAcknowledgementController from './DashboardReleaseAcknowledgementController'
 import Admin from './Admin'
+import PatientController from './PatientController'
 import Settings from './Settings'
 const Controllers = {
     Api: Object.assign(Api, Api),
@@ -12,6 +13,7 @@ DashboardController: Object.assign(DashboardController, DashboardController),
 ReleaseChangelogController: Object.assign(ReleaseChangelogController, ReleaseChangelogController),
 DashboardReleaseAcknowledgementController: Object.assign(DashboardReleaseAcknowledgementController, DashboardReleaseAcknowledgementController),
 Admin: Object.assign(Admin, Admin),
+PatientController: Object.assign(PatientController, PatientController),
 Settings: Object.assign(Settings, Settings),
 }
 

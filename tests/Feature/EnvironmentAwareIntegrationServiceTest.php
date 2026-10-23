@@ -23,7 +23,8 @@ class EnvironmentAwareIntegrationServiceTest extends TestCase
         $this->assertTrue($first['mock']);
         $this->assertSame(200, $first['status']);
         $this->assertSame($first['body'], $second['body']);
-        $this->assertSame('MOCK_ELIGIBLE', $first['body']['data']['status']);
+        $this->assertSame('DEV_MOCK', $first['body']['statusCode']);
+        $this->assertTrue($first['body']['mock']);
     }
 
     public function test_uat_does_not_fall_back_to_mock_when_configuration_is_missing(): void
