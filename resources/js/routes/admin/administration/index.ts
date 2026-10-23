@@ -475,7 +475,7 @@ accessHistory.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => (
     accessHistory.form = accessHistoryForm
 /**
 * @see \App\Http\Controllers\Admin\ClinicSettingsController::facilitySettings
- * @see app/Http/Controllers/Admin/ClinicSettingsController.php:17
+ * @see app/Http/Controllers/Admin/ClinicSettingsController.php:19
  * @route '/admin/administration/facility-settings'
  */
 export const facilitySettings = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -490,7 +490,7 @@ facilitySettings.definition = {
 
 /**
 * @see \App\Http\Controllers\Admin\ClinicSettingsController::facilitySettings
- * @see app/Http/Controllers/Admin/ClinicSettingsController.php:17
+ * @see app/Http/Controllers/Admin/ClinicSettingsController.php:19
  * @route '/admin/administration/facility-settings'
  */
 facilitySettings.url = (options?: RouteQueryOptions) => {
@@ -499,7 +499,7 @@ facilitySettings.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\Admin\ClinicSettingsController::facilitySettings
- * @see app/Http/Controllers/Admin/ClinicSettingsController.php:17
+ * @see app/Http/Controllers/Admin/ClinicSettingsController.php:19
  * @route '/admin/administration/facility-settings'
  */
 facilitySettings.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -508,7 +508,7 @@ facilitySettings.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => 
 })
 /**
 * @see \App\Http\Controllers\Admin\ClinicSettingsController::facilitySettings
- * @see app/Http/Controllers/Admin/ClinicSettingsController.php:17
+ * @see app/Http/Controllers/Admin/ClinicSettingsController.php:19
  * @route '/admin/administration/facility-settings'
  */
 facilitySettings.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -518,7 +518,7 @@ facilitySettings.head = (options?: RouteQueryOptions): RouteDefinition<'head'> =
 
     /**
 * @see \App\Http\Controllers\Admin\ClinicSettingsController::facilitySettings
- * @see app/Http/Controllers/Admin/ClinicSettingsController.php:17
+ * @see app/Http/Controllers/Admin/ClinicSettingsController.php:19
  * @route '/admin/administration/facility-settings'
  */
     const facilitySettingsForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -528,7 +528,7 @@ facilitySettings.head = (options?: RouteQueryOptions): RouteDefinition<'head'> =
 
             /**
 * @see \App\Http\Controllers\Admin\ClinicSettingsController::facilitySettings
- * @see app/Http/Controllers/Admin/ClinicSettingsController.php:17
+ * @see app/Http/Controllers/Admin/ClinicSettingsController.php:19
  * @route '/admin/administration/facility-settings'
  */
         facilitySettingsForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -537,7 +537,7 @@ facilitySettings.head = (options?: RouteQueryOptions): RouteDefinition<'head'> =
         })
             /**
 * @see \App\Http\Controllers\Admin\ClinicSettingsController::facilitySettings
- * @see app/Http/Controllers/Admin/ClinicSettingsController.php:17
+ * @see app/Http/Controllers/Admin/ClinicSettingsController.php:19
  * @route '/admin/administration/facility-settings'
  */
         facilitySettingsForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -553,7 +553,7 @@ facilitySettings.head = (options?: RouteQueryOptions): RouteDefinition<'head'> =
     facilitySettings.form = facilitySettingsForm
 /**
 * @see \App\Http\Controllers\Admin\ClinicSettingsController::systemConfiguration
- * @see app/Http/Controllers/Admin/ClinicSettingsController.php:58
+ * @see app/Http/Controllers/Admin/ClinicSettingsController.php:162
  * @route '/admin/administration/system-configuration'
  */
 export const systemConfiguration = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -568,7 +568,7 @@ systemConfiguration.definition = {
 
 /**
 * @see \App\Http\Controllers\Admin\ClinicSettingsController::systemConfiguration
- * @see app/Http/Controllers/Admin/ClinicSettingsController.php:58
+ * @see app/Http/Controllers/Admin/ClinicSettingsController.php:162
  * @route '/admin/administration/system-configuration'
  */
 systemConfiguration.url = (options?: RouteQueryOptions) => {
@@ -577,7 +577,7 @@ systemConfiguration.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\Admin\ClinicSettingsController::systemConfiguration
- * @see app/Http/Controllers/Admin/ClinicSettingsController.php:58
+ * @see app/Http/Controllers/Admin/ClinicSettingsController.php:162
  * @route '/admin/administration/system-configuration'
  */
 systemConfiguration.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -586,7 +586,7 @@ systemConfiguration.get = (options?: RouteQueryOptions): RouteDefinition<'get'> 
 })
 /**
 * @see \App\Http\Controllers\Admin\ClinicSettingsController::systemConfiguration
- * @see app/Http/Controllers/Admin/ClinicSettingsController.php:58
+ * @see app/Http/Controllers/Admin/ClinicSettingsController.php:162
  * @route '/admin/administration/system-configuration'
  */
 systemConfiguration.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -596,7 +596,7 @@ systemConfiguration.head = (options?: RouteQueryOptions): RouteDefinition<'head'
 
     /**
 * @see \App\Http\Controllers\Admin\ClinicSettingsController::systemConfiguration
- * @see app/Http/Controllers/Admin/ClinicSettingsController.php:58
+ * @see app/Http/Controllers/Admin/ClinicSettingsController.php:162
  * @route '/admin/administration/system-configuration'
  */
     const systemConfigurationForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -606,7 +606,7 @@ systemConfiguration.head = (options?: RouteQueryOptions): RouteDefinition<'head'
 
             /**
 * @see \App\Http\Controllers\Admin\ClinicSettingsController::systemConfiguration
- * @see app/Http/Controllers/Admin/ClinicSettingsController.php:58
+ * @see app/Http/Controllers/Admin/ClinicSettingsController.php:162
  * @route '/admin/administration/system-configuration'
  */
         systemConfigurationForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -615,7 +615,7 @@ systemConfiguration.head = (options?: RouteQueryOptions): RouteDefinition<'head'
         })
             /**
 * @see \App\Http\Controllers\Admin\ClinicSettingsController::systemConfiguration
- * @see app/Http/Controllers/Admin/ClinicSettingsController.php:58
+ * @see app/Http/Controllers/Admin/ClinicSettingsController.php:162
  * @route '/admin/administration/system-configuration'
  */
         systemConfigurationForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({

@@ -1,7 +1,7 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition } from './../../../../wayfinder'
 /**
 * @see \App\Http\Controllers\Admin\ClinicSettingsController::update
- * @see app/Http/Controllers/Admin/ClinicSettingsController.php:24
+ * @see app/Http/Controllers/Admin/ClinicSettingsController.php:26
  * @route '/admin/administration/facility-settings'
  */
 export const update = (options?: RouteQueryOptions): RouteDefinition<'put'> => ({
@@ -16,7 +16,7 @@ update.definition = {
 
 /**
 * @see \App\Http\Controllers\Admin\ClinicSettingsController::update
- * @see app/Http/Controllers/Admin/ClinicSettingsController.php:24
+ * @see app/Http/Controllers/Admin/ClinicSettingsController.php:26
  * @route '/admin/administration/facility-settings'
  */
 update.url = (options?: RouteQueryOptions) => {
@@ -25,7 +25,7 @@ update.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\Admin\ClinicSettingsController::update
- * @see app/Http/Controllers/Admin/ClinicSettingsController.php:24
+ * @see app/Http/Controllers/Admin/ClinicSettingsController.php:26
  * @route '/admin/administration/facility-settings'
  */
 update.put = (options?: RouteQueryOptions): RouteDefinition<'put'> => ({
@@ -35,7 +35,7 @@ update.put = (options?: RouteQueryOptions): RouteDefinition<'put'> => ({
 
     /**
 * @see \App\Http\Controllers\Admin\ClinicSettingsController::update
- * @see app/Http/Controllers/Admin/ClinicSettingsController.php:24
+ * @see app/Http/Controllers/Admin/ClinicSettingsController.php:26
  * @route '/admin/administration/facility-settings'
  */
     const updateForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -50,7 +50,7 @@ update.put = (options?: RouteQueryOptions): RouteDefinition<'put'> => ({
 
             /**
 * @see \App\Http\Controllers\Admin\ClinicSettingsController::update
- * @see app/Http/Controllers/Admin/ClinicSettingsController.php:24
+ * @see app/Http/Controllers/Admin/ClinicSettingsController.php:26
  * @route '/admin/administration/facility-settings'
  */
         updateForm.put = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -64,8 +64,120 @@ update.put = (options?: RouteQueryOptions): RouteDefinition<'put'> => ({
         })
     
     update.form = updateForm
+/**
+* @see \App\Http\Controllers\Admin\ClinicSettingsController::logo
+ * @see app/Http/Controllers/Admin/ClinicSettingsController.php:101
+ * @route '/admin/administration/facility-settings/logo'
+ */
+export const logo = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+    url: logo.url(options),
+    method: 'post',
+})
+
+logo.definition = {
+    methods: ["post"],
+    url: '/admin/administration/facility-settings/logo',
+} satisfies RouteDefinition<["post"]>
+
+/**
+* @see \App\Http\Controllers\Admin\ClinicSettingsController::logo
+ * @see app/Http/Controllers/Admin/ClinicSettingsController.php:101
+ * @route '/admin/administration/facility-settings/logo'
+ */
+logo.url = (options?: RouteQueryOptions) => {
+    return logo.definition.url + queryParams(options)
+}
+
+/**
+* @see \App\Http\Controllers\Admin\ClinicSettingsController::logo
+ * @see app/Http/Controllers/Admin/ClinicSettingsController.php:101
+ * @route '/admin/administration/facility-settings/logo'
+ */
+logo.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+    url: logo.url(options),
+    method: 'post',
+})
+
+    /**
+* @see \App\Http\Controllers\Admin\ClinicSettingsController::logo
+ * @see app/Http/Controllers/Admin/ClinicSettingsController.php:101
+ * @route '/admin/administration/facility-settings/logo'
+ */
+    const logoForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+        action: logo.url(options),
+        method: 'post',
+    })
+
+            /**
+* @see \App\Http\Controllers\Admin\ClinicSettingsController::logo
+ * @see app/Http/Controllers/Admin/ClinicSettingsController.php:101
+ * @route '/admin/administration/facility-settings/logo'
+ */
+        logoForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+            action: logo.url(options),
+            method: 'post',
+        })
+    
+    logo.form = logoForm
+/**
+* @see \App\Http\Controllers\Admin\ClinicSettingsController::favicon
+ * @see app/Http/Controllers/Admin/ClinicSettingsController.php:106
+ * @route '/admin/administration/facility-settings/favicon'
+ */
+export const favicon = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+    url: favicon.url(options),
+    method: 'post',
+})
+
+favicon.definition = {
+    methods: ["post"],
+    url: '/admin/administration/facility-settings/favicon',
+} satisfies RouteDefinition<["post"]>
+
+/**
+* @see \App\Http\Controllers\Admin\ClinicSettingsController::favicon
+ * @see app/Http/Controllers/Admin/ClinicSettingsController.php:106
+ * @route '/admin/administration/facility-settings/favicon'
+ */
+favicon.url = (options?: RouteQueryOptions) => {
+    return favicon.definition.url + queryParams(options)
+}
+
+/**
+* @see \App\Http\Controllers\Admin\ClinicSettingsController::favicon
+ * @see app/Http/Controllers/Admin/ClinicSettingsController.php:106
+ * @route '/admin/administration/facility-settings/favicon'
+ */
+favicon.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+    url: favicon.url(options),
+    method: 'post',
+})
+
+    /**
+* @see \App\Http\Controllers\Admin\ClinicSettingsController::favicon
+ * @see app/Http/Controllers/Admin/ClinicSettingsController.php:106
+ * @route '/admin/administration/facility-settings/favicon'
+ */
+    const faviconForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+        action: favicon.url(options),
+        method: 'post',
+    })
+
+            /**
+* @see \App\Http\Controllers\Admin\ClinicSettingsController::favicon
+ * @see app/Http/Controllers/Admin/ClinicSettingsController.php:106
+ * @route '/admin/administration/facility-settings/favicon'
+ */
+        faviconForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+            action: favicon.url(options),
+            method: 'post',
+        })
+    
+    favicon.form = faviconForm
 const facilitySettings = {
     update: Object.assign(update, update),
+logo: Object.assign(logo, logo),
+favicon: Object.assign(favicon, favicon),
 }
 
 export default facilitySettings
