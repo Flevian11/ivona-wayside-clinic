@@ -1,7 +1,7 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition } from './../../../../../wayfinder'
 /**
 * @see \App\Http\Controllers\Admin\ClinicSettingsController::facility
- * @see app/Http/Controllers/Admin/ClinicSettingsController.php:19
+ * @see app/Http/Controllers/Admin/ClinicSettingsController.php:17
  * @route '/admin/administration/facility-settings'
  */
 export const facility = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -16,7 +16,7 @@ facility.definition = {
 
 /**
 * @see \App\Http\Controllers\Admin\ClinicSettingsController::facility
- * @see app/Http/Controllers/Admin/ClinicSettingsController.php:19
+ * @see app/Http/Controllers/Admin/ClinicSettingsController.php:17
  * @route '/admin/administration/facility-settings'
  */
 facility.url = (options?: RouteQueryOptions) => {
@@ -25,7 +25,7 @@ facility.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\Admin\ClinicSettingsController::facility
- * @see app/Http/Controllers/Admin/ClinicSettingsController.php:19
+ * @see app/Http/Controllers/Admin/ClinicSettingsController.php:17
  * @route '/admin/administration/facility-settings'
  */
 facility.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -34,7 +34,7 @@ facility.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 })
 /**
 * @see \App\Http\Controllers\Admin\ClinicSettingsController::facility
- * @see app/Http/Controllers/Admin/ClinicSettingsController.php:19
+ * @see app/Http/Controllers/Admin/ClinicSettingsController.php:17
  * @route '/admin/administration/facility-settings'
  */
 facility.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -44,7 +44,7 @@ facility.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
     /**
 * @see \App\Http\Controllers\Admin\ClinicSettingsController::facility
- * @see app/Http/Controllers/Admin/ClinicSettingsController.php:19
+ * @see app/Http/Controllers/Admin/ClinicSettingsController.php:17
  * @route '/admin/administration/facility-settings'
  */
     const facilityForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -54,7 +54,7 @@ facility.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
             /**
 * @see \App\Http\Controllers\Admin\ClinicSettingsController::facility
- * @see app/Http/Controllers/Admin/ClinicSettingsController.php:19
+ * @see app/Http/Controllers/Admin/ClinicSettingsController.php:17
  * @route '/admin/administration/facility-settings'
  */
         facilityForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -63,7 +63,7 @@ facility.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
         })
             /**
 * @see \App\Http\Controllers\Admin\ClinicSettingsController::facility
- * @see app/Http/Controllers/Admin/ClinicSettingsController.php:19
+ * @see app/Http/Controllers/Admin/ClinicSettingsController.php:17
  * @route '/admin/administration/facility-settings'
  */
         facilityForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -79,7 +79,7 @@ facility.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     facility.form = facilityForm
 /**
 * @see \App\Http\Controllers\Admin\ClinicSettingsController::updateFacility
- * @see app/Http/Controllers/Admin/ClinicSettingsController.php:26
+ * @see app/Http/Controllers/Admin/ClinicSettingsController.php:24
  * @route '/admin/administration/facility-settings'
  */
 export const updateFacility = (options?: RouteQueryOptions): RouteDefinition<'put'> => ({
@@ -94,7 +94,7 @@ updateFacility.definition = {
 
 /**
 * @see \App\Http\Controllers\Admin\ClinicSettingsController::updateFacility
- * @see app/Http/Controllers/Admin/ClinicSettingsController.php:26
+ * @see app/Http/Controllers/Admin/ClinicSettingsController.php:24
  * @route '/admin/administration/facility-settings'
  */
 updateFacility.url = (options?: RouteQueryOptions) => {
@@ -103,7 +103,7 @@ updateFacility.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\Admin\ClinicSettingsController::updateFacility
- * @see app/Http/Controllers/Admin/ClinicSettingsController.php:26
+ * @see app/Http/Controllers/Admin/ClinicSettingsController.php:24
  * @route '/admin/administration/facility-settings'
  */
 updateFacility.put = (options?: RouteQueryOptions): RouteDefinition<'put'> => ({
@@ -113,7 +113,7 @@ updateFacility.put = (options?: RouteQueryOptions): RouteDefinition<'put'> => ({
 
     /**
 * @see \App\Http\Controllers\Admin\ClinicSettingsController::updateFacility
- * @see app/Http/Controllers/Admin/ClinicSettingsController.php:26
+ * @see app/Http/Controllers/Admin/ClinicSettingsController.php:24
  * @route '/admin/administration/facility-settings'
  */
     const updateFacilityForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -128,7 +128,7 @@ updateFacility.put = (options?: RouteQueryOptions): RouteDefinition<'put'> => ({
 
             /**
 * @see \App\Http\Controllers\Admin\ClinicSettingsController::updateFacility
- * @see app/Http/Controllers/Admin/ClinicSettingsController.php:26
+ * @see app/Http/Controllers/Admin/ClinicSettingsController.php:24
  * @route '/admin/administration/facility-settings'
  */
         updateFacilityForm.put = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -143,118 +143,8 @@ updateFacility.put = (options?: RouteQueryOptions): RouteDefinition<'put'> => ({
     
     updateFacility.form = updateFacilityForm
 /**
-* @see \App\Http\Controllers\Admin\ClinicSettingsController::updateLogo
- * @see app/Http/Controllers/Admin/ClinicSettingsController.php:101
- * @route '/admin/administration/facility-settings/logo'
- */
-export const updateLogo = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
-    url: updateLogo.url(options),
-    method: 'post',
-})
-
-updateLogo.definition = {
-    methods: ["post"],
-    url: '/admin/administration/facility-settings/logo',
-} satisfies RouteDefinition<["post"]>
-
-/**
-* @see \App\Http\Controllers\Admin\ClinicSettingsController::updateLogo
- * @see app/Http/Controllers/Admin/ClinicSettingsController.php:101
- * @route '/admin/administration/facility-settings/logo'
- */
-updateLogo.url = (options?: RouteQueryOptions) => {
-    return updateLogo.definition.url + queryParams(options)
-}
-
-/**
-* @see \App\Http\Controllers\Admin\ClinicSettingsController::updateLogo
- * @see app/Http/Controllers/Admin/ClinicSettingsController.php:101
- * @route '/admin/administration/facility-settings/logo'
- */
-updateLogo.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
-    url: updateLogo.url(options),
-    method: 'post',
-})
-
-    /**
-* @see \App\Http\Controllers\Admin\ClinicSettingsController::updateLogo
- * @see app/Http/Controllers/Admin/ClinicSettingsController.php:101
- * @route '/admin/administration/facility-settings/logo'
- */
-    const updateLogoForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
-        action: updateLogo.url(options),
-        method: 'post',
-    })
-
-            /**
-* @see \App\Http\Controllers\Admin\ClinicSettingsController::updateLogo
- * @see app/Http/Controllers/Admin/ClinicSettingsController.php:101
- * @route '/admin/administration/facility-settings/logo'
- */
-        updateLogoForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
-            action: updateLogo.url(options),
-            method: 'post',
-        })
-    
-    updateLogo.form = updateLogoForm
-/**
-* @see \App\Http\Controllers\Admin\ClinicSettingsController::updateFavicon
- * @see app/Http/Controllers/Admin/ClinicSettingsController.php:106
- * @route '/admin/administration/facility-settings/favicon'
- */
-export const updateFavicon = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
-    url: updateFavicon.url(options),
-    method: 'post',
-})
-
-updateFavicon.definition = {
-    methods: ["post"],
-    url: '/admin/administration/facility-settings/favicon',
-} satisfies RouteDefinition<["post"]>
-
-/**
-* @see \App\Http\Controllers\Admin\ClinicSettingsController::updateFavicon
- * @see app/Http/Controllers/Admin/ClinicSettingsController.php:106
- * @route '/admin/administration/facility-settings/favicon'
- */
-updateFavicon.url = (options?: RouteQueryOptions) => {
-    return updateFavicon.definition.url + queryParams(options)
-}
-
-/**
-* @see \App\Http\Controllers\Admin\ClinicSettingsController::updateFavicon
- * @see app/Http/Controllers/Admin/ClinicSettingsController.php:106
- * @route '/admin/administration/facility-settings/favicon'
- */
-updateFavicon.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
-    url: updateFavicon.url(options),
-    method: 'post',
-})
-
-    /**
-* @see \App\Http\Controllers\Admin\ClinicSettingsController::updateFavicon
- * @see app/Http/Controllers/Admin/ClinicSettingsController.php:106
- * @route '/admin/administration/facility-settings/favicon'
- */
-    const updateFaviconForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
-        action: updateFavicon.url(options),
-        method: 'post',
-    })
-
-            /**
-* @see \App\Http\Controllers\Admin\ClinicSettingsController::updateFavicon
- * @see app/Http/Controllers/Admin/ClinicSettingsController.php:106
- * @route '/admin/administration/facility-settings/favicon'
- */
-        updateFaviconForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
-            action: updateFavicon.url(options),
-            method: 'post',
-        })
-    
-    updateFavicon.form = updateFaviconForm
-/**
 * @see \App\Http\Controllers\Admin\ClinicSettingsController::system
- * @see app/Http/Controllers/Admin/ClinicSettingsController.php:162
+ * @see app/Http/Controllers/Admin/ClinicSettingsController.php:58
  * @route '/admin/administration/system-configuration'
  */
 export const system = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -269,7 +159,7 @@ system.definition = {
 
 /**
 * @see \App\Http\Controllers\Admin\ClinicSettingsController::system
- * @see app/Http/Controllers/Admin/ClinicSettingsController.php:162
+ * @see app/Http/Controllers/Admin/ClinicSettingsController.php:58
  * @route '/admin/administration/system-configuration'
  */
 system.url = (options?: RouteQueryOptions) => {
@@ -278,7 +168,7 @@ system.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\Admin\ClinicSettingsController::system
- * @see app/Http/Controllers/Admin/ClinicSettingsController.php:162
+ * @see app/Http/Controllers/Admin/ClinicSettingsController.php:58
  * @route '/admin/administration/system-configuration'
  */
 system.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -287,7 +177,7 @@ system.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 })
 /**
 * @see \App\Http\Controllers\Admin\ClinicSettingsController::system
- * @see app/Http/Controllers/Admin/ClinicSettingsController.php:162
+ * @see app/Http/Controllers/Admin/ClinicSettingsController.php:58
  * @route '/admin/administration/system-configuration'
  */
 system.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -297,7 +187,7 @@ system.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
     /**
 * @see \App\Http\Controllers\Admin\ClinicSettingsController::system
- * @see app/Http/Controllers/Admin/ClinicSettingsController.php:162
+ * @see app/Http/Controllers/Admin/ClinicSettingsController.php:58
  * @route '/admin/administration/system-configuration'
  */
     const systemForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -307,7 +197,7 @@ system.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
             /**
 * @see \App\Http\Controllers\Admin\ClinicSettingsController::system
- * @see app/Http/Controllers/Admin/ClinicSettingsController.php:162
+ * @see app/Http/Controllers/Admin/ClinicSettingsController.php:58
  * @route '/admin/administration/system-configuration'
  */
         systemForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -316,7 +206,7 @@ system.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
         })
             /**
 * @see \App\Http\Controllers\Admin\ClinicSettingsController::system
- * @see app/Http/Controllers/Admin/ClinicSettingsController.php:162
+ * @see app/Http/Controllers/Admin/ClinicSettingsController.php:58
  * @route '/admin/administration/system-configuration'
  */
         systemForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -332,7 +222,7 @@ system.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     system.form = systemForm
 /**
 * @see \App\Http\Controllers\Admin\ClinicSettingsController::updateSystem
- * @see app/Http/Controllers/Admin/ClinicSettingsController.php:178
+ * @see app/Http/Controllers/Admin/ClinicSettingsController.php:74
  * @route '/admin/administration/system-configuration'
  */
 export const updateSystem = (options?: RouteQueryOptions): RouteDefinition<'put'> => ({
@@ -347,7 +237,7 @@ updateSystem.definition = {
 
 /**
 * @see \App\Http\Controllers\Admin\ClinicSettingsController::updateSystem
- * @see app/Http/Controllers/Admin/ClinicSettingsController.php:178
+ * @see app/Http/Controllers/Admin/ClinicSettingsController.php:74
  * @route '/admin/administration/system-configuration'
  */
 updateSystem.url = (options?: RouteQueryOptions) => {
@@ -356,7 +246,7 @@ updateSystem.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\Admin\ClinicSettingsController::updateSystem
- * @see app/Http/Controllers/Admin/ClinicSettingsController.php:178
+ * @see app/Http/Controllers/Admin/ClinicSettingsController.php:74
  * @route '/admin/administration/system-configuration'
  */
 updateSystem.put = (options?: RouteQueryOptions): RouteDefinition<'put'> => ({
@@ -366,7 +256,7 @@ updateSystem.put = (options?: RouteQueryOptions): RouteDefinition<'put'> => ({
 
     /**
 * @see \App\Http\Controllers\Admin\ClinicSettingsController::updateSystem
- * @see app/Http/Controllers/Admin/ClinicSettingsController.php:178
+ * @see app/Http/Controllers/Admin/ClinicSettingsController.php:74
  * @route '/admin/administration/system-configuration'
  */
     const updateSystemForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -381,7 +271,7 @@ updateSystem.put = (options?: RouteQueryOptions): RouteDefinition<'put'> => ({
 
             /**
 * @see \App\Http\Controllers\Admin\ClinicSettingsController::updateSystem
- * @see app/Http/Controllers/Admin/ClinicSettingsController.php:178
+ * @see app/Http/Controllers/Admin/ClinicSettingsController.php:74
  * @route '/admin/administration/system-configuration'
  */
         updateSystemForm.put = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -395,6 +285,6 @@ updateSystem.put = (options?: RouteQueryOptions): RouteDefinition<'put'> => ({
         })
     
     updateSystem.form = updateSystemForm
-const ClinicSettingsController = { facility, updateFacility, updateLogo, updateFavicon, system, updateSystem }
+const ClinicSettingsController = { facility, updateFacility, system, updateSystem }
 
 export default ClinicSettingsController

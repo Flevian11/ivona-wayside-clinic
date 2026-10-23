@@ -29,8 +29,6 @@ Route::middleware(['auth', 'verified'])
 
         Route::get('/facility-settings', [\App\Http\Controllers\Admin\ClinicSettingsController::class, 'facility'])->middleware('can:settings.view')->name('facility-settings');
         Route::put('/facility-settings', [\App\Http\Controllers\Admin\ClinicSettingsController::class, 'updateFacility'])->middleware('can:settings.manage')->name('facility-settings.update');
-        Route::post('/facility-settings/logo', [\App\Http\Controllers\Admin\ClinicSettingsController::class, 'updateLogo'])->middleware('can:settings.manage')->name('facility-settings.logo');
-        Route::post('/facility-settings/favicon', [\App\Http\Controllers\Admin\ClinicSettingsController::class, 'updateFavicon'])->middleware('can:settings.manage')->name('facility-settings.favicon');
         Route::get('/system-configuration', [\App\Http\Controllers\Admin\ClinicSettingsController::class, 'system'])->middleware('can:settings.view')->name('system-configuration');
         Route::put('/system-configuration', [\App\Http\Controllers\Admin\ClinicSettingsController::class, 'updateSystem'])->middleware('can:settings.manage')->name('system-configuration.update');
     });

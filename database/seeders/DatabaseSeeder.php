@@ -12,6 +12,7 @@ class DatabaseSeeder extends Seeder
             PermissionCatalogueSeeder::class,
             SystemRoleSeeder::class,
             SystemSettingsSeeder::class,
+            SystemReleaseNotesSeeder::class,
         ]);
     }
 }

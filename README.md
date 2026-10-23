@@ -1,14 +1,13 @@
 # ivona-wayside-clinic
 Modular hospital HMIS with PostgreSQL, Laravel, TypeScript, and DHA/HIE integration
 
-## Facility branding uploads
 
-The Administration → Facility settings page accepts direct image uploads for the clinic logo and browser favicon; it no longer asks for external logo/icon URLs. Accepted formats are PNG, JPEG, and WebP. Logos are limited to 4 MB; favicon images must be square and are limited to 2 MB. Files are stored on Laravel's configured `public` disk under `storage/app/public/site/branding` and referenced through `/storage/...` URLs.
+## Release notes / changelog
 
-After configuring the application, ensure the public storage link exists:
+The in-app **What's New** page is backed by published `system_releases` records. To install or refresh the initial detailed release entry on a development database, run:
 
 ```powershell
-php artisan storage:link
+php artisan db:seed --class=SystemReleaseNotesSeeder
 ```
 
-If the link already exists, do not recreate it. For production, ensure the web server can serve `public/storage` and enforce the deployment's normal file permissions. Uploaded branding files are validated server-side; the previous image is retained when no replacement is selected, and managed old files are removed after a successful replacement or removal.
+The seeder is idempotent for release `0.1.0`. Review `CHANGELOG.md` for the project-level record. The release notes explicitly distinguish implemented foundations from unverified or incomplete production workflows.
