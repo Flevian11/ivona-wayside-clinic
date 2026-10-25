@@ -5,6 +5,11 @@ return [
     'timeout_seconds' => (int) env('IWC_INTEGRATION_TIMEOUT', 20),
     'connect_timeout_seconds' => (int) env('IWC_INTEGRATION_CONNECT_TIMEOUT', 5),
     'mock_seed' => env('IWC_INTEGRATION_MOCK_SEED', 'ivona-wayside-clinic-dev-v1'),
+    // Add any authority-issued custom API host explicitly in this comma-separated allowlist.
+    'allowed_hosts' => array_values(array_filter(array_map('trim', explode(',', (string) env(
+        'IWC_INTEGRATION_ALLOWED_HOSTS',
+        'api-edi.provider.sha.go.ke,edi-api.provider-uat.sha.go.ke,edi-api.provider-dev.sha.go.ke,afyalink.dha.go.ke,ilm-dev.dha.go.ke'
+    ))))),
     'providers' => [
         'sha_edi' => ['name' => 'Social Health Authority — EDI / claims', 'urls' => ['development' => 'https://edi-api.provider-dev.sha.go.ke', 'uat' => 'https://edi-api.provider-uat.sha.go.ke', 'production' => 'https://api-edi.provider.sha.go.ke'], 'documentation' => 'https://api-edi.provider.sha.go.ke/'],
         'dha_hie' => ['name' => 'Digital Health Agency — AfyaConnect / HIE', 'documentation' => 'https://afyaconnect.dha.go.ke/get-started', 'api_catalog' => 'https://afyaconnect.dha.go.ke/', 'claims_documentation' => 'https://afyaconnect.dha.go.ke/docs/eclaims/getting-started/introduction'],

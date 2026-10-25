@@ -11,6 +11,11 @@ class PatientIdentifier extends Model
     protected $guarded = ['id', 'value_encrypted', 'value_hash'];
     protected $hidden = ['value_encrypted', 'value_hash'];
 
+    protected function casts(): array
+    {
+        return ['verified_at' => 'datetime', 'is_primary' => 'boolean'];
+    }
+
     public function patient(): BelongsTo { return $this->belongsTo(Patient::class); }
     public function setIdentifierValue(string $value): void
     {

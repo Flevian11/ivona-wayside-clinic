@@ -4,6 +4,7 @@ import {
     BookOpenText,
     Boxes,
     CalendarDays,
+    CalendarClock,
     Code2,
     ClipboardList,
     FlaskConical,
@@ -69,8 +70,10 @@ export function AppSidebar() {
     ];
 
     const patientItems: NavItem[] = [
-        { title: 'Patient registration', href: '#patient-registration', icon: UserRoundPlus, comingSoon: true },
-        { title: 'Patient records', href: '#patient-records', icon: Users, comingSoon: true },
+        { title: 'Patient registration', href: '/patients/create', icon: UserRoundPlus, permission: 'patients.create' },
+        { title: 'Patient records', href: '/patients', icon: Users, permission: 'patients.view' },
+        { title: 'Visits', href: '/visits', icon: CalendarClock, permission: 'appointments.view' },
+        { title: 'Preauthorizations', href: '/preauthorizations', icon: ShieldCheck, permission: 'sha.services.verify' },
         { title: 'Appointments & queue', href: '#appointments', icon: CalendarDays, comingSoon: true },
         { title: 'Clinical encounters', href: '#clinical-encounters', icon: Stethoscope, comingSoon: true },
         { title: 'Nursing', href: '#nursing', icon: HeartPulse, comingSoon: true },
@@ -104,13 +107,13 @@ export function AppSidebar() {
     ];
 
     const devToolsItems: NavItem[] = [
-        { title: 'Integration overview', href: '/developer-tools', icon: Code2, permission: 'integrations.view' },
-        { title: 'Partner API access', href: '/developer-tools/inbound-keys', icon: KeyRound, permission: 'integrations.view' },
-        { title: 'Connected services', href: '/developer-tools/integrations', icon: Cable, permission: 'integrations.view' },
-        { title: 'Environment settings', href: '/developer-tools/environments', icon: SlidersHorizontal, permission: 'integrations.view' },
-        { title: 'SHA & DHA HIE guidance', href: '/developer-tools/hie', icon: FileText, permission: 'integrations.view' },
-        { title: 'API testing console', href: '/developer-tools/testing', icon: ClipboardCheck, permission: 'integrations.view' },
-        { title: 'API activity history', href: '/developer-tools/activity', icon: Activity, permission: 'integrations.view' },
+        { title: 'Integration overview', href: '/developer-tools', icon: Code2, permission: 'developer-tools.view' },
+        { title: 'Partner API access', href: '/developer-tools/inbound-keys', icon: KeyRound, permission: 'developer-tools.view' },
+        { title: 'Connected services', href: '/developer-tools/integrations', icon: Cable, permission: 'developer-tools.view' },
+        { title: 'Environment settings', href: '/developer-tools/environments', icon: SlidersHorizontal, permission: 'developer-tools.view' },
+        { title: 'SHA & DHA HIE guidance', href: '/developer-tools/hie', icon: FileText, permission: 'developer-tools.view' },
+        { title: 'API testing console', href: '/developer-tools/testing', icon: ClipboardCheck, permission: 'developer-tools.view' },
+        { title: 'API activity history', href: '/developer-tools/activity', icon: Activity, permission: 'developer-tools.view' },
     ];
 
     const SidebarGroupWrapper = ({ 

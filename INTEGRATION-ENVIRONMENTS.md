@@ -8,7 +8,7 @@ Set `IWC_INTEGRATION_ENVIRONMENT` on the server process to exactly one of `devel
 - **UAT:** uses the saved UAT endpoint and issued UAT credentials. Network, authentication, TLS, and provider errors remain errors; the service never silently falls back to mock data.
 - **Production:** uses the saved Production endpoint and issued production credentials. TLS verification is mandatory. The authority's approval/go-live process must be completed before activating the live connection.
 
-The Developer Tools page stores separate Development/UAT/Production settings for every integration. The application-wide environment selects which record the shared gateway uses. Inbound API keys are also environment-bound; a Development key cannot be used against UAT or Production.
+The Developer Tools page stores separate Development/UAT/Production settings for every integration. The application-wide environment selects which record the shared gateway uses. Inbound API keys are also environment-bound; a Development key cannot be used against UAT or Production. Live HTTPS destinations must also match `IWC_INTEGRATION_ALLOWED_HOSTS` (comma-separated exact hostnames or approved subdomains); add any authority-issued custom host explicitly before enabling it. Private/reserved IP destinations and redirects remain blocked.
 
 ## Official references
 
@@ -22,7 +22,7 @@ The Developer Tools page stores separate Development/UAT/Production settings for
 - SHA EDI UAT: https://edi-api.provider-uat.sha.go.ke/
 - SHA EDI Production: https://api-edi.provider.sha.go.ke/
 
-The SHA EDI landing pages provide these environment URLs, but they do not expose the complete authentication contract or operation schemas on the landing page. The profile is therefore preconfigured with the URLs but remains disabled until the applicable official credentials and API contract are configured.
+The SHA EDI landing pages provide these environment URLs, but they do not expose the complete authentication contract or operation schemas on the landing page. The profile is therefore preconfigured with the URLs but remains disabled until the applicable official credentials and API contract are configured. Client Registry lookup uses the separate `dha-afyalink` profile and the documented `GET /v3/client-registry/fetch-client` route; the assigned AfyaLink host, agent ID, and account credentials must be entered for each environment. The host is intentionally not guessed from a documentation portal URL.
 
 The AfyaConnect eClaims catalogue publishes the UAT base URL `https://ilm-dev.dha.go.ke/uat-middleware/api/v1` and GET paths for eligibility, benefits, benefit interventions/utilization, POMSF balances, sub-benefits, and facility bed occupancy. These are prefilled in the DHA HIE UAT profile. The token endpoint and credentials remain unset because the authority issues them during onboarding. The production API base URL is not guessed: enter the exact one issued for the approved production API product.
 
@@ -37,3 +37,8 @@ The shared gateway applies the selected environment's base URL, authentication, 
 The gateway does not automatically retry write operations. Claims and other writes must use stable transaction references/idempotency controls defined by the exact provider contract before retries are added. Clinical workflows must also map local patient/facility identifiers to official Client Registry and Facility Registry identifiers and validate request/response schemas against the authority's API catalogue.
 
 This patch creates the shared environment and integration layer and configures published UAT endpoints. It does not claim DHA certification or a completed production go-live. Provider-issued production base URLs, credentials, facility identifiers, API-product scopes, and approved workflow schemas must be entered from the authority portal; the patch deliberately does not fabricate them.
+
+
+## SHA patient journey operations
+
+The patient wizard uses `patient.lookup_by_identifier` on the dedicated `dha-afyalink` profile for Client Registry, `patient.benefits` on the DHA HIE/AfyaConnect profile for the configured benefits catalogue, and `preauthorization.check` for the preauthorization workflow. The benefits route is taken from the existing published UAT endpoint map. Preauthorization request path and schema must be configured from the hospital's current authority-issued Postman collection before live use. Do not copy synthetic `DEV-BEN-*` codes into UAT or production. Development benefits are visibly synthetic UI scenarios only. Unknown or unavailable live preauthorization results are not treated as approval.

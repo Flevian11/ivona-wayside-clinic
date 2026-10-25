@@ -74,6 +74,10 @@ class PermissionCatalogueSeeder extends Seeder
             'integrations.view' => ['View integration status', 'integrations'],
             'integrations.manage' => ['Manage authorized integration configuration', 'integrations'],
 
+            // Restricted developer tooling (separate from ordinary integration access)
+            'developer-tools.view' => ['Access developer tools and technical integration workspaces', 'developer-tools'],
+            'developer-tools.manage' => ['Manage developer tools, API keys, environments, and integration tests', 'developer-tools'],
+
             // Medical records
             'medical_records.view' => ['View permitted medical records', 'medical-records'],
             'medical_records.manage' => ['Manage medical records and documents', 'medical-records'],

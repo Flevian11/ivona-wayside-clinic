@@ -10,240 +10,126 @@ use RuntimeException;
 
 class SystemRoleSeeder extends Seeder
 {
+    /**
+     * Seed the five default roles without replacing the dynamic role/permission
+     * management model. Custom (non-system) roles are intentionally preserved.
+     */
     public function run(): void
     {
-        $clinical = [
-            'patients.view',
-            'appointments.view',
-            'consultations.view',
-            'consultations.manage',
-            'diagnoses.record',
-            'treatment_plans.manage',
-            'prescriptions.create',
-            'clinical_notes.view',
-            'clinical_notes.manage',
-            'clinical_records.correct',
-            'lab.orders.view',
-            'lab.orders.manage',
-            'lab.results.record',
-            'lab.results.verify',
-            'medical_records.view',
-        ];
+        DB::transaction(function (): void {
+            $catalogue = Permission::query()->pluck('id', 'name');
 
-        // Platform administration does not automatically grant clinical access.
-        // Add clinical permissions to a role only through an explicit access policy.
-        $clinicalPermissions = [
-            'consultations.view',
-            'consultations.manage',
-            'diagnoses.record',
-            'treatment_plans.manage',
-            'prescriptions.create',
-            'clinical_notes.view',
-            'clinical_notes.manage',
-            'clinical_records.correct',
-            'triage.manage',
-            'vitals.record',
-            'nursing_notes.manage',
-            'nursing_care.manage',
-            'lab.orders.view',
-            'lab.orders.manage',
-            'lab.results.record',
-            'lab.results.verify',
-            'radiology.manage',
-            'medical_records.view',
-            'medical_records.manage',
-            'medical_records.release',
-        ];
+            if ($catalogue->isEmpty()) {
+                throw new RuntimeException(
+                    'The permission catalogue is empty. Run PermissionCatalogueSeeder first.'
+                );
+            }
 
-        $allPermissions = Permission::query()
-            ->whereNotIn('name', $clinicalPermissions)
-            ->pluck('name')
-            ->all();
+            $allPermissionNames = $catalogue->keys()->all();
+            $developerPermissionNames = array_values(array_filter(
+                $allPermissionNames,
+                static fn (string $name): bool => str_starts_with($name, 'developer-tools.')
+            ));
+            $hospitalAdminPermissions = array_values(array_diff(
+                $allPermissionNames,
+                $developerPermissionNames,
+            ));
 
-        $roles = [
-            'super-administrator' => [
-                'name' => 'Super Administrator',
-                'description' => 'Platform-wide administration. Clinical access remains subject to policy and auditing.',
-                'permissions' => $allPermissions,
-            ],
-            'system-administrator' => [
-                'name' => 'System Administrator',
-                'description' => 'Manage system configuration, users, releases, integrations, and audit visibility.',
-                'permissions' => [
-                    'users.view', 'users.manage',
-                    'roles.view',
-                    'settings.view', 'settings.manage',
-                    'audit.view', 'security.manage',
-                    'releases.view', 'releases.create', 'releases.update',
-                    'releases.publish', 'releases.withdraw',
-                    'integrations.view', 'integrations.manage',
-                    'it.diagnostics.view', 'it.backups.manage',
-                ],
-            ],
-            'it-technician' => [
-                'name' => 'IT Technician',
-                'description' => 'Technical support, devices, diagnostics, and authorized backup operations.',
-                'permissions' => [
-                    'users.view',
-                    'it.support.manage',
-                    'it.devices.manage',
-                    'it.diagnostics.view',
-                    'integrations.view',
-                ],
-            ],
-            'receptionist' => [
-                'name' => 'Receptionist',
-                'description' => 'Patient registration, appointments, check-in, queues, and referrals.',
-                'permissions' => [
-                    'patients.view', 'patients.create', 'patients.update',
-                    'appointments.view', 'appointments.manage',
-                    'queues.manage', 'referrals.manage',
-                    'medical_records.view',
-                ],
-            ],
-            'doctor' => [
-                'name' => 'Doctor / Clinician',
-                'description' => 'Clinical assessment, diagnosis, treatment, consultations, and prescriptions.',
-                'permissions' => array_merge($clinical, [
-                    'patients.update',
-                    'appointments.view',
-                    'medical_records.manage',
-                    'lab.results.record',
-                    'radiology.manage',
-                    'reports.clinical.view',
-                ]),
-            ],
-            'nurse' => [
-                'name' => 'Nurse',
-                'description' => 'Triage, vital signs, nursing notes, and assigned patient care.',
-                'permissions' => [
-                    'patients.view',
-                    'appointments.view',
-                    'triage.manage',
-                    'vitals.record',
-                    'nursing_notes.manage',
-                    'nursing_care.manage',
-                    'consultations.view',
-                    'clinical_notes.view',
-                    'medical_records.view',
-                    'lab.orders.view',
-                ],
-            ],
-            'cashier' => [
-                'name' => 'Cashier / Billing Officer',
-                'description' => 'Patient billing, invoices, payment recording, and refund requests.',
-                'permissions' => [
-                    'patients.view',
-                    'billing.invoices.view',
-                    'billing.invoices.manage',
-                    'billing.payments.view',
-                    'billing.payments.record',
-                    'billing.refunds.request',
-                ],
-            ],
-            'sha-claims-officer' => [
-                'name' => 'SHA / Claims Officer',
-                'description' => 'Eligibility, service verification, claims processing, and reconciliation.',
-                'permissions' => [
-                    'patients.view',
-                    'billing.invoices.view',
-                    'sha.eligibility.verify',
-                    'sha.services.verify',
-                    'sha.claims.view',
-                    'sha.claims.prepare',
-                    'sha.claims.submit',
-                    'sha.claims.reconcile',
-                    'integrations.view',
-                ],
-            ],
-            'medical-records-officer' => [
-                'name' => 'Medical Records Officer',
-                'description' => 'Medical record administration, document handling, and authorized record release.',
-                'permissions' => [
-                    'patients.view',
-                    'patients.update',
-                    'medical_records.view',
-                    'medical_records.manage',
-                    'medical_records.release',
-                    'clinical_notes.view',
-                ],
-            ],
-            'laboratory-technician' => [
-                'name' => 'Laboratory Technician',
-                'description' => 'Laboratory orders, results, and authorized result verification.',
-                'permissions' => [
-                    'patients.view',
-                    'lab.orders.view',
-                    'lab.orders.manage',
-                    'lab.results.record',
-                    'lab.results.verify',
-                ],
-            ],
-            'pharmacist' => [
-                'name' => 'Pharmacist / Pharmacy Technician',
-                'description' => 'Prescription processing, dispensing, and pharmacy inventory.',
-                'permissions' => [
-                    'patients.view',
-                    'pharmacy.prescriptions.view',
-                    'pharmacy.dispense',
-                    'pharmacy.stock.view',
-                    'pharmacy.stock.manage',
-                    'inventory.view',
-                ],
-            ],
-            'facility-manager' => [
-                'name' => 'Hospital Administrator / Facility Manager',
-                'description' => 'Facility operations, staff coordination, and operational reporting.',
-                'permissions' => [
-                    'reports.operational.view',
-                    'staff.view',
-                    'staff.manage',
-                    'facility.manage',
-                    'inventory.view',
-                    'procurement.manage',
-                ],
-            ],
-            'accountant' => [
-                'name' => 'Accountant',
-                'description' => 'Financial reporting, reconciliation, and controlled financial oversight.',
-                'permissions' => [
-                    'billing.invoices.view',
-                    'billing.payments.view',
-                    'billing.refunds.request',
-                    'finance.reports.view',
-                    'finance.reconciliation.manage',
-                    'reports.financial.view',
-                ],
-            ],
-            'auditor' => [
-                'name' => 'Auditor',
-                'description' => 'Read-only audit and approved financial or operational reporting.',
-                'permissions' => [
-                    'audit.view',
-                    'reports.operational.view',
-                    'reports.financial.view',
-                    'finance.reports.view',
-                    'billing.invoices.view',
-                    'billing.payments.view',
-                    'releases.view',
-                    'settings.view',
-                ],
-            ],
-            'release-manager' => [
-                'name' => 'Release Manager',
-                'description' => 'Manage the system release lifecycle.',
-                'permissions' => [
-                    'releases.view',
-                    'releases.create',
-                    'releases.update',
-                    'releases.publish',
-                    'releases.withdraw',
-                ],
-            ],
-        ];
+            $clinical = [
+                'patients.view',
+                'patients.update',
+                'appointments.view',
+                'consultations.view',
+                'consultations.manage',
+                'diagnoses.record',
+                'treatment_plans.manage',
+                'prescriptions.create',
+                'clinical_notes.view',
+                'clinical_notes.manage',
+                'clinical_records.correct',
+                'lab.orders.view',
+                'lab.orders.manage',
+                'lab.results.record',
+                'lab.results.verify',
+                'radiology.manage',
+                'medical_records.view',
+                'medical_records.manage',
+                'reports.clinical.view',
+            ];
 
-        DB::transaction(function () use ($roles): void {
+            $roles = [
+                'super-administrator' => [
+                    'name' => 'Super Administrator',
+                    'description' => 'Unrestricted access to all current and future catalogue permissions, including developer tools.',
+                    'permissions' => $allPermissionNames,
+                ],
+                'hospital-administrator' => [
+                    'name' => 'Hospital Administrator',
+                    'description' => 'Full hospital operations and system administration, excluding developer tools.',
+                    'permissions' => $hospitalAdminPermissions,
+                ],
+                'receptionist' => [
+                    'name' => 'Receptionist',
+                    'description' => 'Patient registration, appointments, check-in, queues, referrals, and permitted medical-record access.',
+                    'permissions' => [
+                        'patients.view', 'patients.create', 'patients.update',
+                        'appointments.view', 'appointments.manage',
+                        'queues.manage', 'referrals.manage',
+                        'medical_records.view',
+                    ],
+                ],
+                'doctor' => [
+                    'name' => 'Doctor / Clinician',
+                    'description' => 'Clinical assessment, diagnosis, treatment, consultations, prescriptions, and assigned clinical workflows.',
+                    'permissions' => $clinical,
+                ],
+                'nurse' => [
+                    'name' => 'Nurse',
+                    'description' => 'Triage, vital signs, nursing notes, and assigned patient-care workflows.',
+                    'permissions' => [
+                        'patients.view', 'appointments.view',
+                        'triage.manage', 'vitals.record',
+                        'nursing_notes.manage', 'nursing_care.manage',
+                        'consultations.view', 'clinical_notes.view',
+                        'medical_records.view', 'lab.orders.view',
+                    ],
+                ],
+            ];
+
+            // Refuse to silently discard a user's assigned system role. This is
+            // safer than unexpectedly promoting an account to a broader role.
+            $keepSlugs = array_keys($roles);
+            $obsoleteRoles = Role::query()
+                ->where('is_system', true)
+                ->whereNotIn('slug', $keepSlugs)
+                ->withCount('users')
+                ->get();
+
+            $assignedObsoleteRoles = $obsoleteRoles->filter(
+                static fn (Role $role): bool => $role->users_count > 0
+            );
+
+            if ($assignedObsoleteRoles->isNotEmpty()) {
+                $details = $assignedObsoleteRoles
+                    ->map(static fn (Role $role): string => $role->slug . ' (' . $role->users_count . ' assigned user(s))')
+                    ->implode(', ');
+
+                throw new RuntimeException(
+                    'Cannot remove obsolete system roles while users are assigned to them. Reassign these users to one of the five supported roles, then rerun this seeder: ' . $details
+                );
+            }
+
             foreach ($roles as $slug => $definition) {
+                $permissionNames = array_values(array_unique($definition['permissions']));
+                $missing = array_values(array_diff($permissionNames, $allPermissionNames));
+
+                if ($missing !== []) {
+                    throw new RuntimeException(
+                        'Permission catalogue is incomplete for role ' . $slug . ': ' . implode(', ', $missing)
+                    );
+                }
+
+                /** @var Role $role */
                 $role = Role::query()->updateOrCreate(
                     ['slug' => $slug],
                     [
@@ -254,22 +140,19 @@ class SystemRoleSeeder extends Seeder
                     ],
                 );
 
-                $permissionNames = array_values(array_unique($definition['permissions']));
-
-                $permissionIds = Permission::query()
-                    ->whereIn('name', $permissionNames)
-                    ->pluck('id')
+                $permissionIds = collect($permissionNames)
+                    ->map(static fn (string $name): int => (int) $catalogue->get($name))
                     ->all();
 
-                if (count($permissionIds) !== count($permissionNames)) {
-                    throw new RuntimeException(
-                        "Permission catalogue is incomplete for role: {$slug}."
-                    );
-                }
-
-                // Synchronize seeded system-role mappings; never assign roles to users here.
+                // Sync removes stale mappings while leaving user assignments alone.
                 $role->permissions()->sync($permissionIds);
             }
+
+            // Remove obsolete built-in roles only. Custom roles remain untouched.
+            Role::query()
+                ->where('is_system', true)
+                ->whereNotIn('slug', $keepSlugs)
+                ->delete();
         });
     }
 }

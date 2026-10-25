@@ -44,31 +44,26 @@ class AppServiceProvider extends ServiceProvider
 
     protected function configureAuthorization(): void
     {
-        $permissions = [
-            'releases.view',
-            'releases.create',
-            'releases.update',
-            'releases.publish',
-            'releases.withdraw',
-            'settings.view',
-            'settings.manage',
-            'audit.view',
-            'roles.manage',
-            'users.manage',
-            'staff.manage',
-            'integrations.view',
-            'integrations.manage',
-        ];
+        // Permissions are catalogue-driven. Any permission added through the
+        // Roles & Permissions system becomes enforceable without editing code.
+        Gate::before(function ($user, string $ability): ?bool {
+            try {
+                $permissionExists = \App\Models\Permission::query()
+                    ->where('name', $ability)
+                    ->exists();
 
-        foreach ($permissions as $permission) {
-            Gate::define($permission, function ($user) use ($permission): bool {
-                try {
-                    return method_exists($user, 'hasPermissionTo')
-                        && $user->hasPermissionTo($permission);
-                } catch (Throwable) {
-                    return false;
+                if (! $permissionExists) {
+                    // Preserve Laravel policies and other non-RBAC abilities.
+                    return null;
                 }
-            });
-        }
+
+                return method_exists($user, 'hasPermissionTo')
+                    ? $user->hasPermissionTo($ability)
+                    : false;
+            } catch (Throwable) {
+                // Fail closed if authorization data cannot be read.
+                return false;
+            }
+        });
     }
 }
