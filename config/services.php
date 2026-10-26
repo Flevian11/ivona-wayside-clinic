@@ -35,4 +35,9 @@ return [
         ],
     ],
 
+    'who_icd' => [
+        'client_id' => env('WHO_ICD11_CLIENT_ID'),
+        'client_secret' => env('WHO_ICD11_CLIENT_SECRET'),
+    ],
+
 ];

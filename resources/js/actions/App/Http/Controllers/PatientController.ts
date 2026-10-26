@@ -298,61 +298,6 @@ shaPreauthorizationCheck.post = (options?: RouteQueryOptions): RouteDefinition<'
     
     shaPreauthorizationCheck.form = shaPreauthorizationCheckForm
 /**
-* @see \App\Http\Controllers\PatientController::authorizationContacts
- * @see app/Http/Controllers/PatientController.php:653
- * @route '/patients/principal-authorization/contacts'
- */
-export const authorizationContacts = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
-    url: authorizationContacts.url(options),
-    method: 'post',
-})
-
-authorizationContacts.definition = {
-    methods: ["post"],
-    url: '/patients/principal-authorization/contacts',
-} satisfies RouteDefinition<["post"]>
-
-/**
-* @see \App\Http\Controllers\PatientController::authorizationContacts
- * @see app/Http/Controllers/PatientController.php:653
- * @route '/patients/principal-authorization/contacts'
- */
-authorizationContacts.url = (options?: RouteQueryOptions) => {
-    return authorizationContacts.definition.url + queryParams(options)
-}
-
-/**
-* @see \App\Http\Controllers\PatientController::authorizationContacts
- * @see app/Http/Controllers/PatientController.php:653
- * @route '/patients/principal-authorization/contacts'
- */
-authorizationContacts.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
-    url: authorizationContacts.url(options),
-    method: 'post',
-})
-
-    /**
-* @see \App\Http\Controllers\PatientController::authorizationContacts
- * @see app/Http/Controllers/PatientController.php:653
- * @route '/patients/principal-authorization/contacts'
- */
-    const authorizationContactsForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
-        action: authorizationContacts.url(options),
-        method: 'post',
-    })
-
-            /**
-* @see \App\Http\Controllers\PatientController::authorizationContacts
- * @see app/Http/Controllers/PatientController.php:653
- * @route '/patients/principal-authorization/contacts'
- */
-        authorizationContactsForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
-            action: authorizationContacts.url(options),
-            method: 'post',
-        })
-    
-    authorizationContacts.form = authorizationContactsForm
-/**
 * @see \App\Http\Controllers\PatientController::startPrincipalAuthorization
  * @see app/Http/Controllers/PatientController.php:545
  * @route '/patients/principal-authorization/start'
@@ -1023,6 +968,6 @@ shaEligibility.post = (args: { patient: number | { id: number } } | [patient: nu
         })
     
     shaEligibility.form = shaEligibilityForm
-const PatientController = { index, duplicateCheck, lookupShaIdentifier, shaBenefits, shaPreauthorizationCheck, authorizationContacts, startPrincipalAuthorization, verifyPrincipalAuthorization, create, store, update, recordConsent, show, createVisit, shaEligibility }
+const PatientController = { index, duplicateCheck, lookupShaIdentifier, shaBenefits, shaPreauthorizationCheck, startPrincipalAuthorization, verifyPrincipalAuthorization, create, store, update, recordConsent, show, createVisit, shaEligibility }
 
 export default PatientController

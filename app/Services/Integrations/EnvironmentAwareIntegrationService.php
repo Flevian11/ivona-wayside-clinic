@@ -417,6 +417,10 @@ class EnvironmentAwareIntegrationService
             }
             return ['patient_id' => $patientId, 'benefit_code' => $benefitCode, 'sub_benefits' => array_map(static fn (array $item): array => $item + ['mock' => true], $subBenefits), 'mock' => true, 'note' => 'Patient/benefit-scoped synthetic sub-benefits only; not official SHA coverage.'];
         }
+        if ($operation === 'claims.submit') {
+            return ['status' => 'DEV_MOCK_SUBMITTED', 'claim_id' => 'DEV-CLAIM-' . $reference, 'claim_reference' => 'DEV-CLAIM-' . $reference, 'mock' => true, 'message' => 'Development-only claim simulation. No SHA claim was transmitted or accepted.'];
+        }
+
         if ($operation === 'preauthorization.check') {
             return ['status' => 'DEV_REVIEW_REQUIRED', 'mock' => true, 'message' => 'Development-only simulation. No official preauthorization rules or provider endpoint were queried.'];
         }

@@ -1,60 +1,5 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition } from './../../../wayfinder'
 /**
-* @see \App\Http\Controllers\PatientController::contacts
- * @see app/Http/Controllers/PatientController.php:653
- * @route '/patients/principal-authorization/contacts'
- */
-export const contacts = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
-    url: contacts.url(options),
-    method: 'post',
-})
-
-contacts.definition = {
-    methods: ["post"],
-    url: '/patients/principal-authorization/contacts',
-} satisfies RouteDefinition<["post"]>
-
-/**
-* @see \App\Http\Controllers\PatientController::contacts
- * @see app/Http/Controllers/PatientController.php:653
- * @route '/patients/principal-authorization/contacts'
- */
-contacts.url = (options?: RouteQueryOptions) => {
-    return contacts.definition.url + queryParams(options)
-}
-
-/**
-* @see \App\Http\Controllers\PatientController::contacts
- * @see app/Http/Controllers/PatientController.php:653
- * @route '/patients/principal-authorization/contacts'
- */
-contacts.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
-    url: contacts.url(options),
-    method: 'post',
-})
-
-    /**
-* @see \App\Http\Controllers\PatientController::contacts
- * @see app/Http/Controllers/PatientController.php:653
- * @route '/patients/principal-authorization/contacts'
- */
-    const contactsForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
-        action: contacts.url(options),
-        method: 'post',
-    })
-
-            /**
-* @see \App\Http\Controllers\PatientController::contacts
- * @see app/Http/Controllers/PatientController.php:653
- * @route '/patients/principal-authorization/contacts'
- */
-        contactsForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
-            action: contacts.url(options),
-            method: 'post',
-        })
-    
-    contacts.form = contactsForm
-/**
 * @see \App\Http\Controllers\PatientController::start
  * @see app/Http/Controllers/PatientController.php:545
  * @route '/patients/principal-authorization/start'
@@ -165,8 +110,7 @@ verify.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     
     verify.form = verifyForm
 const principalAuthorization = {
-    contacts: Object.assign(contacts, contacts),
-start: Object.assign(start, start),
+    start: Object.assign(start, start),
 verify: Object.assign(verify, verify),
 }
 
