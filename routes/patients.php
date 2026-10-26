@@ -14,6 +14,7 @@ Route::middleware(['auth', 'verified'])->group(function (): void {
     Route::post('/patients/sha-lookup', [PatientController::class, 'lookupShaIdentifier'])->middleware('can:patients.create')->name('patients.sha-lookup');
     Route::post('/patients/sha-benefits', [PatientController::class, 'shaBenefits'])->middleware('can:patients.create')->name('patients.sha-benefits');
     Route::post('/patients/sha-preauthorization-check', [PatientController::class, 'shaPreauthorizationCheck'])->middleware('can:patients.create')->name('patients.sha-preauthorization-check');
+    Route::post('/patients/principal-authorization/contacts', [PatientController::class, 'authorizationContacts'])->middleware('can:patients.create')->name('patients.principal-authorization.contacts');
     Route::post('/patients/principal-authorization/start', [PatientController::class, 'startPrincipalAuthorization'])->middleware('can:patients.create')->name('patients.principal-authorization.start');
     Route::post('/patients/principal-authorization/verify', [PatientController::class, 'verifyPrincipalAuthorization'])->middleware('can:patients.create')->name('patients.principal-authorization.verify');
     Route::get('/patients/create', [PatientController::class, 'create'])->middleware('can:patients.create')->name('patients.create');

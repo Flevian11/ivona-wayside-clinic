@@ -1,7 +1,7 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../../../wayfinder'
 /**
 * @see \App\Http\Controllers\PatientController::store
- * @see app/Http/Controllers/PatientController.php:479
+ * @see app/Http/Controllers/PatientController.php:512
  * @route '/patients/{patient}/consents'
  */
 export const store = (args: { patient: number | { id: number } } | [patient: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -16,7 +16,7 @@ store.definition = {
 
 /**
 * @see \App\Http\Controllers\PatientController::store
- * @see app/Http/Controllers/PatientController.php:479
+ * @see app/Http/Controllers/PatientController.php:512
  * @route '/patients/{patient}/consents'
  */
 store.url = (args: { patient: number | { id: number } } | [patient: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -49,7 +49,7 @@ store.url = (args: { patient: number | { id: number } } | [patient: number | { i
 
 /**
 * @see \App\Http\Controllers\PatientController::store
- * @see app/Http/Controllers/PatientController.php:479
+ * @see app/Http/Controllers/PatientController.php:512
  * @route '/patients/{patient}/consents'
  */
 store.post = (args: { patient: number | { id: number } } | [patient: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -59,7 +59,7 @@ store.post = (args: { patient: number | { id: number } } | [patient: number | { 
 
     /**
 * @see \App\Http\Controllers\PatientController::store
- * @see app/Http/Controllers/PatientController.php:479
+ * @see app/Http/Controllers/PatientController.php:512
  * @route '/patients/{patient}/consents'
  */
     const storeForm = (args: { patient: number | { id: number } } | [patient: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -69,7 +69,7 @@ store.post = (args: { patient: number | { id: number } } | [patient: number | { 
 
             /**
 * @see \App\Http\Controllers\PatientController::store
- * @see app/Http/Controllers/PatientController.php:479
+ * @see app/Http/Controllers/PatientController.php:512
  * @route '/patients/{patient}/consents'
  */
         storeForm.post = (args: { patient: number | { id: number } } | [patient: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({

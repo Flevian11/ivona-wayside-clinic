@@ -49,6 +49,7 @@ class PatientController extends Controller
             'phone' => ['nullable', 'string', 'max:40'],
             'identifier_type' => ['nullable', 'string', 'max:40'],
             'identifier_number' => ['nullable', 'string', 'max:100'],
+            'client_registry_id' => ['nullable', 'string', 'max:100'],
         ]);
         $term = trim((string) ($data['query'] ?? ''));
         $query = Patient::query()->withCount('encounters')->where(function ($outer) use ($term, $data): void {
@@ -79,7 +80,14 @@ class PatientController extends Controller
             'status' => $patient->status,
             'encounters_count' => $patient->encounters_count,
         ]);
-        return response()->json(['matches' => $matches, 'count' => $matches->count()]);
+        $exactMatch = null;
+        if (!empty($data['identifier_number']) && !empty($data['identifier_type'])) {
+            $normalized = strtoupper(preg_replace('/\s+/', '', trim($data['identifier_number'])));
+            $exactIdentifier = PatientIdentifier::query()->where('type', $data['identifier_type'])->where('value_hash', hash('sha256', $normalized))->first();
+            if ($exactIdentifier) $exactMatch = Patient::query()->whereKey($exactIdentifier->patient_id)->first();
+        }
+        if (!$exactMatch && !empty($data['client_registry_id'])) $exactMatch = Patient::query()->where('client_registry_id', trim($data['client_registry_id']))->first();
+        return response()->json(['matches' => $matches, 'count' => $matches->count(), 'exact_identity_match' => $exactMatch ? ['id' => $exactMatch->id, 'medical_record_number' => $exactMatch->medical_record_number] : null]);
     }
 
     public function create(Request $request): Response
@@ -184,7 +192,24 @@ class PatientController extends Controller
                 ]);
                 $registryPatientRecord = is_array($patientLookup['body'] ?? null) ? $patientLookup['body'] : null;
                 if (($patientLookup['status'] ?? 500) < 200 || ($patientLookup['status'] ?? 500) >= 300 || empty($registryPatientRecord['id'])) {
-                    return back()->withErrors(['identifier_number' => 'The Client Registry did not verify this identifier. Register as local/non-SHA or retry the provider lookup; no SHA identity was saved.'])->withInput();
+                    if ($gateway->isMockMode()) {
+                        // Development-only simulated registry: allow the workflow to continue with
+                        // a stable synthetic ID. This is explicitly NOT a real DHA verification.
+                        $syntheticId = 'DEV-CR-' . strtoupper(substr(hash('sha256', strtoupper(preg_replace('/\s+/', '', trim((string) $validated['identifier_number'])))), 0, 10));
+                        $registryPatientRecord = [
+                            'id' => $syntheticId, 'resourceType' => 'Patient',
+                            'identification_type' => $validated['identifier_type'],
+                            'identification_number' => $validated['identifier_number'],
+                            'first_name' => $validated['first_name'] ?? null, 'middle_name' => $validated['middle_name'] ?? null,
+                            'last_name' => $validated['last_name'] ?? null, 'date_of_birth' => $validated['date_of_birth'] ?? null,
+                            'gender' => $validated['gender'] ?? $validated['sex'] ?? 'unknown',
+                            'phone' => $validated['phone'] ?? null, 'email' => $validated['email'] ?? null,
+                            'county' => $validated['county'] ?? null, 'sub_county' => $validated['sub_county'] ?? null,
+                            'ward' => $validated['ward'] ?? null, '_development_mock' => true,
+                        ];
+                    } else {
+                        return back()->withErrors(['identifier_number' => 'The Client Registry did not verify this identifier. Register as local/non-SHA or retry the provider lookup; no SHA identity was saved.'])->withInput();
+                    }
                 }
                 $validated['client_registry_id'] = (string) $registryPatientRecord['id'];
             } catch (Throwable $exception) {
@@ -279,18 +304,26 @@ class PatientController extends Controller
                     $patient->registration_source = $validated['registration_source'];
                     $patient->created_by = $request->user()->id;
                 }
+                // Idempotent merge: never replace populated local demographics with blank form values.
+                // For an existing record, fill missing fields only; verified DHA registry values below may refresh registry-controlled fields.
                 foreach (['client_registry_id','first_name','middle_name','last_name','full_name','date_of_birth','sex','gender','phone','email','preferred_language','nationality','county','sub_county','ward','address','emergency_contact_name','emergency_contact_relationship','emergency_contact_phone'] as $field) {
-                    if (array_key_exists($field, $validated) && filled($validated[$field])) $patient->{$field} = $validated[$field];
+                    if (!array_key_exists($field, $validated) || !filled($validated[$field])) continue;
+                    if ($created || blank($patient->{$field})) $patient->{$field} = $validated[$field];
                 }
                 if ($validated['registration_source'] === 'sha' && $registryPatientRecord) {
                     $patient->client_registry_id = (string) $registryPatientRecord['id'];
                     foreach (['first_name','middle_name','last_name','date_of_birth','phone','county','sub_county','ward'] as $field) {
-                        if (array_key_exists($field, $registryPatientRecord) && filled($registryPatientRecord[$field])) $patient->{$field} = $registryPatientRecord[$field];
+                        if (array_key_exists($field, $registryPatientRecord) && filled($registryPatientRecord[$field]) && ($created || blank($patient->{$field}) || empty($registryPatientRecord['_development_mock']))) $patient->{$field} = $registryPatientRecord[$field];
                     }
                     $patient->gender = $registryPatientRecord['gender'] ?? $patient->gender;
                     $patient->full_name = trim(implode(' ', array_filter([$patient->first_name, $patient->middle_name, $patient->last_name]))) ?: $patient->full_name;
-                    $patient->identity_verification_source = 'dha_client_registry';
-                    $patient->last_identity_verified_at = now();
+                    if (!empty($registryPatientRecord['_development_mock'])) {
+                        $patient->identity_verification_source = 'development_mock';
+                        // Never represent synthetic development data as verified by DHA.
+                    } else {
+                        $patient->identity_verification_source = 'dha_client_registry';
+                        $patient->last_identity_verified_at = now();
+                    }
                 }
                 if ($validated['registration_source'] === 'sha') $patient->registration_source = 'sha';
                 $patient->updated_by = $request->user()->id;
@@ -517,82 +550,120 @@ class PatientController extends Controller
             'principal_registry_id' => ['required', 'string', 'max:100'],
             'dependent_registry_id' => ['required', 'string', 'max:100'],
             'selected_contact' => ['nullable', 'string', 'max:255', 'required_if:method,otp'],
+            'intervention_codes' => ['nullable', 'array', 'min:1', 'max:20'],
+            'intervention_codes.*' => ['string', 'max:80'],
+            'service_type' => ['nullable', Rule::in(['OUTPATIENT', 'INPATIENT', 'EMERGENCY', 'CAPITATION'])],
         ]);
-
-        // Provider OTP and production scanner contracts are not present in the supplied API catalogue.
-        // Never simulate a successful live authorization or pretend a message was delivered.
-        if (! $gateway->isMockMode()) {
-            return response()->json([
-                'message' => $data['method'] === 'biometric'
-                    ? 'The live fingerprint scanner bridge is not configured. Connect the approved scanner SDK/device bridge before accepting a biometric match.'
-                    : 'The approved live OTP delivery/verification adapter is not configured. No OTP was sent.',
-                'environment' => $gateway->environment(), 'mock' => false,
-            ], 503);
+        $interventions = array_values(array_filter((array) ($data['intervention_codes'] ?? [])));
+        if (!$interventions) {
+            $configured = preg_split('/\s*,\s*/', (string) env('DHA_HIE_DEFAULT_INTERVENTION_CODES', '')) ?: [];
+            $interventions = array_values(array_filter($configured));
         }
-
+        $serviceType = $data['service_type'] ?? 'OUTPATIENT';
+        $challengeId = (string) Str::uuid();
+        $challenge = [
+            'challenge_id' => $challengeId, 'method' => $data['method'],
+            'principal_registry_id' => $data['principal_registry_id'], 'dependent_registry_id' => $data['dependent_registry_id'],
+            'expires_at' => now()->addMinutes(10)->timestamp, 'attempts' => 0, 'verified' => false,
+            'intervention_codes' => $interventions, 'service_type' => $serviceType,
+        ];
         try {
-            $principalResponse = $gateway->request('dha-afyalink', 'patient.lookup_by_identifier', 'GET',
-                '/v3/client-registry/fetch-client', ['dynamic_id_search' => 1, 'id' => $data['principal_registry_id']]);
-            $principal = is_array($principalResponse['body'] ?? null) ? $principalResponse['body'] : [];
-            if (($principalResponse['status'] ?? 500) < 200 || ($principalResponse['status'] ?? 500) >= 300 || empty($principal['id'])) {
-                return response()->json(['message' => 'The principal could not be re-verified. No authorization challenge was issued.'], 422);
-            }
-
-            if (strtoupper(trim($data['principal_registry_id'])) !== strtoupper(trim($data['dependent_registry_id']))) {
-                $dependants = $this->safeRegistryDependants($principal['dependants'] ?? []);
-                $unconfirmed = $this->safeRegistryDependants($principal['unconfirmed_dependants'] ?? []);
-                $dependentListed = collect(array_merge($dependants, $unconfirmed))->contains(
-                    fn ($dependent) => strtoupper(trim((string) ($dependent['id'] ?? ''))) === strtoupper(trim($data['dependent_registry_id'])));
-                if (! $dependentListed) {
-                    return response()->json(['message' => 'The selected dependant is not listed under this principal in the registry response. No authorization challenge was issued.'], 422);
+            if ($gateway->isMockMode()) {
+                $response = ['challenge_id' => $challengeId, 'method' => $data['method'], 'environment' => 'development', 'mock' => true, 'expires_in_seconds' => 600];
+                if ($data['method'] === 'otp') {
+                    $otp = (string) random_int(100000, 999999);
+                    $challenge['otp_hash'] = hash('sha256', $otp);
+                    $response['development_otp'] = $otp;
+                    $response['message'] = 'Synthetic development OTP generated; no external message was sent.';
+                } else {
+                    $response['message'] = 'Synthetic development biometric challenge ready; no biometric data is captured.';
                 }
+                $request->session()->put('patient_principal_authorization', $challenge);
+                return response()->json($response);
             }
 
-            $selected = null;
+            if (!$interventions) return response()->json(['message' => 'Configure DHA_HIE_DEFAULT_INTERVENTION_CODES or supply valid intervention codes returned by the HIE before requesting consent.'], 422);
             if ($data['method'] === 'otp') {
-                $contacts = [];
-                foreach ([['type' => 'phone', 'value' => $principal['phone'] ?? null], ['type' => 'email', 'value' => $principal['email'] ?? null]] as $item) {
-                    if (is_string($item['value']) && trim($item['value']) !== '') $contacts[] = ['type' => $item['type'], 'value' => trim($item['value'])];
+                // Resolve the selected UI contact to a confirmed HIE contact ID. The UI may send
+                // a contact ID or a full registry contact value; never send the value to DHA.
+                $contactsResponse = $gateway->request('dha-hie', 'patient.contacts', 'GET', '/patients/contacts', ['patient_id' => $data['principal_registry_id']]);
+                $contactsBody = is_array($contactsResponse['body'] ?? null) ? $contactsResponse['body'] : [];
+                $contacts = $contactsBody['results'] ?? $contactsBody['contacts'] ?? $contactsBody['data'] ?? [];
+                if (!is_array($contacts)) $contacts = [];
+                $contacts = array_values(array_filter($contacts, fn ($c) => is_array($c) && isset($c['id']) && ($c['active'] ?? true) && ($c['isConfirmed'] ?? $c['is_confirmed'] ?? true)));
+                $selectedValue = trim((string) $data['selected_contact']);
+                $contact = null;
+                foreach ($contacts as $candidate) {
+                    if ((string) ($candidate['id'] ?? '') === $selectedValue) { $contact = $candidate; break; }
                 }
-                foreach ((array) ($principal['telecom'] ?? []) as $item) {
-                    if (! is_array($item)) continue;
-                    $value = trim((string) ($item['value'] ?? ''));
-                    $type = strtolower((string) ($item['system'] ?? ''));
-                    if ($value !== '' && in_array($type, ['phone', 'email'], true)) $contacts[] = ['type' => $type, 'value' => $value];
+                if (!$contact) {
+                    $digits = preg_replace('/\D+/', '', $selectedValue);
+                    $suffix = strlen($digits) >= 3 ? substr($digits, -3) : '';
+                    $matches = $suffix === '' ? [] : array_values(array_filter($contacts, function ($candidate) use ($suffix) {
+                        $maskedDigits = preg_replace('/\D+/', '', (string) ($candidate['contactValue'] ?? $candidate['contact_value'] ?? ''));
+                        return strlen($maskedDigits) >= 3 && substr($maskedDigits, -3) === $suffix;
+                    }));
+                    if (count($matches) === 1) $contact = $matches[0];
+                    elseif (count($contacts) === 1) $contact = $contacts[0];
                 }
-                $contacts = collect($contacts)->unique(fn ($item) => strtolower($item['type'].'|'.$item['value']))->values();
-                $selected = $contacts->first(fn ($item) => hash_equals($item['value'], trim((string) $data['selected_contact'])));
-                if (! $selected) return response()->json(['message' => 'Select a contact returned by the Client Registry. No OTP was generated.'], 422);
+                if (!$contact || !is_numeric((string) $contact['id'])) return response()->json(['message' => 'Could not safely match the selected contact to one confirmed DHA contact. Refresh contacts and select again.'], 422);
+                $send = $gateway->request('dha-hie', 'consent.send_otp', 'POST', '/claims/otp', [
+                    'contact_id' => (int) $contact['id'], 'intervention_codes' => $interventions,
+                    'patient_id' => $data['principal_registry_id'],
+                ], ['X-Correlation-ID' => $challengeId]);
+                if (($send['status'] ?? 500) < 200 || ($send['status'] ?? 500) >= 300) {
+                    return response()->json(['message' => 'DHA did not accept the OTP request. No verification has been recorded.', 'provider_status' => $send['status'] ?? null], 502);
+                }
+                $challenge['contact_id'] = (int) $contact['id'];
+                $challenge['otp_sent'] = true;
+                $request->session()->put('patient_principal_authorization', $challenge);
+                return response()->json(['challenge_id' => $challengeId, 'method' => 'otp', 'environment' => $gateway->environment(), 'mock' => false, 'expires_in_seconds' => 600, 'message' => 'DHA accepted the OTP request. Enter the code delivered to the selected registered contact.']);
             }
 
-            $challengeId = (string) Str::uuid();
-            $challenge = [
-                'challenge_id' => $challengeId, 'method' => $data['method'],
-                'principal_registry_id' => $data['principal_registry_id'],
-                'dependent_registry_id' => $data['dependent_registry_id'],
-                'expires_at' => now()->addMinutes(5)->timestamp, 'attempts' => 0,
-                'otp_verified' => false, 'biometric_verified' => false, 'verified' => false,
-            ];
-            $response = ['challenge_id' => $challengeId, 'method' => $data['method'], 'environment' => $gateway->environment(), 'mock' => true, 'expires_in_seconds' => 300];
-            if ($data['method'] === 'otp') {
-                $otp = (string) random_int(100000, 999999);
-                $challenge['selected_contact_hash'] = hash('sha256', strtolower($selected['type'].'|'.$selected['value']));
-                $challenge['otp_hash'] = hash('sha256', $otp);
-                Log::info('IWC development principal authorization OTP (synthetic; not sent externally)', [
-                    'challenge_id' => $challengeId, 'principal_registry_id' => $data['principal_registry_id'],
-                    'dependent_registry_id' => $data['dependent_registry_id'], 'contact_type' => $selected['type'],
-                    'contact_masked' => $selected['type'] === 'email' ? preg_replace('/(^.).*(@.*$)/', '$1***$2', $selected['value']) : (strlen($selected['value']) > 5 ? substr($selected['value'], 0, 3).'****'.substr($selected['value'], -2) : '***'),
-                    'expires_at' => now()->addMinutes(5)->toIso8601String(), 'environment' => 'development',
-                ]);
-                $response += ['development_otp' => $otp, 'contact_type' => $selected['type'], 'contact' => $selected['value'], 'message' => 'Development OTP generated. No SMS/email provider was contacted.'];
-            } else {
-                $response['message'] = 'Development biometric challenge ready. Use the synthetic fingerprint simulation; no fingerprint data is captured.';
+            $agentId = (string) env('DHA_HIE_BIOMETRICS_AGENT_ID', '');
+            $facilityName = (string) env('DHA_HIE_FACILITY_NAME', '');
+            $os = strtolower((string) env('DHA_HIE_BIOMETRICS_DEVICE_OS', PHP_OS_FAMILY === 'Windows' ? 'windows' : 'android'));
+            if ($agentId === '' || $facilityName === '' || !in_array($os, ['windows', 'android'], true)) {
+                return response()->json(['message' => 'Configure DHA_HIE_BIOMETRICS_AGENT_ID, DHA_HIE_FACILITY_NAME and DHA_HIE_BIOMETRICS_DEVICE_OS before enabling live biometric authorization.'], 503);
             }
+            $auth = $gateway->request('dha-hie', 'consent.authorize', 'POST', '/claims/authorize', [
+                'agent_id' => $agentId, 'authorizing_device_os' => $os, 'ekyc_provider_id' => $facilityName,
+                'factors' => ['SHA'], 'interventions' => $interventions,
+                'is_biometrics_discharge_authorization' => false, 'is_emergency' => $serviceType === 'EMERGENCY',
+                'is_integration' => true, 'patient_id' => $data['dependent_registry_id'], 'service_type' => $serviceType,
+            ], ['X-Correlation-ID' => $challengeId]);
+            $body = is_array($auth['body'] ?? null) ? $auth['body'] : [];
+            $providerData = is_array($body['data'] ?? null) ? $body['data'] : $body;
+            $guid = (string) ($providerData['guid'] ?? $providerData['authorization_guid'] ?? '');
+            if (($auth['status'] ?? 500) < 200 || ($auth['status'] ?? 500) >= 300 || $guid === '') {
+                return response()->json(['message' => 'DHA did not return a usable biometric authorization GUID. No match has been accepted.', 'provider_status' => $auth['status'] ?? null], 502);
+            }
+            $challenge['provider_guid'] = $guid;
+            $challenge['provider_token'] = $providerData['token'] ?? null;
+            $challenge['iframe_url'] = $providerData['iframe_url'] ?? $providerData['iframeUrl'] ?? $providerData['url'] ?? null;
+            $challenge['provider_status'] = strtoupper((string) ($providerData['status'] ?? 'PENDING'));
             $request->session()->put('patient_principal_authorization', $challenge);
-            return response()->json($response);
+            return response()->json(['challenge_id' => $challengeId, 'method' => 'biometric', 'environment' => $gateway->environment(), 'mock' => false, 'expires_in_seconds' => 600, 'guid' => $guid, 'iframe_url' => $challenge['iframe_url'], 'status' => $challenge['provider_status'], 'message' => 'DHA biometric authorization created. Complete the provider-hosted biometric flow, then confirm its status.']);
         } catch (Throwable $exception) {
             report($exception);
-            return response()->json(['message' => 'Could not start the authorization challenge. No visit has been created.'], 502);
+            return response()->json(['message' => 'Could not start DHA consent authorization. No local verification was marked successful.'], 502);
+        }
+    }
+
+    public function authorizationContacts(Request $request, EnvironmentAwareIntegrationService $gateway): \Illuminate\Http\JsonResponse
+    {
+        abort_unless($request->user()->can('patients.create'), 403);
+        $data = $request->validate(['patient_id' => ['required', 'string', 'max:100']]);
+        try {
+            $response = $gateway->request('dha-hie', 'patient.contacts', 'GET', '/patients/contacts', ['patient_id' => $data['patient_id']]);
+            $body = is_array($response['body'] ?? null) ? $response['body'] : [];
+            $contacts = $body['results'] ?? $body['contacts'] ?? $body['data'] ?? [];
+            if (!is_array($contacts)) $contacts = [];
+            $contacts = array_values(array_filter($contacts, fn ($c) => is_array($c) && !empty($c['id']) && ($c['active'] ?? true) && ($c['isConfirmed'] ?? $c['is_confirmed'] ?? true)));
+            return response()->json(['contacts' => $contacts, 'environment' => $response['environment'], 'mock' => $response['mock'], 'status' => $response['status']], (($response['status'] ?? 500) >= 200 && ($response['status'] ?? 500) < 300) ? 200 : 502);
+        } catch (Throwable $exception) {
+            report($exception);
+            return response()->json(['message' => 'DHA registered contacts could not be retrieved.'], 502);
         }
     }
 
@@ -602,50 +673,59 @@ class PatientController extends Controller
         $data = $request->validate([
             'challenge_id' => ['required', 'uuid'], 'method' => ['required', Rule::in(['otp', 'biometric'])],
             'otp' => ['required_if:method,otp', 'nullable', 'digits:6'],
-            'biometric_scenario' => ['nullable', Rule::in(['match', 'no_match', 'not_enrolled'])],
         ]);
         $challenge = $request->session()->get('patient_principal_authorization');
-        if (! is_array($challenge) || ! hash_equals((string) ($challenge['challenge_id'] ?? ''), $data['challenge_id'])
-            || ! hash_equals((string) ($challenge['method'] ?? ''), $data['method'])
-            || (int) ($challenge['expires_at'] ?? 0) < now()->timestamp) {
+        if (!is_array($challenge) || !hash_equals((string) ($challenge['challenge_id'] ?? ''), $data['challenge_id']) || !hash_equals((string) ($challenge['method'] ?? ''), $data['method']) || (int) ($challenge['expires_at'] ?? 0) < now()->timestamp) {
             $request->session()->forget('patient_principal_authorization');
-            return response()->json(['message' => 'Authorization challenge is missing, expired, or belongs to a different method. Start again.'], 422);
+            return response()->json(['message' => 'Authorization challenge is missing, expired, or belongs to another method. Start again.'], 422);
         }
-        if (! $gateway->isMockMode()) {
-            return response()->json(['message' => 'The live authorization adapter is not configured for this environment. No synthetic verification was accepted.'], 503);
-        }
-
-        if ($data['method'] === 'otp') {
-            $expectedHash = (string) ($challenge['otp_hash'] ?? '');
-            if ($expectedHash === '' || ! hash_equals($expectedHash, hash('sha256', (string) ($data['otp'] ?? '')))) {
-                $challenge['attempts'] = (int) ($challenge['attempts'] ?? 0) + 1;
-                if ($challenge['attempts'] >= 5) {
-                    $request->session()->forget('patient_principal_authorization');
-                    return response()->json(['verified' => false, 'mock' => true, 'message' => 'Too many incorrect OTP attempts. Start a new challenge.'], 429);
+        if ($gateway->isMockMode()) {
+            if ($data['method'] === 'otp') {
+                if (empty($challenge['otp_hash']) || !hash_equals($challenge['otp_hash'], hash('sha256', (string) $data['otp']))) {
+                    $challenge['attempts'] = (int) ($challenge['attempts'] ?? 0) + 1;
+                    if ($challenge['attempts'] >= 5) { $request->session()->forget('patient_principal_authorization'); return response()->json(['verified' => false, 'mock' => true, 'message' => 'Too many incorrect attempts. Restart the challenge.'], 429); }
+                    $request->session()->put('patient_principal_authorization', $challenge);
+                    return response()->json(['verified' => false, 'mock' => true, 'message' => 'Incorrect development OTP.'], 422);
                 }
-                $request->session()->put('patient_principal_authorization', $challenge);
-                return response()->json(['verified' => false, 'mock' => true, 'message' => 'Incorrect development OTP. Try again or restart the challenge.'], 422);
             }
-            $challenge['otp_verified'] = true;
-            $challenge['verified'] = true;
-        } else {
-            $scenario = (string) ($data['biometric_scenario'] ?? 'match');
-            if ($scenario !== 'match') {
-                return response()->json(['verified' => false, 'mock' => true, 'message' => $scenario === 'not_enrolled' ? 'No enrolled fingerprint was found in the development simulation.' : 'The simulated fingerprint did not match. Try again.'], 422);
-            }
-            // Development-only simulated match. No external endpoint is called and no biometric template is stored.
-            $challenge['biometric_verified'] = true;
-            $challenge['verified'] = true;
+            $challenge['verified'] = true; $challenge['verified_at'] = now()->timestamp;
+            $request->session()->put('patient_principal_authorization', $challenge);
+            return response()->json(['verified' => true, 'step_verified' => true, 'method' => $data['method'], 'challenge_id' => $challenge['challenge_id'], 'mock' => true, 'environment' => 'development', 'message' => 'Development simulation passed. This is not live DHA authorization.']);
         }
-        $challenge['verified_at'] = now()->timestamp;
-        $request->session()->put('patient_principal_authorization', $challenge);
-        return response()->json([
-            'verified' => true, 'step_verified' => true, 'method' => $challenge['method'],
-            'otp_verified' => (bool) ($challenge['otp_verified'] ?? false),
-            'biometric_verified' => (bool) ($challenge['biometric_verified'] ?? false),
-            'challenge_id' => $challenge['challenge_id'], 'mock' => true, 'environment' => $gateway->environment(),
-            'message' => $challenge['method'] === 'otp' ? 'Development OTP verified. This is a synthetic test, not real SHA authorization.' : 'Development fingerprint simulation passed. No biometric data was captured; this is not real SHA authorization.',
-        ]);
+        try {
+            if ($data['method'] === 'otp') {
+                if (empty($challenge['otp_sent'])) return response()->json(['verified' => false, 'message' => 'No OTP request was accepted for this challenge.'], 422);
+                $auth = $gateway->request('dha-hie', 'consent.authorize', 'POST', '/claims/authorize', [
+                    'patient_id' => $challenge['dependent_registry_id'], 'service_type' => $challenge['service_type'] ?? 'OUTPATIENT',
+                    'otp' => (string) $data['otp'], 'interventions' => $challenge['intervention_codes'] ?? [],
+                ], ['X-Correlation-ID' => $challenge['challenge_id']]);
+                $body = is_array($auth['body'] ?? null) ? $auth['body'] : [];
+                $providerData = is_array($body['data'] ?? null) ? $body['data'] : $body;
+                $status = strtoupper((string) ($providerData['status'] ?? ''));
+                if (($auth['status'] ?? 500) < 200 || ($auth['status'] ?? 500) >= 300 || !in_array($status, ['AUTHORIZED', 'AUTHORIZED_PENDING_VISIT'], true)) {
+                    return response()->json(['verified' => false, 'message' => 'DHA has not confirmed OTP authorization. Check the code and provider status.'], 422);
+                }
+                $challenge['provider_token'] = $providerData['token'] ?? null;
+                $challenge['provider_guid'] = $providerData['guid'] ?? null;
+            } else {
+                if (empty($challenge['provider_guid'])) return response()->json(['verified' => false, 'message' => 'No DHA biometric authorization GUID is stored. Start the biometric flow again.'], 422);
+                $statusResponse = $gateway->request('dha-hie', 'consent.authorizations', 'GET', '/claims/authorizations', ['guid' => $challenge['provider_guid']]);
+                $body = is_array($statusResponse['body'] ?? null) ? $statusResponse['body'] : [];
+                $records = isset($body[0]) ? $body : ($body['data'] ?? $body['results'] ?? [$body]);
+                $record = is_array($records[0] ?? null) ? $records[0] : [];
+                $status = strtoupper((string) ($record['status'] ?? 'PENDING'));
+                if (($statusResponse['status'] ?? 500) < 200 || ($statusResponse['status'] ?? 500) >= 300 || !in_array($status, ['AUTHORIZED', 'AUTHORIZED_PENDING_VISIT'], true)) {
+                    return response()->json(['verified' => false, 'status' => $status, 'message' => 'DHA has not confirmed biometric authorization. Complete the hosted matching flow and retry status confirmation.'], 422);
+                }
+                $challenge['provider_token'] = $record['token'] ?? $challenge['provider_token'] ?? null;
+            }
+            $challenge['provider_status'] = $status; $challenge['verified'] = true; $challenge['verified_at'] = now()->timestamp;
+            $request->session()->put('patient_principal_authorization', $challenge);
+            return response()->json(['verified' => true, 'step_verified' => true, 'method' => $data['method'], 'challenge_id' => $challenge['challenge_id'], 'status' => $status, 'guid' => $challenge['provider_guid'] ?? null, 'mock' => false, 'environment' => $gateway->environment(), 'message' => 'DHA confirmed authorization.']);
+        } catch (Throwable $exception) {
+            report($exception);
+            return response()->json(['verified' => false, 'message' => 'DHA authorization could not be confirmed. No local success was recorded.'], 502);
+        }
     }
 
     public function lookupShaIdentifier(Request $request, EnvironmentAwareIntegrationService $gateway): \Illuminate\Http\JsonResponse
@@ -669,6 +749,19 @@ class PatientController extends Controller
             ]);
             $body = is_array($response['body']) ? $response['body'] : [];
             $found = $response['status'] >= 200 && $response['status'] < 300 && ! empty($body['id']);
+            if (!$found && $gateway->isMockMode()) {
+                $identifier = trim((string) $data['identification_number']);
+                $syntheticId = 'DEV-CR-' . strtoupper(substr(hash('sha256', strtoupper(preg_replace('/\s+/', '', $identifier))), 0, 10));
+                $body = [
+                    'id' => $syntheticId, 'resourceType' => 'Patient',
+                    'identification_type' => $data['identification_type'], 'identification_number' => $identifier,
+                    'first_name' => 'Development', 'middle_name' => null, 'last_name' => 'Patient',
+                    'gender' => 'unknown', 'dependants' => [], 'unconfirmed_dependants' => [],
+                    'mock' => true, 'development_synthetic' => true,
+                    'note' => 'Synthetic development record only; not verified by DHA.',
+                ];
+                $found = true;
+            }
             return response()->json([
                 'environment' => $response['environment'], 'mock' => $response['mock'],
                 'status' => $response['status'], 'found' => $found,

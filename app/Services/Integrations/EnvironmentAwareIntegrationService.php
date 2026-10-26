@@ -367,7 +367,15 @@ class EnvironmentAwareIntegrationService
                 'DEV-DEP-02-01' => 'DEV-CR-002', 'DEV-DEP-03-01' => 'DEV-CR-003', 'DEV-DEP-03-02' => 'DEV-CR-003',
             ];
             $ownerId = array_key_exists($patientId, $benefitSets) ? $patientId : ($dependentParents[$patientId] ?? $patientId);
-            $benefits = array_map(static fn (array $benefit): array => $benefit + ['mock' => true], $benefitSets[$ownerId] ?? []);
+            $benefitRows = $benefitSets[$ownerId] ?? [];
+            if ($benefitRows === [] && str_starts_with($patientId, 'DEV-CR-')) {
+                $suffix = substr($patientId, -6);
+                $benefitRows = [
+                    ['code' => 'DEV-' . $suffix . '-OPD', 'name' => 'Development outpatient care', 'description' => 'Synthetic development benefit; not an SHA entitlement.', 'status' => 'DEV_MOCK'],
+                    ['code' => 'DEV-' . $suffix . '-IPD', 'name' => 'Development inpatient care', 'description' => 'Synthetic development benefit; not an SHA entitlement.', 'status' => 'DEV_MOCK'],
+                ];
+            }
+            $benefits = array_map(static fn (array $benefit): array => $benefit + ['mock' => true], $benefitRows);
             return [
                 'patient_id' => $patientId,
                 'benefits' => $benefits,
@@ -403,6 +411,9 @@ class EnvironmentAwareIntegrationService
             $subBenefits = $sets[$benefitCode] ?? [];
             if ($subBenefits !== [] && !str_starts_with($benefitCode, $benefitOwnerPrefix)) {
                 $subBenefits = [];
+            }
+            if ($subBenefits === [] && str_starts_with($patientId, 'DEV-CR-') && str_starts_with($benefitCode, 'DEV-')) {
+                $subBenefits = [['code' => $benefitCode . '-CONSULT', 'name' => 'Development consultation', 'status' => 'DEV_MOCK']];
             }
             return ['patient_id' => $patientId, 'benefit_code' => $benefitCode, 'sub_benefits' => array_map(static fn (array $item): array => $item + ['mock' => true], $subBenefits), 'mock' => true, 'note' => 'Patient/benefit-scoped synthetic sub-benefits only; not official SHA coverage.'];
         }

@@ -137,7 +137,7 @@ duplicateCheck.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => 
     duplicateCheck.form = duplicateCheckForm
 /**
 * @see \App\Http\Controllers\PatientController::shaLookup
- * @see app/Http/Controllers/PatientController.php:651
+ * @see app/Http/Controllers/PatientController.php:731
  * @route '/patients/sha-lookup'
  */
 export const shaLookup = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -152,7 +152,7 @@ shaLookup.definition = {
 
 /**
 * @see \App\Http\Controllers\PatientController::shaLookup
- * @see app/Http/Controllers/PatientController.php:651
+ * @see app/Http/Controllers/PatientController.php:731
  * @route '/patients/sha-lookup'
  */
 shaLookup.url = (options?: RouteQueryOptions) => {
@@ -161,7 +161,7 @@ shaLookup.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\PatientController::shaLookup
- * @see app/Http/Controllers/PatientController.php:651
+ * @see app/Http/Controllers/PatientController.php:731
  * @route '/patients/sha-lookup'
  */
 shaLookup.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -171,7 +171,7 @@ shaLookup.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 
     /**
 * @see \App\Http\Controllers\PatientController::shaLookup
- * @see app/Http/Controllers/PatientController.php:651
+ * @see app/Http/Controllers/PatientController.php:731
  * @route '/patients/sha-lookup'
  */
     const shaLookupForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -181,7 +181,7 @@ shaLookup.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 
             /**
 * @see \App\Http\Controllers\PatientController::shaLookup
- * @see app/Http/Controllers/PatientController.php:651
+ * @see app/Http/Controllers/PatientController.php:731
  * @route '/patients/sha-lookup'
  */
         shaLookupForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -192,7 +192,7 @@ shaLookup.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     shaLookup.form = shaLookupForm
 /**
 * @see \App\Http\Controllers\PatientController::shaBenefits
- * @see app/Http/Controllers/PatientController.php:691
+ * @see app/Http/Controllers/PatientController.php:784
  * @route '/patients/sha-benefits'
  */
 export const shaBenefits = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -207,7 +207,7 @@ shaBenefits.definition = {
 
 /**
 * @see \App\Http\Controllers\PatientController::shaBenefits
- * @see app/Http/Controllers/PatientController.php:691
+ * @see app/Http/Controllers/PatientController.php:784
  * @route '/patients/sha-benefits'
  */
 shaBenefits.url = (options?: RouteQueryOptions) => {
@@ -216,7 +216,7 @@ shaBenefits.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\PatientController::shaBenefits
- * @see app/Http/Controllers/PatientController.php:691
+ * @see app/Http/Controllers/PatientController.php:784
  * @route '/patients/sha-benefits'
  */
 shaBenefits.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -226,7 +226,7 @@ shaBenefits.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 
     /**
 * @see \App\Http\Controllers\PatientController::shaBenefits
- * @see app/Http/Controllers/PatientController.php:691
+ * @see app/Http/Controllers/PatientController.php:784
  * @route '/patients/sha-benefits'
  */
     const shaBenefitsForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -236,7 +236,7 @@ shaBenefits.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 
             /**
 * @see \App\Http\Controllers\PatientController::shaBenefits
- * @see app/Http/Controllers/PatientController.php:691
+ * @see app/Http/Controllers/PatientController.php:784
  * @route '/patients/sha-benefits'
  */
         shaBenefitsForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -247,7 +247,7 @@ shaBenefits.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     shaBenefits.form = shaBenefitsForm
 /**
 * @see \App\Http\Controllers\PatientController::shaPreauthorizationCheck
- * @see app/Http/Controllers/PatientController.php:730
+ * @see app/Http/Controllers/PatientController.php:823
  * @route '/patients/sha-preauthorization-check'
  */
 export const shaPreauthorizationCheck = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -262,7 +262,7 @@ shaPreauthorizationCheck.definition = {
 
 /**
 * @see \App\Http\Controllers\PatientController::shaPreauthorizationCheck
- * @see app/Http/Controllers/PatientController.php:730
+ * @see app/Http/Controllers/PatientController.php:823
  * @route '/patients/sha-preauthorization-check'
  */
 shaPreauthorizationCheck.url = (options?: RouteQueryOptions) => {
@@ -271,7 +271,7 @@ shaPreauthorizationCheck.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\PatientController::shaPreauthorizationCheck
- * @see app/Http/Controllers/PatientController.php:730
+ * @see app/Http/Controllers/PatientController.php:823
  * @route '/patients/sha-preauthorization-check'
  */
 shaPreauthorizationCheck.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -281,7 +281,7 @@ shaPreauthorizationCheck.post = (options?: RouteQueryOptions): RouteDefinition<'
 
     /**
 * @see \App\Http\Controllers\PatientController::shaPreauthorizationCheck
- * @see app/Http/Controllers/PatientController.php:730
+ * @see app/Http/Controllers/PatientController.php:823
  * @route '/patients/sha-preauthorization-check'
  */
     const shaPreauthorizationCheckForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -291,7 +291,7 @@ shaPreauthorizationCheck.post = (options?: RouteQueryOptions): RouteDefinition<'
 
             /**
 * @see \App\Http\Controllers\PatientController::shaPreauthorizationCheck
- * @see app/Http/Controllers/PatientController.php:730
+ * @see app/Http/Controllers/PatientController.php:823
  * @route '/patients/sha-preauthorization-check'
  */
         shaPreauthorizationCheckForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -302,7 +302,7 @@ shaPreauthorizationCheck.post = (options?: RouteQueryOptions): RouteDefinition<'
     shaPreauthorizationCheck.form = shaPreauthorizationCheckForm
 /**
 * @see \App\Http\Controllers\PatientController::create
- * @see app/Http/Controllers/PatientController.php:85
+ * @see app/Http/Controllers/PatientController.php:93
  * @route '/patients/create'
  */
 export const create = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -317,7 +317,7 @@ create.definition = {
 
 /**
 * @see \App\Http\Controllers\PatientController::create
- * @see app/Http/Controllers/PatientController.php:85
+ * @see app/Http/Controllers/PatientController.php:93
  * @route '/patients/create'
  */
 create.url = (options?: RouteQueryOptions) => {
@@ -326,7 +326,7 @@ create.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\PatientController::create
- * @see app/Http/Controllers/PatientController.php:85
+ * @see app/Http/Controllers/PatientController.php:93
  * @route '/patients/create'
  */
 create.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -335,7 +335,7 @@ create.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 })
 /**
 * @see \App\Http\Controllers\PatientController::create
- * @see app/Http/Controllers/PatientController.php:85
+ * @see app/Http/Controllers/PatientController.php:93
  * @route '/patients/create'
  */
 create.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -345,7 +345,7 @@ create.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
     /**
 * @see \App\Http\Controllers\PatientController::create
- * @see app/Http/Controllers/PatientController.php:85
+ * @see app/Http/Controllers/PatientController.php:93
  * @route '/patients/create'
  */
     const createForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -355,7 +355,7 @@ create.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
             /**
 * @see \App\Http\Controllers\PatientController::create
- * @see app/Http/Controllers/PatientController.php:85
+ * @see app/Http/Controllers/PatientController.php:93
  * @route '/patients/create'
  */
         createForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -364,7 +364,7 @@ create.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
         })
             /**
 * @see \App\Http\Controllers\PatientController::create
- * @see app/Http/Controllers/PatientController.php:85
+ * @see app/Http/Controllers/PatientController.php:93
  * @route '/patients/create'
  */
         createForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -380,7 +380,7 @@ create.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     create.form = createForm
 /**
 * @see \App\Http\Controllers\PatientController::store
- * @see app/Http/Controllers/PatientController.php:93
+ * @see app/Http/Controllers/PatientController.php:101
  * @route '/patients'
  */
 export const store = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -395,7 +395,7 @@ store.definition = {
 
 /**
 * @see \App\Http\Controllers\PatientController::store
- * @see app/Http/Controllers/PatientController.php:93
+ * @see app/Http/Controllers/PatientController.php:101
  * @route '/patients'
  */
 store.url = (options?: RouteQueryOptions) => {
@@ -404,7 +404,7 @@ store.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\PatientController::store
- * @see app/Http/Controllers/PatientController.php:93
+ * @see app/Http/Controllers/PatientController.php:101
  * @route '/patients'
  */
 store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -414,7 +414,7 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 
     /**
 * @see \App\Http\Controllers\PatientController::store
- * @see app/Http/Controllers/PatientController.php:93
+ * @see app/Http/Controllers/PatientController.php:101
  * @route '/patients'
  */
     const storeForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -424,7 +424,7 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 
             /**
 * @see \App\Http\Controllers\PatientController::store
- * @see app/Http/Controllers/PatientController.php:93
+ * @see app/Http/Controllers/PatientController.php:101
  * @route '/patients'
  */
         storeForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -435,7 +435,7 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     store.form = storeForm
 /**
 * @see \App\Http\Controllers\PatientController::update
- * @see app/Http/Controllers/PatientController.php:456
+ * @see app/Http/Controllers/PatientController.php:489
  * @route '/patients/{patient}'
  */
 export const update = (args: { patient: number | { id: number } } | [patient: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
@@ -450,7 +450,7 @@ update.definition = {
 
 /**
 * @see \App\Http\Controllers\PatientController::update
- * @see app/Http/Controllers/PatientController.php:456
+ * @see app/Http/Controllers/PatientController.php:489
  * @route '/patients/{patient}'
  */
 update.url = (args: { patient: number | { id: number } } | [patient: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -483,7 +483,7 @@ update.url = (args: { patient: number | { id: number } } | [patient: number | { 
 
 /**
 * @see \App\Http\Controllers\PatientController::update
- * @see app/Http/Controllers/PatientController.php:456
+ * @see app/Http/Controllers/PatientController.php:489
  * @route '/patients/{patient}'
  */
 update.patch = (args: { patient: number | { id: number } } | [patient: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
@@ -493,7 +493,7 @@ update.patch = (args: { patient: number | { id: number } } | [patient: number | 
 
     /**
 * @see \App\Http\Controllers\PatientController::update
- * @see app/Http/Controllers/PatientController.php:456
+ * @see app/Http/Controllers/PatientController.php:489
  * @route '/patients/{patient}'
  */
     const updateForm = (args: { patient: number | { id: number } } | [patient: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -508,7 +508,7 @@ update.patch = (args: { patient: number | { id: number } } | [patient: number | 
 
             /**
 * @see \App\Http\Controllers\PatientController::update
- * @see app/Http/Controllers/PatientController.php:456
+ * @see app/Http/Controllers/PatientController.php:489
  * @route '/patients/{patient}'
  */
         updateForm.patch = (args: { patient: number | { id: number } } | [patient: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -524,7 +524,7 @@ update.patch = (args: { patient: number | { id: number } } | [patient: number | 
     update.form = updateForm
 /**
 * @see \App\Http\Controllers\PatientController::show
- * @see app/Http/Controllers/PatientController.php:389
+ * @see app/Http/Controllers/PatientController.php:422
  * @route '/patients/{patient}'
  */
 export const show = (args: { patient: number | { id: number } } | [patient: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -539,7 +539,7 @@ show.definition = {
 
 /**
 * @see \App\Http\Controllers\PatientController::show
- * @see app/Http/Controllers/PatientController.php:389
+ * @see app/Http/Controllers/PatientController.php:422
  * @route '/patients/{patient}'
  */
 show.url = (args: { patient: number | { id: number } } | [patient: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -572,7 +572,7 @@ show.url = (args: { patient: number | { id: number } } | [patient: number | { id
 
 /**
 * @see \App\Http\Controllers\PatientController::show
- * @see app/Http/Controllers/PatientController.php:389
+ * @see app/Http/Controllers/PatientController.php:422
  * @route '/patients/{patient}'
  */
 show.get = (args: { patient: number | { id: number } } | [patient: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -581,7 +581,7 @@ show.get = (args: { patient: number | { id: number } } | [patient: number | { id
 })
 /**
 * @see \App\Http\Controllers\PatientController::show
- * @see app/Http/Controllers/PatientController.php:389
+ * @see app/Http/Controllers/PatientController.php:422
  * @route '/patients/{patient}'
  */
 show.head = (args: { patient: number | { id: number } } | [patient: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -591,7 +591,7 @@ show.head = (args: { patient: number | { id: number } } | [patient: number | { i
 
     /**
 * @see \App\Http\Controllers\PatientController::show
- * @see app/Http/Controllers/PatientController.php:389
+ * @see app/Http/Controllers/PatientController.php:422
  * @route '/patients/{patient}'
  */
     const showForm = (args: { patient: number | { id: number } } | [patient: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -601,7 +601,7 @@ show.head = (args: { patient: number | { id: number } } | [patient: number | { i
 
             /**
 * @see \App\Http\Controllers\PatientController::show
- * @see app/Http/Controllers/PatientController.php:389
+ * @see app/Http/Controllers/PatientController.php:422
  * @route '/patients/{patient}'
  */
         showForm.get = (args: { patient: number | { id: number } } | [patient: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -610,7 +610,7 @@ show.head = (args: { patient: number | { id: number } } | [patient: number | { i
         })
             /**
 * @see \App\Http\Controllers\PatientController::show
- * @see app/Http/Controllers/PatientController.php:389
+ * @see app/Http/Controllers/PatientController.php:422
  * @route '/patients/{patient}'
  */
         showForm.head = (args: { patient: number | { id: number } } | [patient: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -626,7 +626,7 @@ show.head = (args: { patient: number | { id: number } } | [patient: number | { i
     show.form = showForm
 /**
 * @see \App\Http\Controllers\PatientController::shaEligibility
- * @see app/Http/Controllers/PatientController.php:763
+ * @see app/Http/Controllers/PatientController.php:856
  * @route '/patients/{patient}/sha-eligibility'
  */
 export const shaEligibility = (args: { patient: number | { id: number } } | [patient: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -641,7 +641,7 @@ shaEligibility.definition = {
 
 /**
 * @see \App\Http\Controllers\PatientController::shaEligibility
- * @see app/Http/Controllers/PatientController.php:763
+ * @see app/Http/Controllers/PatientController.php:856
  * @route '/patients/{patient}/sha-eligibility'
  */
 shaEligibility.url = (args: { patient: number | { id: number } } | [patient: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -674,7 +674,7 @@ shaEligibility.url = (args: { patient: number | { id: number } } | [patient: num
 
 /**
 * @see \App\Http\Controllers\PatientController::shaEligibility
- * @see app/Http/Controllers/PatientController.php:763
+ * @see app/Http/Controllers/PatientController.php:856
  * @route '/patients/{patient}/sha-eligibility'
  */
 shaEligibility.post = (args: { patient: number | { id: number } } | [patient: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -684,7 +684,7 @@ shaEligibility.post = (args: { patient: number | { id: number } } | [patient: nu
 
     /**
 * @see \App\Http\Controllers\PatientController::shaEligibility
- * @see app/Http/Controllers/PatientController.php:763
+ * @see app/Http/Controllers/PatientController.php:856
  * @route '/patients/{patient}/sha-eligibility'
  */
     const shaEligibilityForm = (args: { patient: number | { id: number } } | [patient: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -694,7 +694,7 @@ shaEligibility.post = (args: { patient: number | { id: number } } | [patient: nu
 
             /**
 * @see \App\Http\Controllers\PatientController::shaEligibility
- * @see app/Http/Controllers/PatientController.php:763
+ * @see app/Http/Controllers/PatientController.php:856
  * @route '/patients/{patient}/sha-eligibility'
  */
         shaEligibilityForm.post = (args: { patient: number | { id: number } } | [patient: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
