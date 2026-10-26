@@ -274,7 +274,7 @@ update.patch = (args: { encounter: number | { id: number } } | [encounter: numbe
     update.form = updateForm
 /**
 * @see \App\Http\Controllers\PatientOperationsController::complete
- * @see app/Http/Controllers/PatientOperationsController.php:1070
+ * @see app/Http/Controllers/PatientOperationsController.php:1053
  * @route '/visits/{encounter}/complete'
  */
 export const complete = (args: { encounter: number | { id: number } } | [encounter: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -289,7 +289,7 @@ complete.definition = {
 
 /**
 * @see \App\Http\Controllers\PatientOperationsController::complete
- * @see app/Http/Controllers/PatientOperationsController.php:1070
+ * @see app/Http/Controllers/PatientOperationsController.php:1053
  * @route '/visits/{encounter}/complete'
  */
 complete.url = (args: { encounter: number | { id: number } } | [encounter: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -322,7 +322,7 @@ complete.url = (args: { encounter: number | { id: number } } | [encounter: numbe
 
 /**
 * @see \App\Http\Controllers\PatientOperationsController::complete
- * @see app/Http/Controllers/PatientOperationsController.php:1070
+ * @see app/Http/Controllers/PatientOperationsController.php:1053
  * @route '/visits/{encounter}/complete'
  */
 complete.post = (args: { encounter: number | { id: number } } | [encounter: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -332,7 +332,7 @@ complete.post = (args: { encounter: number | { id: number } } | [encounter: numb
 
     /**
 * @see \App\Http\Controllers\PatientOperationsController::complete
- * @see app/Http/Controllers/PatientOperationsController.php:1070
+ * @see app/Http/Controllers/PatientOperationsController.php:1053
  * @route '/visits/{encounter}/complete'
  */
     const completeForm = (args: { encounter: number | { id: number } } | [encounter: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -342,7 +342,7 @@ complete.post = (args: { encounter: number | { id: number } } | [encounter: numb
 
             /**
 * @see \App\Http\Controllers\PatientOperationsController::complete
- * @see app/Http/Controllers/PatientOperationsController.php:1070
+ * @see app/Http/Controllers/PatientOperationsController.php:1053
  * @route '/visits/{encounter}/complete'
  */
         completeForm.post = (args: { encounter: number | { id: number } } | [encounter: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({

@@ -868,7 +868,7 @@ downloadInvoice.head = (args: { encounter: number | { id: number } } | [encounte
     downloadInvoice.form = downloadInvoiceForm
 /**
 * @see \App\Http\Controllers\PatientOperationsController::completeVisit
- * @see app/Http/Controllers/PatientOperationsController.php:1070
+ * @see app/Http/Controllers/PatientOperationsController.php:1053
  * @route '/visits/{encounter}/complete'
  */
 export const completeVisit = (args: { encounter: number | { id: number } } | [encounter: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -883,7 +883,7 @@ completeVisit.definition = {
 
 /**
 * @see \App\Http\Controllers\PatientOperationsController::completeVisit
- * @see app/Http/Controllers/PatientOperationsController.php:1070
+ * @see app/Http/Controllers/PatientOperationsController.php:1053
  * @route '/visits/{encounter}/complete'
  */
 completeVisit.url = (args: { encounter: number | { id: number } } | [encounter: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -916,7 +916,7 @@ completeVisit.url = (args: { encounter: number | { id: number } } | [encounter: 
 
 /**
 * @see \App\Http\Controllers\PatientOperationsController::completeVisit
- * @see app/Http/Controllers/PatientOperationsController.php:1070
+ * @see app/Http/Controllers/PatientOperationsController.php:1053
  * @route '/visits/{encounter}/complete'
  */
 completeVisit.post = (args: { encounter: number | { id: number } } | [encounter: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -926,7 +926,7 @@ completeVisit.post = (args: { encounter: number | { id: number } } | [encounter:
 
     /**
 * @see \App\Http\Controllers\PatientOperationsController::completeVisit
- * @see app/Http/Controllers/PatientOperationsController.php:1070
+ * @see app/Http/Controllers/PatientOperationsController.php:1053
  * @route '/visits/{encounter}/complete'
  */
     const completeVisitForm = (args: { encounter: number | { id: number } } | [encounter: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -936,7 +936,7 @@ completeVisit.post = (args: { encounter: number | { id: number } } | [encounter:
 
             /**
 * @see \App\Http\Controllers\PatientOperationsController::completeVisit
- * @see app/Http/Controllers/PatientOperationsController.php:1070
+ * @see app/Http/Controllers/PatientOperationsController.php:1053
  * @route '/visits/{encounter}/complete'
  */
         completeVisitForm.post = (args: { encounter: number | { id: number } } | [encounter: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -947,7 +947,7 @@ completeVisit.post = (args: { encounter: number | { id: number } } | [encounter:
     completeVisit.form = completeVisitForm
 /**
 * @see \App\Http\Controllers\PatientOperationsController::preauthorizations
- * @see app/Http/Controllers/PatientOperationsController.php:1086
+ * @see app/Http/Controllers/PatientOperationsController.php:1069
  * @route '/preauthorizations'
  */
 export const preauthorizations = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -962,7 +962,7 @@ preauthorizations.definition = {
 
 /**
 * @see \App\Http\Controllers\PatientOperationsController::preauthorizations
- * @see app/Http/Controllers/PatientOperationsController.php:1086
+ * @see app/Http/Controllers/PatientOperationsController.php:1069
  * @route '/preauthorizations'
  */
 preauthorizations.url = (options?: RouteQueryOptions) => {
@@ -971,7 +971,7 @@ preauthorizations.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\PatientOperationsController::preauthorizations
- * @see app/Http/Controllers/PatientOperationsController.php:1086
+ * @see app/Http/Controllers/PatientOperationsController.php:1069
  * @route '/preauthorizations'
  */
 preauthorizations.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -980,7 +980,7 @@ preauthorizations.get = (options?: RouteQueryOptions): RouteDefinition<'get'> =>
 })
 /**
 * @see \App\Http\Controllers\PatientOperationsController::preauthorizations
- * @see app/Http/Controllers/PatientOperationsController.php:1086
+ * @see app/Http/Controllers/PatientOperationsController.php:1069
  * @route '/preauthorizations'
  */
 preauthorizations.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -990,7 +990,7 @@ preauthorizations.head = (options?: RouteQueryOptions): RouteDefinition<'head'> 
 
     /**
 * @see \App\Http\Controllers\PatientOperationsController::preauthorizations
- * @see app/Http/Controllers/PatientOperationsController.php:1086
+ * @see app/Http/Controllers/PatientOperationsController.php:1069
  * @route '/preauthorizations'
  */
     const preauthorizationsForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -1000,7 +1000,7 @@ preauthorizations.head = (options?: RouteQueryOptions): RouteDefinition<'head'> 
 
             /**
 * @see \App\Http\Controllers\PatientOperationsController::preauthorizations
- * @see app/Http/Controllers/PatientOperationsController.php:1086
+ * @see app/Http/Controllers/PatientOperationsController.php:1069
  * @route '/preauthorizations'
  */
         preauthorizationsForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -1009,7 +1009,7 @@ preauthorizations.head = (options?: RouteQueryOptions): RouteDefinition<'head'> 
         })
             /**
 * @see \App\Http\Controllers\PatientOperationsController::preauthorizations
- * @see app/Http/Controllers/PatientOperationsController.php:1086
+ * @see app/Http/Controllers/PatientOperationsController.php:1069
  * @route '/preauthorizations'
  */
         preauthorizationsForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({

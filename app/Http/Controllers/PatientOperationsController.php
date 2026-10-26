@@ -573,7 +573,6 @@ class PatientOperationsController extends Controller
         }
 
         $reference = (string) ($encounter->invoice_reference ?: 'INV-' . $encounter->encounter_number);
-        $status = strtoupper((string) ($encounter->invoice_status ?: 'DRAFT'));
         $coverage = strtolower((string) ($encounter->coverage_type ?: $encounter->payment_type ?: 'local'));
         $isSha = $coverage === 'sha';
 
@@ -687,382 +686,366 @@ class PatientOperationsController extends Controller
             }
         }
 
-        // A4-sized vector PDF drawing surface.
+        // ============================================================
+        // PDF DRAWING ENGINE
+        // ============================================================
         $ops = [];
+        
+        // Exact width calculation for Helvetica/Helvetica-Bold/Helvetica-Oblique
+        $getTextWidth = function($text, $size, $font) {
+            $width = 0;
+            $len = strlen((string)$text);
+            for ($i = 0; $i < $len; $i++) {
+                $char = $text[$i];
+                if ($font === 'F2' || $font === 'F3') {
+                    if (in_array($char, ['i', 'l', 'I', 'j', 't', 'f', 'r', ' '])) $width += 0.35 * $size;
+                    elseif (in_array($char, ['m', 'w', 'M', 'W'])) $width += 0.90 * $size;
+                    else $width += 0.60 * $size;
+                } else {
+                    if (in_array($char, ['i', 'l', 'I', 'j', 't', 'f', 'r', ' '])) $width += 0.28 * $size;
+                    elseif (in_array($char, ['m', 'w', 'M', 'W'])) $width += 0.85 * $size;
+                    else $width += 0.55 * $size;
+                }
+            }
+            return $width;
+        };
 
         $rect = function ($x, $y, $w, $h, $r, $g, $b) use (&$ops) {
-            $ops[] = sprintf(
-                '%.3f %.3f %.3f rg %.2f %.2f %.2f %.2f re f',
-                $r, $g, $b, $x, $y, $w, $h
-            );
+            $ops[] = sprintf('%.3f %.3f %.3f rg %.2f %.2f %.2f %.2f re f', $r, $g, $b, $x, $y, $w, $h);
         };
-
-        $line = function ($x1, $y1, $x2, $y2, $r = .86, $g = .89, $b = .93, $width = 1) use (&$ops) {
-            $ops[] = sprintf(
-                '%.3f %.3f %.3f RG %.2f w %.2f %.2f m %.2f %.2f l S',
-                $r, $g, $b, $width, $x1, $y1, $x2, $y2
-            );
+        $line = function ($x1, $y1, $x2, $y2, $r=.86, $g=.89, $b=.93, $width=1) use (&$ops) {
+            $ops[] = sprintf('%.3f %.3f %.3f RG %.2f w %.2f %.2f m %.2f %.2f l S', $r, $g, $b, $width, $x1, $y1, $x2, $y2);
         };
-
-        $text = function ($x, $y, $size, $value, $r = .12, $g = .16, $b = .22, $font = 'F1') use (&$ops) {
+        $text = function ($x, $y, $size, $value, $r=.12, $g=.16, $b=.22, $font='F1', $align='L') use (&$ops, $getTextWidth) {
             $value = iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', (string) $value) ?: (string) $value;
-            $value = str_replace(
-                ["\\", "(", ")", "\r", "\n"],
-                ["\\\\", "\\(", "\\)", ' ', ' '],
-                $value
-            );
-
-            $ops[] = sprintf(
-                '%.3f %.3f %.3f rg BT /%s %d Tf %.2f %.2f Td (%s) Tj ET',
-                $r, $g, $b, $font, $size, $x, $y, $value
-            );
+            $value = str_replace(["\\", "(", ")", "\r", "\n"], ["\\\\", "\\(", "\\)", ' ', ' '], $value);
+            
+            if ($align === 'R') {
+                $w = $getTextWidth($value, $size, $font);
+                $x = $x - $w;
+            } elseif ($align === 'C') {
+                $w = $getTextWidth($value, $size, $font);
+                $x = $x - ($w / 2);
+            }
+            
+            $ops[] = sprintf('%.3f %.3f %.3f rg BT /%s %d Tf %.2f %.2f Td (%s) Tj ET', $r, $g, $b, $font, $size, $x, $y, $value);
         };
-
         $money = fn ($amount) => 'KES ' . number_format((float) $amount, 2);
 
-        // White page and faint diagonal line artwork, behind invoice content.
-        $rect(0, 0, 612, 842, 1, 1, 1);
+        // ============================================================
+        // BACKGROUND ARTWORK
+        // ============================================================
+        $rect(0, 0, 612, 842, 1, 1, 1); // Pure white canvas
 
-        for ($i = 0; $i < 22; $i++) {
-            $yy = 838 - ($i * 2.6);
+        // 1. Dotted Matrix (Behind Logo)
+        for ($dx = 30; $dx <= 150; $dx += 10) {
+            for ($dy = 720; $dy <= 820; $dy += 10) {
+                $ops[] = sprintf('%.3f %.3f %.3f rg %.2f %.2f 1.2 0 360 arc f', $brandR, $brandG, $brandB, $dx, $dy);
+            }
+        }
+
+        // 2. Elegant Line Waves
+        for ($i = 0; $i < 15; $i++) {
+            $c = 0.88 + ($i * 0.008); 
+            if ($c > 0.95) $c = 0.95;
+            $yShift = $i * 2.5;
 
             $ops[] = sprintf(
-                '0.925 0.945 0.935 RG 0.35 w 0 %.2f m 612 %.2f l S',
-                $yy,
-                $yy - 235
+                '%.3f %.3f %.3f RG 0.8 w %.2f %.2f m %.2f %.2f %.2f %.2f %.2f %.2f c %.2f %.2f %.2f %.2f %.2f %.2f c S',
+                $c, $c, $c, 
+                -20, 850 - $yShift,
+                100, 800 - $yShift, 
+                250, 750 - $yShift, 
+                400, 680 - $yShift,
+                550, 610 - $yShift, 
+                650, 550 - $yShift, 
+                650, 480 - $yShift
             );
         }
 
-        for ($i = 0; $i < 12; $i++) {
-            $yy = 440 - ($i * 3.2);
+        // ============================================================
+        // HEADER & META
+        // ============================================================
+        $marginL = 40;
+        $marginR = 572;
 
-            $ops[] = sprintf(
-                '0.965 0.972 0.968 RG 0.25 w 0 %.2f m 612 %.2f l S',
-                $yy,
-                $yy - 90
-            );
-        }
-
-        // Branded header.
-        $rect(0, 730, 612, 112, $brandR, $brandG, $brandB);
-
+        // Logo
         if ($logoJpeg !== null && $logoWidth > 0 && $logoHeight > 0) {
-            $fit = min(46 / $logoWidth, 46 / $logoHeight);
-            $drawW = $logoWidth * $fit;
-            $drawH = $logoHeight * $fit;
-            $drawX = 42 + (46 - $drawW) / 2;
-            $drawY = 758 + (46 - $drawH) / 2;
-
-            $rect(38, 754, 54, 54, 1, 1, 1);
-            $ops[] = sprintf(
-                'q %.2f 0 0 %.2f %.2f %.2f cm /ClinicLogo Do Q',
-                $drawW,
-                $drawH,
-                $drawX,
-                $drawY
-            );
+            $boxW = 70; $boxH = 60; $boxY = 745;
+            $fit = min($boxW / $logoWidth, $boxH / $logoHeight);
+            $drawW = $logoWidth * $fit; $drawH = $logoHeight * $fit;
+            $drawX = $marginL; $drawY = $boxY + (($boxH - $drawH) / 2);
+            $ops[] = sprintf('q %.2f 0 0 %.2f %.2f %.2f cm /ClinicLogo Do Q', $drawW, $drawH, $drawX, $drawY);
+        } else {
+            $text($marginL, 750, 40, 'SA', $brandR, $brandG, $brandB, 'F2');
         }
 
-        $text(105, 790, 10, mb_substr($clinicName, 0, 36), .90, .96, 1, 'F2');
+        // Title
+        $text($marginR, 765, 24, 'Hospital Invoice', 0.10, 0.10, 0.10, 'F2', 'R');
+        
+        // Meta Block
+        $metaY = 740;
+        $metaLabelX = 410;
+        $text($metaLabelX, $metaY, 9, 'Invoice no:', 0.45, 0.45, 0.45, 'F1', 'L');
+        $text($marginR, $metaY, 9, $reference, 0.10, 0.10, 0.10, 'F2', 'R');
+        
+        $metaY -= 16;
+        $text($metaLabelX, $metaY, 9, 'Invoice date:', 0.45, 0.45, 0.45, 'F1', 'L');
+        $text($marginR, $metaY, 9, ($encounter->invoice_issued_at ?? $encounter->created_at ?? now())->format('d M Y'), 0.10, 0.10, 0.10, 'F2', 'R');
+        
+        $metaY -= 16;
+        $text($metaLabelX, $metaY, 9, 'Due:', 0.45, 0.45, 0.45, 'F1', 'L');
+        $text($marginR, $metaY, 9, now()->addDays(30)->format('d M Y'), 0.10, 0.10, 0.10, 'F2', 'R');
 
-        if ($clinicTagline !== '') {
-            $text(105, 777, 7, mb_substr($clinicTagline, 0, 48), .88, .95, 1);
-        }
+        // ============================================================
+        // FROM / BILL TO / SHIP TO
+        // ============================================================
+        $col1X = $marginL;
+        $col2X = 240;
+        $col3X = 410;
+        $topY = 640;
 
-        $text(105, 762, 23, 'HOSPITAL INVOICE', 1, 1, 1, 'F2');
-        $text(105, 744, 8, 'VISIT BILLING STATEMENT  |  KENYAN SHILLING (KES)', .90, .96, 1);
-
-        $text(414, 792, 8, 'INVOICE REFERENCE', .82, .91, 1, 'F2');
-        $text(414, 775, 10, mb_substr($reference, 0, 28), 1, 1, 1, 'F2');
-        $text(414, 755, 8, 'ISSUE DATE', .82, .91, 1, 'F2');
-        $text(
-            414,
-            740,
-            9,
-            ($encounter->invoice_issued_at ?? $encounter->created_at ?? now())->format('d M Y'),
-            1,
-            1,
-            1
-        );
-
-        if ($clinicPhone !== '') {
-            $text(414, 727, 7, mb_substr($clinicPhone, 0, 28), .88, .95, 1);
-        }
-
-        // FROM / BILL TO / SHIP TO — all values originate from the clinic and patient records.
-        $panelY = 626;
-        $panelH = 82;
-        $panelW = 172;
-        $panelXs = [36, 220, 404];
-
-        foreach ($panelXs as $panelX) {
-            $rect($panelX, $panelY, $panelW, $panelH, .96, .975, .99);
-        }
-
-        // From: clinic identity.
-        $text(47, 688, 8, 'FROM', .28, .39, .54, 'F2');
-        $text(47, 670, 10, mb_substr($clinicName, 0, 27), .08, .12, .20, 'F2');
-
+        // From
+        $text($col1X, $topY, 9, 'From', 0.45, 0.45, 0.45, 'F1');
+        $text($col1X, $topY - 14, 11, mb_substr($clinicName, 0, 30), 0.10, 0.10, 0.10, 'F2');
+        
         $fromLines = array_values(array_filter([
             $clinicTagline !== '' ? $clinicTagline : null,
             $clinicEmail !== '' ? $clinicEmail : null,
             $clinicPhone !== '' ? $clinicPhone : null,
             $clinicAddress !== '' ? $clinicAddress : null,
             $clinicWebsite !== '' ? $clinicWebsite : null,
-        ], fn ($value) => is_string($value) && trim($value) !== ''));
-
-        $lineY = 655;
-
-        foreach (array_slice($fromLines, 0, 4) as $fromLine) {
-            $text(47, $lineY, 7, mb_substr($fromLine, 0, 29), .28, .35, .43);
-            $lineY -= 11;
+        ]));
+        
+        $fy = $topY - 28;
+        foreach (array_slice($fromLines, 0, 5) as $l) {
+            $text($col1X, $fy, 8, mb_substr($l, 0, 35), 0.35, 0.35, 0.35);
+            $fy -= 12;
         }
 
-        // Bill to: patient demographics.
-        $text(231, 688, 8, 'BILL TO', .28, .39, .54, 'F2');
-        $text(
-            231,
-            670,
-            10,
-            mb_substr($patientName !== '' ? $patientName : 'Patient record', 0, 26),
-            .08,
-            .12,
-            .20,
-            'F2'
-        );
-
+        // Bill to
+        $text($col2X, $topY, 9, 'Bill to', 0.45, 0.45, 0.45, 'F1');
+        $text($col2X, $topY - 14, 11, mb_substr($patientName !== '' ? $patientName : 'Patient record', 0, 30), 0.10, 0.10, 0.10, 'F2');
+        
         $billLines = array_values(array_filter([
-            $patientMrn !== '' ? 'MRN: ' . $patientMrn : null,
-            $patientPhone !== '' ? 'Phone: ' . $patientPhone : null,
             $patientEmail !== '' ? $patientEmail : null,
-        ], fn ($value) => is_string($value) && trim($value) !== ''));
-
-        $lineY = 655;
-
-        foreach (array_slice($billLines, 0, 4) as $billLine) {
-            $text(231, $lineY, 7, mb_substr($billLine, 0, 29), .28, .35, .43);
-            $lineY -= 11;
-        }
-
-        // Ship to: clinic service location and actual encounter reference.
-        $text(415, 688, 8, 'SHIP TO / SERVICE LOCATION', .28, .39, .54, 'F2');
-        $text(415, 670, 10, mb_substr($clinicName, 0, 26), .08, .12, .20, 'F2');
-
-        $shipLines = array_values(array_filter([
+            $patientPhone !== '' ? $patientPhone : null,
+            $patientMrn !== '' ? 'MRN: ' . $patientMrn : null,
             $clinicAddress !== '' ? $clinicAddress : null,
-            'Encounter: ' . (string) $encounter->encounter_number,
-            'Visit: ' . strtoupper((string) ($encounter->visit_type ?: 'Not recorded')),
-            $clinicPhone !== '' ? 'Facility phone: ' . $clinicPhone : null,
-        ], fn ($value) => is_string($value) && trim($value) !== ''));
-
-        $lineY = 655;
-
-        foreach (array_slice($shipLines, 0, 4) as $shipLine) {
-            $text(415, $lineY, 7, mb_substr($shipLine, 0, 29), .28, .35, .43);
-            $lineY -= 11;
+        ]));
+        
+        $by = $topY - 28;
+        foreach (array_slice($billLines, 0, 4) as $l) {
+            $text($col2X, $by, 8, mb_substr($l, 0, 35), 0.35, 0.35, 0.35);
+            $by -= 12;
         }
 
-        // Itemized charges.
-        $text(38, 596, 12, 'ITEMIZED CHARGES', .08, .12, .20, 'F2');
-        $text(38, 581, 8, 'Review the services and amounts recorded against this encounter.', .36, .42, .49);
+        // Ship to
+        $text($col3X, $topY, 9, 'Ship to / Service Location', 0.45, 0.45, 0.45, 'F1');
+        $text($col3X, $topY - 14, 8, mb_substr($clinicAddress !== '' ? $clinicAddress : 'Facility Address', 0, 35), 0.35, 0.35, 0.35);
+        $text($col3X, $topY - 26, 8, 'Track #: ' . mb_substr((string) $encounter->encounter_number, 0, 24), 0.35, 0.35, 0.35);
 
-        $rect(36, 544, 540, 25, $brandR, $brandG, $brandB);
-        $text(48, 553, 8, 'DESCRIPTION', 1, 1, 1, 'F2');
-        $text(346, 553, 8, 'QTY', 1, 1, 1, 'F2');
-        $text(394, 553, 8, 'UNIT PRICE', 1, 1, 1, 'F2');
-        $text(500, 553, 8, 'AMOUNT', 1, 1, 1, 'F2');
 
-        $y = 523;
+        // ============================================================
+        // ITEMS TABLE
+        // ============================================================
+        $tableTop = 500;
+        $tableLeft = $marginL;
+        $tableWidth = $marginR - $marginL;
+        $headerH = 24;
 
-        foreach (array_slice($rows, 0, 12) as $index => $row) {
-            if ($index % 2 === 0) {
-                $rect(36, $y - 8, 540, 24, .97, .98, 1);
-            }
+        // Header
+        $rect($tableLeft, $tableTop - $headerH, $tableWidth, $headerH, $brandR, $brandG, $brandB);
+        
+        $cols = [
+            'desc' => ['start' => $tableLeft + 10, 'align' => 'L'],
+            'rate' => ['start' => 270, 'align' => 'R'],
+            'qty'  => ['start' => 330, 'align' => 'R'],
+            'tax'  => ['start' => 380, 'align' => 'R'],
+            'disc' => ['start' => 440, 'align' => 'R'],
+            'amt'  => ['start' => $marginR - 10, 'align' => 'R'],
+        ];
 
-            $text(48, $y, 8, mb_substr($row['description'], 0, 42), .12, .16, .22);
-            $text(
-                350,
-                $y,
-                8,
-                rtrim(rtrim(number_format($row['quantity'], 2), '0'), '.'),
-                .20,
-                .25,
-                .31
-            );
-            $text(394, $y, 8, number_format($row['unit_price'], 2), .20, .25, .31);
-            $text(492, $y, 8, number_format($row['total'], 2), .08, .12, .20, 'F2');
+        $text($cols['desc']['start'], $tableTop - 16, 8, 'DESCRIPTION', 1, 1, 1, 'F2', 'L');
+        $text($cols['rate']['start'], $tableTop - 16, 8, 'RATE/CHARGE', 1, 1, 1, 'F2', 'R');
+        $text($cols['qty']['start'],  $tableTop - 16, 8, 'QTY', 1, 1, 1, 'F2', 'R');
+        $text($cols['tax']['start'],  $tableTop - 16, 8, 'TAX', 1, 1, 1, 'F2', 'R');
+        $text($cols['disc']['start'], $tableTop - 16, 8, 'DISCOUNT', 1, 1, 1, 'F2', 'R');
+        $text($cols['amt']['start'],  $tableTop - 16, 8, 'AMOUNT/CHARGE', 1, 1, 1, 'F2', 'R');
 
-            $line(36, $y - 9, 576, $y - 9, .90, .92, .95, .5);
-            $y -= 25;
+        // Rows
+        $rowH = 26;
+        $y = $tableTop - $headerH;
+        foreach (array_slice($rows, 0, 10) as $i => $row) {
+            $bg = ($i % 2 === 0) ? [0.98, 0.99, 1.0] : [1, 1, 1];
+            $rect($tableLeft, $y - $rowH, $tableWidth, $rowH, $bg[0], $bg[1], $bg[2]);
+            
+            $text($cols['desc']['start'], $y - 16, 8, mb_substr($row['description'], 0, 45), 0.15, 0.15, 0.15, 'F1', 'L');
+            $text($cols['rate']['start'], $y - 16, 8, number_format($row['unit_price'], 2), 0.15, 0.15, 0.15, 'F1', 'R');
+            $text($cols['qty']['start'],  $y - 16, 8, rtrim(rtrim(number_format($row['quantity'], 2), '0'), '.'), 0.15, 0.15, 0.15, 'F1', 'R');
+            $text($cols['tax']['start'],  $y - 16, 8, '0', 0.15, 0.15, 0.15, 'F1', 'R');
+            $text($cols['disc']['start'], $y - 16, 8, '0', 0.15, 0.15, 0.15, 'F1', 'R');
+            $text($cols['amt']['start'],  $y - 16, 8, number_format($row['total'], 2), 0.10, 0.10, 0.10, 'F2', 'R');
+            
+            $y -= $rowH;
         }
+        $line($tableLeft, $y, $tableLeft + $tableWidth, $y, $brandR, $brandG, $brandB, 1);
 
-        if (count($rows) > 12) {
-            $text(
-                48,
-                $y,
-                8,
-                'Additional items omitted from this summary. Refer to the encounter billing record.',
-                .42,
-                .45,
-                .50
-            );
-        }
 
-        // Totals panel.
-        $totalY = max(280, $y - 34);
+        // ============================================================
+        // PAYMENT INSTRUCTION & TOTALS
+        // ============================================================
+        $blockTop = $y - 40;
+        
+        $totalsBlockW = 230;
+        $totalsBlockX = $marginR - $totalsBlockW;
+        $rect($totalsBlockX - 10, $blockTop - 145, $totalsBlockW + 10, 155, 0.97, 0.98, 0.99);
 
-        $rect(330, $totalY - 48, 246, 70, .93, .97, 1);
-        $text(344, $totalY + 2, 9, 'SUBTOTAL', .28, .35, .43);
-        $text(475, $totalY + 2, 9, number_format($calculatedTotal, 2), .08, .12, .20, 'F2');
-
-        $line(344, $totalY - 8, 562, $totalY - 8, .78, .84, .92, .7);
-
-        $text(344, $totalY - 28, 10, 'TOTAL DUE', .08, .12, .20, 'F2');
-        $text(430, $totalY - 28, 13, $money($total), $brandR, $brandG, $brandB, 'F2');
-
-        // Payment instructions: only configured values are displayed.
-        $text(38, 230, 9, 'PAYMENT & BILLING NOTES', .08, .12, .20, 'F2');
-
+        // Payment Instruction (Left)
+        $text($marginL, $blockTop, 10, 'Payment instruction', 0.10, 0.10, 0.10, 'F2');
+        
         $paymentLines = array_values(array_filter([
-            trim((string) ($paymentSettings['paybill'] ?? '')) !== ''
-                ? 'Paybill: ' . trim((string) $paymentSettings['paybill'])
-                : null,
-            trim((string) ($paymentSettings['till'] ?? '')) !== ''
-                ? 'Till: ' . trim((string) $paymentSettings['till'])
-                : null,
-            trim((string) ($paymentSettings['account_reference'] ?? '')) !== ''
-                ? 'Account/reference: ' . trim((string) $paymentSettings['account_reference'])
-                : null,
-            trim((string) ($paymentSettings['bank_name'] ?? '')) !== ''
-                ? 'Bank: ' . trim((string) $paymentSettings['bank_name'])
-                : null,
-            trim((string) ($paymentSettings['account_name'] ?? '')) !== ''
-                ? 'Account name: ' . trim((string) $paymentSettings['account_name'])
-                : null,
-            trim((string) ($paymentSettings['account_number'] ?? '')) !== ''
-                ? 'Account number: ' . trim((string) $paymentSettings['account_number'])
-                : null,
-            trim((string) ($paymentSettings['payment_note'] ?? '')) !== ''
-                ? trim((string) $paymentSettings['payment_note'])
-                : null,
-        ], fn ($value) => is_string($value) && trim($value) !== ''));
-
+            trim((string) ($paymentSettings['paybill'] ?? '')) !== '' ? 'Paybill: ' . trim((string) $paymentSettings['paybill']) : null,
+            trim((string) ($paymentSettings['till'] ?? '')) !== '' ? 'Till: ' . trim((string) $paymentSettings['till']) : null,
+            trim((string) ($paymentSettings['account_reference'] ?? '')) !== '' ? 'Account/ref: ' . trim((string) $paymentSettings['account_reference']) : null,
+            trim((string) ($paymentSettings['bank_name'] ?? '')) !== '' ? 'Bank: ' . trim((string) $paymentSettings['bank_name']) : null,
+            trim((string) ($paymentSettings['account_name'] ?? '')) !== '' ? 'Acc Name: ' . trim((string) $paymentSettings['account_name']) : null,
+            trim((string) ($paymentSettings['account_number'] ?? '')) !== '' ? 'Acc No: ' . trim((string) $paymentSettings['account_number']) : null,
+            trim((string) ($paymentSettings['payment_note'] ?? '')) !== '' ? trim((string) $paymentSettings['payment_note']) : null,
+        ]));
+        
         if ($isSha) {
-            array_unshift(
-                $paymentLines,
-                'SHA-covered visit: this is a cost summary, not a claim approval or proof of payment.'
-            );
+            array_unshift($paymentLines, 'SHA-covered visit: this is a cost summary, not a claim approval.');
         } elseif (!$paymentLines) {
             $paymentLines[] = 'Please quote invoice reference ' . $reference . ' when making payment.';
         }
 
-        $paymentY = 212;
-
-        foreach (array_slice($paymentLines, 0, 3) as $paymentLine) {
-            $text(38, $paymentY, 7, mb_substr($paymentLine, 0, 108), .30, .36, .43);
-            $paymentY -= 12;
+        $payY = $blockTop - 18;
+        foreach (array_slice($paymentLines, 0, 5) as $paymentLine) {
+            $text($marginL, $payY, 8, mb_substr($paymentLine, 0, 45), 0.35, 0.35, 0.35);
+            $payY -= 14;
         }
 
-        $text(
-            38,
-            $paymentY,
-            7,
-            'Invoice status: ' . $status . '  |  Generated: ' . now()->format('d M Y H:i T'),
-            .30,
-            .36,
-            .43
-        );
 
-        if ($isSha) {
-            $text(
-                38,
-                $paymentY - 12,
-                7,
-                'SHA claim status: ' . strtoupper((string) ($encounter->claim_status ?: 'NOT SUBMITTED')),
-                .30,
-                .36,
-                .43
-            );
+        // Totals (Right)
+        $totLabelX = $totalsBlockX + 10;
+        $totValX = $marginR - 10;
+        $totY = $blockTop - 10;
+        
+        $text($totLabelX, $totY, 9, 'Subtotal:', 0.35, 0.35, 0.35, 'F1', 'L');
+        $text($totValX, $totY, 9, number_format($calculatedTotal, 2), 0.10, 0.10, 0.10, 'F2', 'R');
+        
+        $totY -= 16;
+        $text($totLabelX, $totY, 9, 'Discount (0%):', 0.35, 0.35, 0.35, 'F1', 'L');
+        $text($totValX, $totY, 9, '0.00', 0.10, 0.10, 0.10, 'F2', 'R');
+        
+        $totY -= 16;
+        $text($totLabelX, $totY, 9, 'Shipping cost:', 0.35, 0.35, 0.35, 'F1', 'L');
+        $text($totValX, $totY, 9, '0.00', 0.10, 0.10, 0.10, 'F2', 'R');
+        
+        $totY -= 16;
+        $text($totLabelX, $totY, 9, 'Sales Tax:', 0.35, 0.35, 0.35, 'F1', 'L');
+        $text($totValX, $totY, 9, '0.00', 0.10, 0.10, 0.10, 'F2', 'R');
+        
+        $totY -= 18;
+        $text($totLabelX, $totY, 10, 'Total:', 0.10, 0.10, 0.10, 'F2', 'L');
+        $text($totValX, $totY, 10, $money($total), 0.10, 0.10, 0.10, 'F2', 'R');
+        
+        $totY -= 16;
+        $text($totLabelX, $totY, 9, 'Amount paid:', 0.35, 0.35, 0.35, 'F1', 'L');
+        $text($totValX, $totY, 9, '0.00', 0.10, 0.10, 0.10, 'F2', 'R');
+        
+        $totY -= 12;
+        $line($totLabelX, $totY, $totValX, $totY, 0.85, 0.85, 0.85, 1);
+
+        // Balance Due Highlight
+        $totY -= 26;
+        $rect($totLabelX - 5, $totY - 6, ($totValX - $totLabelX) + 10, 24, 0.92, 0.96, 0.95); 
+        $text($totLabelX, $totY, 10, 'Balance Due:', 0.10, 0.10, 0.10, 'F2', 'L');
+        $text($totValX, $totY, 10, $money($total), 0.10, 0.10, 0.10, 'F2', 'R');
+
+
+        // ============================================================
+        // NOTES
+        // ============================================================
+        $notesY = $totY - 45;
+        $text($marginL, $notesY, 10, 'Notes', 0.10, 0.10, 0.10, 'F2', 'L');
+        
+        $noteLines = [
+            'Payment is due within 30 days of the invoice date.',
+            'Please include the invoice reference on all payments.',
+            'For billing inquiries, please contact the facility.',
+        ];
+        
+        $ny = $notesY - 16;
+        foreach ($noteLines as $line) {
+            $text($marginL, $ny, 8, $line, 0.35, 0.35, 0.35, 'F1', 'L');
+            $ny -= 14;
         }
 
-        // Signature / payment reference lines.
-        $line(38, 126, 230, 126, .67, .73, .80, .8);
-        $text(38, 111, 8, 'Authorized by / billing officer', .35, .40, .48);
 
-        $line(340, 126, 570, 126, .67, .73, .80, .8);
-        $text(340, 111, 8, 'Payment reference / receipt number (if applicable)', .35, .40, .48);
+        // ============================================================
+        // SYSTEM GENERATED DISCLAIMER (Centered & Detailed)
+        // ============================================================
+        $disclaimerY = 110;
+        $centerX = 306; // Center of A4 page (612 / 2)
+        
+        // Line 1
+        $text($centerX, $disclaimerY, 9, 'This is a system generated invoice and it needs no signature.', 0.35, 0.35, 0.35, 'F3', 'C');
+        
+        // Line 2
+        $text($centerX, $disclaimerY - 14, 8, 'Generated by ' . $clinicName . ' Billing System on ' . now()->format('d M Y \a\t H:i T') . '.', 0.55, 0.55, 0.55, 'F3', 'C');
 
-        // Footer.
-        $rect(0, 0, 612, 48, .95, .97, .99);
+        // Line 3
+        $text($centerX, $disclaimerY - 26, 8, 'For inquiries regarding this invoice, please contact ' . ($clinicEmail !== '' ? $clinicEmail : 'billing@clinic.com') . '.', 0.55, 0.55, 0.55, 'F3', 'C');
 
-        $text(
-            38,
-            28,
-            7,
-            mb_substr($clinicName, 0, 48) . '  |  Confidential patient billing information',
-            .32,
-            .39,
-            .48
-        );
 
-        $text(
-            38,
-            15,
-            7,
-            'Reference: ' . mb_substr($reference, 0, 38) . '  |  Not a receipt',
-            .45,
-            .50,
-            .57
-        );
-
-        // Build the PDF.
+        // ============================================================
+        // BUILD PDF
+        // ============================================================
         $stream = implode("\n", $ops);
-
-        $pageResources = '<< /Font << /F1 4 0 R /F2 5 0 R >>'
-            . ($logoJpeg !== null ? ' /XObject << /ClinicLogo 7 0 R >>' : '')
-            . ' >>';
+        
+        // Added F3 (Helvetica-Oblique) to font resources
+        $pageResources = '<< /Font << /F1 4 0 R /F2 5 0 R /F3 8 0 R >>'
+            . ($logoJpeg !== null ? ' /XObject << /ClinicLogo 7 0 R >>' : '') . ' >>';
 
         $objects = [
             '<< /Type /Catalog /Pages 2 0 R >>',
             '<< /Type /Pages /Kids [3 0 R] /Count 1 >>',
-            '<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 842] /Resources '
-                . $pageResources . ' /Contents 6 0 R >>',
+            '<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 842] /Resources ' . $pageResources . ' /Contents 6 0 R >>',
             '<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>',
             '<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >>',
             '<< /Length ' . strlen($stream) . ">>\nstream\n" . $stream . "\nendstream",
         ];
-
         if ($logoJpeg !== null) {
             $objects[] = '<< /Type /XObject /Subtype /Image /Width ' . $logoWidth
                 . ' /Height ' . $logoHeight
                 . ' /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length '
                 . strlen($logoJpeg) . ">>\nstream\n" . $logoJpeg . "\nendstream";
         }
+        
+        // Add Helvetica-Oblique font object
+        $objects[] = '<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Oblique >>';
 
         $pdf = "%PDF-1.4\n%\xE2\xE3\xCF\xD3\n";
         $offsets = [0];
-
-        foreach ($objects as $index => $object) {
+        foreach ($objects as $i => $object) {
             $offsets[] = strlen($pdf);
-            $pdf .= ($index + 1) . " 0 obj\n" . $object . "\nendobj\n";
+            $pdf .= ($i + 1) . " 0 obj\n" . $object . "\nendobj\n";
         }
-
         $xref = strlen($pdf);
-
         $pdf .= "xref\n0 " . (count($objects) + 1) . "\n0000000000 65535 f \n";
-
-        for ($index = 1; $index <= count($objects); $index++) {
-            $pdf .= sprintf("%010d 00000 n \n", $offsets[$index]);
+        for ($i = 1; $i <= count($objects); $i++) {
+            $pdf .= sprintf("%010d 00000 n \n", $offsets[$i]);
         }
-
         $pdf .= "trailer\n<< /Size " . (count($objects) + 1)
             . " /Root 1 0 R >>\nstartxref\n" . $xref . "\n%%EOF";
 
         return response($pdf, 200, [
-            'Content-Type' => 'application/pdf',
+            'Content-Type'        => 'application/pdf',
             'Content-Disposition' => 'attachment; filename="'
                 . preg_replace('/[^A-Za-z0-9._-]/', '-', $reference) . '.pdf"',
-            'Cache-Control' => 'private, no-store',
+            'Cache-Control'       => 'private, no-store',
             'X-Content-Type-Options' => 'nosniff',
         ]);
     }
