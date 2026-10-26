@@ -7,7 +7,13 @@ use Illuminate\Support\Facades\Route;
 Route::middleware(['auth', 'verified'])->group(function (): void {
     Route::get('/visits', [PatientOperationsController::class, 'visits'])->middleware('can:appointments.view')->name('visits.index');
     Route::get('/visits/{encounter}', [PatientOperationsController::class, 'showVisit'])->whereNumber('encounter')->middleware('can:appointments.view')->name('visits.show');
+    Route::patch('/visits/{encounter}', [PatientOperationsController::class, 'updateVisit'])->whereNumber('encounter')->middleware('can:appointments.manage')->name('visits.update');
+    Route::get('/visits/icd11/search', [PatientOperationsController::class, 'icd11Search'])->middleware('can:appointments.view')->name('visits.icd11.search');
+    Route::post('/visits/{encounter}/documents', [PatientOperationsController::class, 'uploadDocument'])->whereNumber('encounter')->middleware('can:appointments.manage')->name('visits.documents.store');
+    Route::get('/visits/{encounter}/documents/{document}', [PatientOperationsController::class, 'downloadDocument'])->whereNumber('encounter')->whereNumber('document')->middleware('can:appointments.view')->name('visits.documents.download');
+    Route::delete('/visits/{encounter}/documents/{document}', [PatientOperationsController::class, 'deleteDocument'])->whereNumber('encounter')->whereNumber('document')->middleware('can:appointments.manage')->name('visits.documents.delete');
     Route::post('/visits/{encounter}/benefits/refresh', [PatientOperationsController::class, 'refreshVisitBenefits'])->whereNumber('encounter')->middleware('can:appointments.manage')->name('visits.benefits.refresh');
+    Route::post('/visits/{encounter}/invoice/issue', [PatientOperationsController::class, 'issueInvoice'])->whereNumber('encounter')->middleware('can:appointments.manage')->name('visits.invoice.issue');
     Route::get('/visits/{encounter}/invoice.pdf', [PatientOperationsController::class, 'downloadInvoice'])->whereNumber('encounter')->middleware('can:appointments.view')->name('visits.invoice.pdf');
     Route::post('/visits/{encounter}/complete', [PatientOperationsController::class, 'completeVisit'])->whereNumber('encounter')->middleware('can:appointments.manage')->name('visits.complete');
     Route::get('/preauthorizations', [PatientOperationsController::class, 'preauthorizations'])->middleware('can:sha.services.verify')->name('preauthorizations.index');

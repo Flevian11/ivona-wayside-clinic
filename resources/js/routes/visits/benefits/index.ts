@@ -1,7 +1,7 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../../../wayfinder'
 /**
 * @see \App\Http\Controllers\PatientOperationsController::refresh
- * @see app/Http/Controllers/PatientOperationsController.php:120
+ * @see app/Http/Controllers/PatientOperationsController.php:383
  * @route '/visits/{encounter}/benefits/refresh'
  */
 export const refresh = (args: { encounter: number | { id: number } } | [encounter: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -16,7 +16,7 @@ refresh.definition = {
 
 /**
 * @see \App\Http\Controllers\PatientOperationsController::refresh
- * @see app/Http/Controllers/PatientOperationsController.php:120
+ * @see app/Http/Controllers/PatientOperationsController.php:383
  * @route '/visits/{encounter}/benefits/refresh'
  */
 refresh.url = (args: { encounter: number | { id: number } } | [encounter: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -49,7 +49,7 @@ refresh.url = (args: { encounter: number | { id: number } } | [encounter: number
 
 /**
 * @see \App\Http\Controllers\PatientOperationsController::refresh
- * @see app/Http/Controllers/PatientOperationsController.php:120
+ * @see app/Http/Controllers/PatientOperationsController.php:383
  * @route '/visits/{encounter}/benefits/refresh'
  */
 refresh.post = (args: { encounter: number | { id: number } } | [encounter: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -59,7 +59,7 @@ refresh.post = (args: { encounter: number | { id: number } } | [encounter: numbe
 
     /**
 * @see \App\Http\Controllers\PatientOperationsController::refresh
- * @see app/Http/Controllers/PatientOperationsController.php:120
+ * @see app/Http/Controllers/PatientOperationsController.php:383
  * @route '/visits/{encounter}/benefits/refresh'
  */
     const refreshForm = (args: { encounter: number | { id: number } } | [encounter: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -69,7 +69,7 @@ refresh.post = (args: { encounter: number | { id: number } } | [encounter: numbe
 
             /**
 * @see \App\Http\Controllers\PatientOperationsController::refresh
- * @see app/Http/Controllers/PatientOperationsController.php:120
+ * @see app/Http/Controllers/PatientOperationsController.php:383
  * @route '/visits/{encounter}/benefits/refresh'
  */
         refreshForm.post = (args: { encounter: number | { id: number } } | [encounter: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({

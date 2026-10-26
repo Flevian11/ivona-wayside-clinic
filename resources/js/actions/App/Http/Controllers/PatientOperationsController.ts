@@ -1,7 +1,7 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../../../../wayfinder'
 /**
 * @see \App\Http\Controllers\PatientOperationsController::visits
- * @see app/Http/Controllers/PatientOperationsController.php:16
+ * @see app/Http/Controllers/PatientOperationsController.php:20
  * @route '/visits'
  */
 export const visits = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -16,7 +16,7 @@ visits.definition = {
 
 /**
 * @see \App\Http\Controllers\PatientOperationsController::visits
- * @see app/Http/Controllers/PatientOperationsController.php:16
+ * @see app/Http/Controllers/PatientOperationsController.php:20
  * @route '/visits'
  */
 visits.url = (options?: RouteQueryOptions) => {
@@ -25,7 +25,7 @@ visits.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\PatientOperationsController::visits
- * @see app/Http/Controllers/PatientOperationsController.php:16
+ * @see app/Http/Controllers/PatientOperationsController.php:20
  * @route '/visits'
  */
 visits.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -34,7 +34,7 @@ visits.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 })
 /**
 * @see \App\Http\Controllers\PatientOperationsController::visits
- * @see app/Http/Controllers/PatientOperationsController.php:16
+ * @see app/Http/Controllers/PatientOperationsController.php:20
  * @route '/visits'
  */
 visits.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -44,7 +44,7 @@ visits.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
     /**
 * @see \App\Http\Controllers\PatientOperationsController::visits
- * @see app/Http/Controllers/PatientOperationsController.php:16
+ * @see app/Http/Controllers/PatientOperationsController.php:20
  * @route '/visits'
  */
     const visitsForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -54,7 +54,7 @@ visits.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
             /**
 * @see \App\Http\Controllers\PatientOperationsController::visits
- * @see app/Http/Controllers/PatientOperationsController.php:16
+ * @see app/Http/Controllers/PatientOperationsController.php:20
  * @route '/visits'
  */
         visitsForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -63,7 +63,7 @@ visits.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
         })
             /**
 * @see \App\Http\Controllers\PatientOperationsController::visits
- * @see app/Http/Controllers/PatientOperationsController.php:16
+ * @see app/Http/Controllers/PatientOperationsController.php:20
  * @route '/visits'
  */
         visitsForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -79,7 +79,7 @@ visits.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     visits.form = visitsForm
 /**
 * @see \App\Http\Controllers\PatientOperationsController::showVisit
- * @see app/Http/Controllers/PatientOperationsController.php:63
+ * @see app/Http/Controllers/PatientOperationsController.php:71
  * @route '/visits/{encounter}'
  */
 export const showVisit = (args: { encounter: number | { id: number } } | [encounter: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -94,7 +94,7 @@ showVisit.definition = {
 
 /**
 * @see \App\Http\Controllers\PatientOperationsController::showVisit
- * @see app/Http/Controllers/PatientOperationsController.php:63
+ * @see app/Http/Controllers/PatientOperationsController.php:71
  * @route '/visits/{encounter}'
  */
 showVisit.url = (args: { encounter: number | { id: number } } | [encounter: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -127,7 +127,7 @@ showVisit.url = (args: { encounter: number | { id: number } } | [encounter: numb
 
 /**
 * @see \App\Http\Controllers\PatientOperationsController::showVisit
- * @see app/Http/Controllers/PatientOperationsController.php:63
+ * @see app/Http/Controllers/PatientOperationsController.php:71
  * @route '/visits/{encounter}'
  */
 showVisit.get = (args: { encounter: number | { id: number } } | [encounter: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -136,7 +136,7 @@ showVisit.get = (args: { encounter: number | { id: number } } | [encounter: numb
 })
 /**
 * @see \App\Http\Controllers\PatientOperationsController::showVisit
- * @see app/Http/Controllers/PatientOperationsController.php:63
+ * @see app/Http/Controllers/PatientOperationsController.php:71
  * @route '/visits/{encounter}'
  */
 showVisit.head = (args: { encounter: number | { id: number } } | [encounter: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -146,7 +146,7 @@ showVisit.head = (args: { encounter: number | { id: number } } | [encounter: num
 
     /**
 * @see \App\Http\Controllers\PatientOperationsController::showVisit
- * @see app/Http/Controllers/PatientOperationsController.php:63
+ * @see app/Http/Controllers/PatientOperationsController.php:71
  * @route '/visits/{encounter}'
  */
     const showVisitForm = (args: { encounter: number | { id: number } } | [encounter: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -156,7 +156,7 @@ showVisit.head = (args: { encounter: number | { id: number } } | [encounter: num
 
             /**
 * @see \App\Http\Controllers\PatientOperationsController::showVisit
- * @see app/Http/Controllers/PatientOperationsController.php:63
+ * @see app/Http/Controllers/PatientOperationsController.php:71
  * @route '/visits/{encounter}'
  */
         showVisitForm.get = (args: { encounter: number | { id: number } } | [encounter: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -165,7 +165,7 @@ showVisit.head = (args: { encounter: number | { id: number } } | [encounter: num
         })
             /**
 * @see \App\Http\Controllers\PatientOperationsController::showVisit
- * @see app/Http/Controllers/PatientOperationsController.php:63
+ * @see app/Http/Controllers/PatientOperationsController.php:71
  * @route '/visits/{encounter}'
  */
         showVisitForm.head = (args: { encounter: number | { id: number } } | [encounter: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -180,8 +180,435 @@ showVisit.head = (args: { encounter: number | { id: number } } | [encounter: num
     
     showVisit.form = showVisitForm
 /**
+* @see \App\Http\Controllers\PatientOperationsController::updateVisit
+ * @see app/Http/Controllers/PatientOperationsController.php:161
+ * @route '/visits/{encounter}'
+ */
+export const updateVisit = (args: { encounter: number | { id: number } } | [encounter: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
+    url: updateVisit.url(args, options),
+    method: 'patch',
+})
+
+updateVisit.definition = {
+    methods: ["patch"],
+    url: '/visits/{encounter}',
+} satisfies RouteDefinition<["patch"]>
+
+/**
+* @see \App\Http\Controllers\PatientOperationsController::updateVisit
+ * @see app/Http/Controllers/PatientOperationsController.php:161
+ * @route '/visits/{encounter}'
+ */
+updateVisit.url = (args: { encounter: number | { id: number } } | [encounter: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
+    if (typeof args === 'string' || typeof args === 'number') {
+        args = { encounter: args }
+    }
+
+            if (typeof args === 'object' && !Array.isArray(args) && 'id' in args) {
+            args = { encounter: args.id }
+        }
+    
+    if (Array.isArray(args)) {
+        args = {
+                    encounter: args[0],
+                }
+    }
+
+    args = applyUrlDefaults(args)
+
+    const parsedArgs = {
+                        encounter: typeof args.encounter === 'object'
+                ? args.encounter.id
+                : args.encounter,
+                }
+
+    return updateVisit.definition.url
+            .replace('{encounter}', parsedArgs.encounter.toString())
+            .replace(/\/+$/, '') + queryParams(options)
+}
+
+/**
+* @see \App\Http\Controllers\PatientOperationsController::updateVisit
+ * @see app/Http/Controllers/PatientOperationsController.php:161
+ * @route '/visits/{encounter}'
+ */
+updateVisit.patch = (args: { encounter: number | { id: number } } | [encounter: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
+    url: updateVisit.url(args, options),
+    method: 'patch',
+})
+
+    /**
+* @see \App\Http\Controllers\PatientOperationsController::updateVisit
+ * @see app/Http/Controllers/PatientOperationsController.php:161
+ * @route '/visits/{encounter}'
+ */
+    const updateVisitForm = (args: { encounter: number | { id: number } } | [encounter: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+        action: updateVisit.url(args, {
+                    [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                        _method: 'PATCH',
+                        ...(options?.query ?? options?.mergeQuery ?? {}),
+                    }
+                }),
+        method: 'post',
+    })
+
+            /**
+* @see \App\Http\Controllers\PatientOperationsController::updateVisit
+ * @see app/Http/Controllers/PatientOperationsController.php:161
+ * @route '/visits/{encounter}'
+ */
+        updateVisitForm.patch = (args: { encounter: number | { id: number } } | [encounter: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+            action: updateVisit.url(args, {
+                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                            _method: 'PATCH',
+                            ...(options?.query ?? options?.mergeQuery ?? {}),
+                        }
+                    }),
+            method: 'post',
+        })
+    
+    updateVisit.form = updateVisitForm
+/**
+* @see \App\Http\Controllers\PatientOperationsController::icd11Search
+ * @see app/Http/Controllers/PatientOperationsController.php:290
+ * @route '/visits/icd11/search'
+ */
+export const icd11Search = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: icd11Search.url(options),
+    method: 'get',
+})
+
+icd11Search.definition = {
+    methods: ["get","head"],
+    url: '/visits/icd11/search',
+} satisfies RouteDefinition<["get","head"]>
+
+/**
+* @see \App\Http\Controllers\PatientOperationsController::icd11Search
+ * @see app/Http/Controllers/PatientOperationsController.php:290
+ * @route '/visits/icd11/search'
+ */
+icd11Search.url = (options?: RouteQueryOptions) => {
+    return icd11Search.definition.url + queryParams(options)
+}
+
+/**
+* @see \App\Http\Controllers\PatientOperationsController::icd11Search
+ * @see app/Http/Controllers/PatientOperationsController.php:290
+ * @route '/visits/icd11/search'
+ */
+icd11Search.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: icd11Search.url(options),
+    method: 'get',
+})
+/**
+* @see \App\Http\Controllers\PatientOperationsController::icd11Search
+ * @see app/Http/Controllers/PatientOperationsController.php:290
+ * @route '/visits/icd11/search'
+ */
+icd11Search.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
+    url: icd11Search.url(options),
+    method: 'head',
+})
+
+    /**
+* @see \App\Http\Controllers\PatientOperationsController::icd11Search
+ * @see app/Http/Controllers/PatientOperationsController.php:290
+ * @route '/visits/icd11/search'
+ */
+    const icd11SearchForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+        action: icd11Search.url(options),
+        method: 'get',
+    })
+
+            /**
+* @see \App\Http\Controllers\PatientOperationsController::icd11Search
+ * @see app/Http/Controllers/PatientOperationsController.php:290
+ * @route '/visits/icd11/search'
+ */
+        icd11SearchForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+            action: icd11Search.url(options),
+            method: 'get',
+        })
+            /**
+* @see \App\Http\Controllers\PatientOperationsController::icd11Search
+ * @see app/Http/Controllers/PatientOperationsController.php:290
+ * @route '/visits/icd11/search'
+ */
+        icd11SearchForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+            action: icd11Search.url({
+                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                            _method: 'HEAD',
+                            ...(options?.query ?? options?.mergeQuery ?? {}),
+                        }
+                    }),
+            method: 'get',
+        })
+    
+    icd11Search.form = icd11SearchForm
+/**
+* @see \App\Http\Controllers\PatientOperationsController::uploadDocument
+ * @see app/Http/Controllers/PatientOperationsController.php:215
+ * @route '/visits/{encounter}/documents'
+ */
+export const uploadDocument = (args: { encounter: number | { id: number } } | [encounter: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+    url: uploadDocument.url(args, options),
+    method: 'post',
+})
+
+uploadDocument.definition = {
+    methods: ["post"],
+    url: '/visits/{encounter}/documents',
+} satisfies RouteDefinition<["post"]>
+
+/**
+* @see \App\Http\Controllers\PatientOperationsController::uploadDocument
+ * @see app/Http/Controllers/PatientOperationsController.php:215
+ * @route '/visits/{encounter}/documents'
+ */
+uploadDocument.url = (args: { encounter: number | { id: number } } | [encounter: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
+    if (typeof args === 'string' || typeof args === 'number') {
+        args = { encounter: args }
+    }
+
+            if (typeof args === 'object' && !Array.isArray(args) && 'id' in args) {
+            args = { encounter: args.id }
+        }
+    
+    if (Array.isArray(args)) {
+        args = {
+                    encounter: args[0],
+                }
+    }
+
+    args = applyUrlDefaults(args)
+
+    const parsedArgs = {
+                        encounter: typeof args.encounter === 'object'
+                ? args.encounter.id
+                : args.encounter,
+                }
+
+    return uploadDocument.definition.url
+            .replace('{encounter}', parsedArgs.encounter.toString())
+            .replace(/\/+$/, '') + queryParams(options)
+}
+
+/**
+* @see \App\Http\Controllers\PatientOperationsController::uploadDocument
+ * @see app/Http/Controllers/PatientOperationsController.php:215
+ * @route '/visits/{encounter}/documents'
+ */
+uploadDocument.post = (args: { encounter: number | { id: number } } | [encounter: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+    url: uploadDocument.url(args, options),
+    method: 'post',
+})
+
+    /**
+* @see \App\Http\Controllers\PatientOperationsController::uploadDocument
+ * @see app/Http/Controllers/PatientOperationsController.php:215
+ * @route '/visits/{encounter}/documents'
+ */
+    const uploadDocumentForm = (args: { encounter: number | { id: number } } | [encounter: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+        action: uploadDocument.url(args, options),
+        method: 'post',
+    })
+
+            /**
+* @see \App\Http\Controllers\PatientOperationsController::uploadDocument
+ * @see app/Http/Controllers/PatientOperationsController.php:215
+ * @route '/visits/{encounter}/documents'
+ */
+        uploadDocumentForm.post = (args: { encounter: number | { id: number } } | [encounter: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+            action: uploadDocument.url(args, options),
+            method: 'post',
+        })
+    
+    uploadDocument.form = uploadDocumentForm
+/**
+* @see \App\Http\Controllers\PatientOperationsController::downloadDocument
+ * @see app/Http/Controllers/PatientOperationsController.php:269
+ * @route '/visits/{encounter}/documents/{document}'
+ */
+export const downloadDocument = (args: { encounter: number | { id: number }, document: string | number } | [encounter: number | { id: number }, document: string | number ], options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: downloadDocument.url(args, options),
+    method: 'get',
+})
+
+downloadDocument.definition = {
+    methods: ["get","head"],
+    url: '/visits/{encounter}/documents/{document}',
+} satisfies RouteDefinition<["get","head"]>
+
+/**
+* @see \App\Http\Controllers\PatientOperationsController::downloadDocument
+ * @see app/Http/Controllers/PatientOperationsController.php:269
+ * @route '/visits/{encounter}/documents/{document}'
+ */
+downloadDocument.url = (args: { encounter: number | { id: number }, document: string | number } | [encounter: number | { id: number }, document: string | number ], options?: RouteQueryOptions) => {
+    if (Array.isArray(args)) {
+        args = {
+                    encounter: args[0],
+                    document: args[1],
+                }
+    }
+
+    args = applyUrlDefaults(args)
+
+    const parsedArgs = {
+                        encounter: typeof args.encounter === 'object'
+                ? args.encounter.id
+                : args.encounter,
+                                document: args.document,
+                }
+
+    return downloadDocument.definition.url
+            .replace('{encounter}', parsedArgs.encounter.toString())
+            .replace('{document}', parsedArgs.document.toString())
+            .replace(/\/+$/, '') + queryParams(options)
+}
+
+/**
+* @see \App\Http\Controllers\PatientOperationsController::downloadDocument
+ * @see app/Http/Controllers/PatientOperationsController.php:269
+ * @route '/visits/{encounter}/documents/{document}'
+ */
+downloadDocument.get = (args: { encounter: number | { id: number }, document: string | number } | [encounter: number | { id: number }, document: string | number ], options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: downloadDocument.url(args, options),
+    method: 'get',
+})
+/**
+* @see \App\Http\Controllers\PatientOperationsController::downloadDocument
+ * @see app/Http/Controllers/PatientOperationsController.php:269
+ * @route '/visits/{encounter}/documents/{document}'
+ */
+downloadDocument.head = (args: { encounter: number | { id: number }, document: string | number } | [encounter: number | { id: number }, document: string | number ], options?: RouteQueryOptions): RouteDefinition<'head'> => ({
+    url: downloadDocument.url(args, options),
+    method: 'head',
+})
+
+    /**
+* @see \App\Http\Controllers\PatientOperationsController::downloadDocument
+ * @see app/Http/Controllers/PatientOperationsController.php:269
+ * @route '/visits/{encounter}/documents/{document}'
+ */
+    const downloadDocumentForm = (args: { encounter: number | { id: number }, document: string | number } | [encounter: number | { id: number }, document: string | number ], options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+        action: downloadDocument.url(args, options),
+        method: 'get',
+    })
+
+            /**
+* @see \App\Http\Controllers\PatientOperationsController::downloadDocument
+ * @see app/Http/Controllers/PatientOperationsController.php:269
+ * @route '/visits/{encounter}/documents/{document}'
+ */
+        downloadDocumentForm.get = (args: { encounter: number | { id: number }, document: string | number } | [encounter: number | { id: number }, document: string | number ], options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+            action: downloadDocument.url(args, options),
+            method: 'get',
+        })
+            /**
+* @see \App\Http\Controllers\PatientOperationsController::downloadDocument
+ * @see app/Http/Controllers/PatientOperationsController.php:269
+ * @route '/visits/{encounter}/documents/{document}'
+ */
+        downloadDocumentForm.head = (args: { encounter: number | { id: number }, document: string | number } | [encounter: number | { id: number }, document: string | number ], options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+            action: downloadDocument.url(args, {
+                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                            _method: 'HEAD',
+                            ...(options?.query ?? options?.mergeQuery ?? {}),
+                        }
+                    }),
+            method: 'get',
+        })
+    
+    downloadDocument.form = downloadDocumentForm
+/**
+* @see \App\Http\Controllers\PatientOperationsController::deleteDocument
+ * @see app/Http/Controllers/PatientOperationsController.php:247
+ * @route '/visits/{encounter}/documents/{document}'
+ */
+export const deleteDocument = (args: { encounter: number | { id: number }, document: string | number } | [encounter: number | { id: number }, document: string | number ], options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
+    url: deleteDocument.url(args, options),
+    method: 'delete',
+})
+
+deleteDocument.definition = {
+    methods: ["delete"],
+    url: '/visits/{encounter}/documents/{document}',
+} satisfies RouteDefinition<["delete"]>
+
+/**
+* @see \App\Http\Controllers\PatientOperationsController::deleteDocument
+ * @see app/Http/Controllers/PatientOperationsController.php:247
+ * @route '/visits/{encounter}/documents/{document}'
+ */
+deleteDocument.url = (args: { encounter: number | { id: number }, document: string | number } | [encounter: number | { id: number }, document: string | number ], options?: RouteQueryOptions) => {
+    if (Array.isArray(args)) {
+        args = {
+                    encounter: args[0],
+                    document: args[1],
+                }
+    }
+
+    args = applyUrlDefaults(args)
+
+    const parsedArgs = {
+                        encounter: typeof args.encounter === 'object'
+                ? args.encounter.id
+                : args.encounter,
+                                document: args.document,
+                }
+
+    return deleteDocument.definition.url
+            .replace('{encounter}', parsedArgs.encounter.toString())
+            .replace('{document}', parsedArgs.document.toString())
+            .replace(/\/+$/, '') + queryParams(options)
+}
+
+/**
+* @see \App\Http\Controllers\PatientOperationsController::deleteDocument
+ * @see app/Http/Controllers/PatientOperationsController.php:247
+ * @route '/visits/{encounter}/documents/{document}'
+ */
+deleteDocument.delete = (args: { encounter: number | { id: number }, document: string | number } | [encounter: number | { id: number }, document: string | number ], options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
+    url: deleteDocument.url(args, options),
+    method: 'delete',
+})
+
+    /**
+* @see \App\Http\Controllers\PatientOperationsController::deleteDocument
+ * @see app/Http/Controllers/PatientOperationsController.php:247
+ * @route '/visits/{encounter}/documents/{document}'
+ */
+    const deleteDocumentForm = (args: { encounter: number | { id: number }, document: string | number } | [encounter: number | { id: number }, document: string | number ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+        action: deleteDocument.url(args, {
+                    [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                        _method: 'DELETE',
+                        ...(options?.query ?? options?.mergeQuery ?? {}),
+                    }
+                }),
+        method: 'post',
+    })
+
+            /**
+* @see \App\Http\Controllers\PatientOperationsController::deleteDocument
+ * @see app/Http/Controllers/PatientOperationsController.php:247
+ * @route '/visits/{encounter}/documents/{document}'
+ */
+        deleteDocumentForm.delete = (args: { encounter: number | { id: number }, document: string | number } | [encounter: number | { id: number }, document: string | number ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+            action: deleteDocument.url(args, {
+                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                            _method: 'DELETE',
+                            ...(options?.query ?? options?.mergeQuery ?? {}),
+                        }
+                    }),
+            method: 'post',
+        })
+    
+    deleteDocument.form = deleteDocumentForm
+/**
 * @see \App\Http\Controllers\PatientOperationsController::refreshVisitBenefits
- * @see app/Http/Controllers/PatientOperationsController.php:120
+ * @see app/Http/Controllers/PatientOperationsController.php:383
  * @route '/visits/{encounter}/benefits/refresh'
  */
 export const refreshVisitBenefits = (args: { encounter: number | { id: number } } | [encounter: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -196,7 +623,7 @@ refreshVisitBenefits.definition = {
 
 /**
 * @see \App\Http\Controllers\PatientOperationsController::refreshVisitBenefits
- * @see app/Http/Controllers/PatientOperationsController.php:120
+ * @see app/Http/Controllers/PatientOperationsController.php:383
  * @route '/visits/{encounter}/benefits/refresh'
  */
 refreshVisitBenefits.url = (args: { encounter: number | { id: number } } | [encounter: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -229,7 +656,7 @@ refreshVisitBenefits.url = (args: { encounter: number | { id: number } } | [enco
 
 /**
 * @see \App\Http\Controllers\PatientOperationsController::refreshVisitBenefits
- * @see app/Http/Controllers/PatientOperationsController.php:120
+ * @see app/Http/Controllers/PatientOperationsController.php:383
  * @route '/visits/{encounter}/benefits/refresh'
  */
 refreshVisitBenefits.post = (args: { encounter: number | { id: number } } | [encounter: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -239,7 +666,7 @@ refreshVisitBenefits.post = (args: { encounter: number | { id: number } } | [enc
 
     /**
 * @see \App\Http\Controllers\PatientOperationsController::refreshVisitBenefits
- * @see app/Http/Controllers/PatientOperationsController.php:120
+ * @see app/Http/Controllers/PatientOperationsController.php:383
  * @route '/visits/{encounter}/benefits/refresh'
  */
     const refreshVisitBenefitsForm = (args: { encounter: number | { id: number } } | [encounter: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -249,7 +676,7 @@ refreshVisitBenefits.post = (args: { encounter: number | { id: number } } | [enc
 
             /**
 * @see \App\Http\Controllers\PatientOperationsController::refreshVisitBenefits
- * @see app/Http/Controllers/PatientOperationsController.php:120
+ * @see app/Http/Controllers/PatientOperationsController.php:383
  * @route '/visits/{encounter}/benefits/refresh'
  */
         refreshVisitBenefitsForm.post = (args: { encounter: number | { id: number } } | [encounter: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -259,8 +686,87 @@ refreshVisitBenefits.post = (args: { encounter: number | { id: number } } | [enc
     
     refreshVisitBenefits.form = refreshVisitBenefitsForm
 /**
+* @see \App\Http\Controllers\PatientOperationsController::issueInvoice
+ * @see app/Http/Controllers/PatientOperationsController.php:455
+ * @route '/visits/{encounter}/invoice/issue'
+ */
+export const issueInvoice = (args: { encounter: number | { id: number } } | [encounter: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+    url: issueInvoice.url(args, options),
+    method: 'post',
+})
+
+issueInvoice.definition = {
+    methods: ["post"],
+    url: '/visits/{encounter}/invoice/issue',
+} satisfies RouteDefinition<["post"]>
+
+/**
+* @see \App\Http\Controllers\PatientOperationsController::issueInvoice
+ * @see app/Http/Controllers/PatientOperationsController.php:455
+ * @route '/visits/{encounter}/invoice/issue'
+ */
+issueInvoice.url = (args: { encounter: number | { id: number } } | [encounter: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
+    if (typeof args === 'string' || typeof args === 'number') {
+        args = { encounter: args }
+    }
+
+            if (typeof args === 'object' && !Array.isArray(args) && 'id' in args) {
+            args = { encounter: args.id }
+        }
+    
+    if (Array.isArray(args)) {
+        args = {
+                    encounter: args[0],
+                }
+    }
+
+    args = applyUrlDefaults(args)
+
+    const parsedArgs = {
+                        encounter: typeof args.encounter === 'object'
+                ? args.encounter.id
+                : args.encounter,
+                }
+
+    return issueInvoice.definition.url
+            .replace('{encounter}', parsedArgs.encounter.toString())
+            .replace(/\/+$/, '') + queryParams(options)
+}
+
+/**
+* @see \App\Http\Controllers\PatientOperationsController::issueInvoice
+ * @see app/Http/Controllers/PatientOperationsController.php:455
+ * @route '/visits/{encounter}/invoice/issue'
+ */
+issueInvoice.post = (args: { encounter: number | { id: number } } | [encounter: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+    url: issueInvoice.url(args, options),
+    method: 'post',
+})
+
+    /**
+* @see \App\Http\Controllers\PatientOperationsController::issueInvoice
+ * @see app/Http/Controllers/PatientOperationsController.php:455
+ * @route '/visits/{encounter}/invoice/issue'
+ */
+    const issueInvoiceForm = (args: { encounter: number | { id: number } } | [encounter: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+        action: issueInvoice.url(args, options),
+        method: 'post',
+    })
+
+            /**
+* @see \App\Http\Controllers\PatientOperationsController::issueInvoice
+ * @see app/Http/Controllers/PatientOperationsController.php:455
+ * @route '/visits/{encounter}/invoice/issue'
+ */
+        issueInvoiceForm.post = (args: { encounter: number | { id: number } } | [encounter: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+            action: issueInvoice.url(args, options),
+            method: 'post',
+        })
+    
+    issueInvoice.form = issueInvoiceForm
+/**
 * @see \App\Http\Controllers\PatientOperationsController::downloadInvoice
- * @see app/Http/Controllers/PatientOperationsController.php:151
+ * @see app/Http/Controllers/PatientOperationsController.php:514
  * @route '/visits/{encounter}/invoice.pdf'
  */
 export const downloadInvoice = (args: { encounter: number | { id: number } } | [encounter: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -275,7 +781,7 @@ downloadInvoice.definition = {
 
 /**
 * @see \App\Http\Controllers\PatientOperationsController::downloadInvoice
- * @see app/Http/Controllers/PatientOperationsController.php:151
+ * @see app/Http/Controllers/PatientOperationsController.php:514
  * @route '/visits/{encounter}/invoice.pdf'
  */
 downloadInvoice.url = (args: { encounter: number | { id: number } } | [encounter: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -308,7 +814,7 @@ downloadInvoice.url = (args: { encounter: number | { id: number } } | [encounter
 
 /**
 * @see \App\Http\Controllers\PatientOperationsController::downloadInvoice
- * @see app/Http/Controllers/PatientOperationsController.php:151
+ * @see app/Http/Controllers/PatientOperationsController.php:514
  * @route '/visits/{encounter}/invoice.pdf'
  */
 downloadInvoice.get = (args: { encounter: number | { id: number } } | [encounter: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -317,7 +823,7 @@ downloadInvoice.get = (args: { encounter: number | { id: number } } | [encounter
 })
 /**
 * @see \App\Http\Controllers\PatientOperationsController::downloadInvoice
- * @see app/Http/Controllers/PatientOperationsController.php:151
+ * @see app/Http/Controllers/PatientOperationsController.php:514
  * @route '/visits/{encounter}/invoice.pdf'
  */
 downloadInvoice.head = (args: { encounter: number | { id: number } } | [encounter: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -327,7 +833,7 @@ downloadInvoice.head = (args: { encounter: number | { id: number } } | [encounte
 
     /**
 * @see \App\Http\Controllers\PatientOperationsController::downloadInvoice
- * @see app/Http/Controllers/PatientOperationsController.php:151
+ * @see app/Http/Controllers/PatientOperationsController.php:514
  * @route '/visits/{encounter}/invoice.pdf'
  */
     const downloadInvoiceForm = (args: { encounter: number | { id: number } } | [encounter: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -337,7 +843,7 @@ downloadInvoice.head = (args: { encounter: number | { id: number } } | [encounte
 
             /**
 * @see \App\Http\Controllers\PatientOperationsController::downloadInvoice
- * @see app/Http/Controllers/PatientOperationsController.php:151
+ * @see app/Http/Controllers/PatientOperationsController.php:514
  * @route '/visits/{encounter}/invoice.pdf'
  */
         downloadInvoiceForm.get = (args: { encounter: number | { id: number } } | [encounter: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -346,7 +852,7 @@ downloadInvoice.head = (args: { encounter: number | { id: number } } | [encounte
         })
             /**
 * @see \App\Http\Controllers\PatientOperationsController::downloadInvoice
- * @see app/Http/Controllers/PatientOperationsController.php:151
+ * @see app/Http/Controllers/PatientOperationsController.php:514
  * @route '/visits/{encounter}/invoice.pdf'
  */
         downloadInvoiceForm.head = (args: { encounter: number | { id: number } } | [encounter: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -362,7 +868,7 @@ downloadInvoice.head = (args: { encounter: number | { id: number } } | [encounte
     downloadInvoice.form = downloadInvoiceForm
 /**
 * @see \App\Http\Controllers\PatientOperationsController::completeVisit
- * @see app/Http/Controllers/PatientOperationsController.php:258
+ * @see app/Http/Controllers/PatientOperationsController.php:1070
  * @route '/visits/{encounter}/complete'
  */
 export const completeVisit = (args: { encounter: number | { id: number } } | [encounter: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -377,7 +883,7 @@ completeVisit.definition = {
 
 /**
 * @see \App\Http\Controllers\PatientOperationsController::completeVisit
- * @see app/Http/Controllers/PatientOperationsController.php:258
+ * @see app/Http/Controllers/PatientOperationsController.php:1070
  * @route '/visits/{encounter}/complete'
  */
 completeVisit.url = (args: { encounter: number | { id: number } } | [encounter: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -410,7 +916,7 @@ completeVisit.url = (args: { encounter: number | { id: number } } | [encounter: 
 
 /**
 * @see \App\Http\Controllers\PatientOperationsController::completeVisit
- * @see app/Http/Controllers/PatientOperationsController.php:258
+ * @see app/Http/Controllers/PatientOperationsController.php:1070
  * @route '/visits/{encounter}/complete'
  */
 completeVisit.post = (args: { encounter: number | { id: number } } | [encounter: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -420,7 +926,7 @@ completeVisit.post = (args: { encounter: number | { id: number } } | [encounter:
 
     /**
 * @see \App\Http\Controllers\PatientOperationsController::completeVisit
- * @see app/Http/Controllers/PatientOperationsController.php:258
+ * @see app/Http/Controllers/PatientOperationsController.php:1070
  * @route '/visits/{encounter}/complete'
  */
     const completeVisitForm = (args: { encounter: number | { id: number } } | [encounter: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -430,7 +936,7 @@ completeVisit.post = (args: { encounter: number | { id: number } } | [encounter:
 
             /**
 * @see \App\Http\Controllers\PatientOperationsController::completeVisit
- * @see app/Http/Controllers/PatientOperationsController.php:258
+ * @see app/Http/Controllers/PatientOperationsController.php:1070
  * @route '/visits/{encounter}/complete'
  */
         completeVisitForm.post = (args: { encounter: number | { id: number } } | [encounter: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -441,7 +947,7 @@ completeVisit.post = (args: { encounter: number | { id: number } } | [encounter:
     completeVisit.form = completeVisitForm
 /**
 * @see \App\Http\Controllers\PatientOperationsController::preauthorizations
- * @see app/Http/Controllers/PatientOperationsController.php:267
+ * @see app/Http/Controllers/PatientOperationsController.php:1086
  * @route '/preauthorizations'
  */
 export const preauthorizations = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -456,7 +962,7 @@ preauthorizations.definition = {
 
 /**
 * @see \App\Http\Controllers\PatientOperationsController::preauthorizations
- * @see app/Http/Controllers/PatientOperationsController.php:267
+ * @see app/Http/Controllers/PatientOperationsController.php:1086
  * @route '/preauthorizations'
  */
 preauthorizations.url = (options?: RouteQueryOptions) => {
@@ -465,7 +971,7 @@ preauthorizations.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\PatientOperationsController::preauthorizations
- * @see app/Http/Controllers/PatientOperationsController.php:267
+ * @see app/Http/Controllers/PatientOperationsController.php:1086
  * @route '/preauthorizations'
  */
 preauthorizations.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -474,7 +980,7 @@ preauthorizations.get = (options?: RouteQueryOptions): RouteDefinition<'get'> =>
 })
 /**
 * @see \App\Http\Controllers\PatientOperationsController::preauthorizations
- * @see app/Http/Controllers/PatientOperationsController.php:267
+ * @see app/Http/Controllers/PatientOperationsController.php:1086
  * @route '/preauthorizations'
  */
 preauthorizations.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -484,7 +990,7 @@ preauthorizations.head = (options?: RouteQueryOptions): RouteDefinition<'head'> 
 
     /**
 * @see \App\Http\Controllers\PatientOperationsController::preauthorizations
- * @see app/Http/Controllers/PatientOperationsController.php:267
+ * @see app/Http/Controllers/PatientOperationsController.php:1086
  * @route '/preauthorizations'
  */
     const preauthorizationsForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -494,7 +1000,7 @@ preauthorizations.head = (options?: RouteQueryOptions): RouteDefinition<'head'> 
 
             /**
 * @see \App\Http\Controllers\PatientOperationsController::preauthorizations
- * @see app/Http/Controllers/PatientOperationsController.php:267
+ * @see app/Http/Controllers/PatientOperationsController.php:1086
  * @route '/preauthorizations'
  */
         preauthorizationsForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -503,7 +1009,7 @@ preauthorizations.head = (options?: RouteQueryOptions): RouteDefinition<'head'> 
         })
             /**
 * @see \App\Http\Controllers\PatientOperationsController::preauthorizations
- * @see app/Http/Controllers/PatientOperationsController.php:267
+ * @see app/Http/Controllers/PatientOperationsController.php:1086
  * @route '/preauthorizations'
  */
         preauthorizationsForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -517,6 +1023,6 @@ preauthorizations.head = (options?: RouteQueryOptions): RouteDefinition<'head'> 
         })
     
     preauthorizations.form = preauthorizationsForm
-const PatientOperationsController = { visits, showVisit, refreshVisitBenefits, downloadInvoice, completeVisit, preauthorizations }
+const PatientOperationsController = { visits, showVisit, updateVisit, icd11Search, uploadDocument, downloadDocument, deleteDocument, refreshVisitBenefits, issueInvoice, downloadInvoice, completeVisit, preauthorizations }
 
 export default PatientOperationsController
