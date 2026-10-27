@@ -1,7 +1,7 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../../../wayfinder'
 /**
 * @see \App\Http\Controllers\PatientOperationsController::store
- * @see app/Http/Controllers/PatientOperationsController.php:215
+ * @see app/Http/Controllers/PatientOperationsController.php:217
  * @route '/visits/{encounter}/documents'
  */
 export const store = (args: { encounter: number | { id: number } } | [encounter: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -16,7 +16,7 @@ store.definition = {
 
 /**
 * @see \App\Http\Controllers\PatientOperationsController::store
- * @see app/Http/Controllers/PatientOperationsController.php:215
+ * @see app/Http/Controllers/PatientOperationsController.php:217
  * @route '/visits/{encounter}/documents'
  */
 store.url = (args: { encounter: number | { id: number } } | [encounter: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -49,7 +49,7 @@ store.url = (args: { encounter: number | { id: number } } | [encounter: number |
 
 /**
 * @see \App\Http\Controllers\PatientOperationsController::store
- * @see app/Http/Controllers/PatientOperationsController.php:215
+ * @see app/Http/Controllers/PatientOperationsController.php:217
  * @route '/visits/{encounter}/documents'
  */
 store.post = (args: { encounter: number | { id: number } } | [encounter: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -59,7 +59,7 @@ store.post = (args: { encounter: number | { id: number } } | [encounter: number 
 
     /**
 * @see \App\Http\Controllers\PatientOperationsController::store
- * @see app/Http/Controllers/PatientOperationsController.php:215
+ * @see app/Http/Controllers/PatientOperationsController.php:217
  * @route '/visits/{encounter}/documents'
  */
     const storeForm = (args: { encounter: number | { id: number } } | [encounter: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -69,7 +69,7 @@ store.post = (args: { encounter: number | { id: number } } | [encounter: number 
 
             /**
 * @see \App\Http\Controllers\PatientOperationsController::store
- * @see app/Http/Controllers/PatientOperationsController.php:215
+ * @see app/Http/Controllers/PatientOperationsController.php:217
  * @route '/visits/{encounter}/documents'
  */
         storeForm.post = (args: { encounter: number | { id: number } } | [encounter: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -80,7 +80,7 @@ store.post = (args: { encounter: number | { id: number } } | [encounter: number 
     store.form = storeForm
 /**
 * @see \App\Http\Controllers\PatientOperationsController::download
- * @see app/Http/Controllers/PatientOperationsController.php:269
+ * @see app/Http/Controllers/PatientOperationsController.php:271
  * @route '/visits/{encounter}/documents/{document}'
  */
 export const download = (args: { encounter: number | { id: number }, document: string | number } | [encounter: number | { id: number }, document: string | number ], options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -95,7 +95,7 @@ download.definition = {
 
 /**
 * @see \App\Http\Controllers\PatientOperationsController::download
- * @see app/Http/Controllers/PatientOperationsController.php:269
+ * @see app/Http/Controllers/PatientOperationsController.php:271
  * @route '/visits/{encounter}/documents/{document}'
  */
 download.url = (args: { encounter: number | { id: number }, document: string | number } | [encounter: number | { id: number }, document: string | number ], options?: RouteQueryOptions) => {
@@ -123,7 +123,7 @@ download.url = (args: { encounter: number | { id: number }, document: string | n
 
 /**
 * @see \App\Http\Controllers\PatientOperationsController::download
- * @see app/Http/Controllers/PatientOperationsController.php:269
+ * @see app/Http/Controllers/PatientOperationsController.php:271
  * @route '/visits/{encounter}/documents/{document}'
  */
 download.get = (args: { encounter: number | { id: number }, document: string | number } | [encounter: number | { id: number }, document: string | number ], options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -132,7 +132,7 @@ download.get = (args: { encounter: number | { id: number }, document: string | n
 })
 /**
 * @see \App\Http\Controllers\PatientOperationsController::download
- * @see app/Http/Controllers/PatientOperationsController.php:269
+ * @see app/Http/Controllers/PatientOperationsController.php:271
  * @route '/visits/{encounter}/documents/{document}'
  */
 download.head = (args: { encounter: number | { id: number }, document: string | number } | [encounter: number | { id: number }, document: string | number ], options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -142,7 +142,7 @@ download.head = (args: { encounter: number | { id: number }, document: string | 
 
     /**
 * @see \App\Http\Controllers\PatientOperationsController::download
- * @see app/Http/Controllers/PatientOperationsController.php:269
+ * @see app/Http/Controllers/PatientOperationsController.php:271
  * @route '/visits/{encounter}/documents/{document}'
  */
     const downloadForm = (args: { encounter: number | { id: number }, document: string | number } | [encounter: number | { id: number }, document: string | number ], options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -152,7 +152,7 @@ download.head = (args: { encounter: number | { id: number }, document: string | 
 
             /**
 * @see \App\Http\Controllers\PatientOperationsController::download
- * @see app/Http/Controllers/PatientOperationsController.php:269
+ * @see app/Http/Controllers/PatientOperationsController.php:271
  * @route '/visits/{encounter}/documents/{document}'
  */
         downloadForm.get = (args: { encounter: number | { id: number }, document: string | number } | [encounter: number | { id: number }, document: string | number ], options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -161,7 +161,7 @@ download.head = (args: { encounter: number | { id: number }, document: string | 
         })
             /**
 * @see \App\Http\Controllers\PatientOperationsController::download
- * @see app/Http/Controllers/PatientOperationsController.php:269
+ * @see app/Http/Controllers/PatientOperationsController.php:271
  * @route '/visits/{encounter}/documents/{document}'
  */
         downloadForm.head = (args: { encounter: number | { id: number }, document: string | number } | [encounter: number | { id: number }, document: string | number ], options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -177,7 +177,7 @@ download.head = (args: { encounter: number | { id: number }, document: string | 
     download.form = downloadForm
 /**
 * @see \App\Http\Controllers\PatientOperationsController::deleteMethod
- * @see app/Http/Controllers/PatientOperationsController.php:247
+ * @see app/Http/Controllers/PatientOperationsController.php:249
  * @route '/visits/{encounter}/documents/{document}'
  */
 export const deleteMethod = (args: { encounter: number | { id: number }, document: string | number } | [encounter: number | { id: number }, document: string | number ], options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -192,7 +192,7 @@ deleteMethod.definition = {
 
 /**
 * @see \App\Http\Controllers\PatientOperationsController::deleteMethod
- * @see app/Http/Controllers/PatientOperationsController.php:247
+ * @see app/Http/Controllers/PatientOperationsController.php:249
  * @route '/visits/{encounter}/documents/{document}'
  */
 deleteMethod.url = (args: { encounter: number | { id: number }, document: string | number } | [encounter: number | { id: number }, document: string | number ], options?: RouteQueryOptions) => {
@@ -220,7 +220,7 @@ deleteMethod.url = (args: { encounter: number | { id: number }, document: string
 
 /**
 * @see \App\Http\Controllers\PatientOperationsController::deleteMethod
- * @see app/Http/Controllers/PatientOperationsController.php:247
+ * @see app/Http/Controllers/PatientOperationsController.php:249
  * @route '/visits/{encounter}/documents/{document}'
  */
 deleteMethod.delete = (args: { encounter: number | { id: number }, document: string | number } | [encounter: number | { id: number }, document: string | number ], options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -230,7 +230,7 @@ deleteMethod.delete = (args: { encounter: number | { id: number }, document: str
 
     /**
 * @see \App\Http\Controllers\PatientOperationsController::deleteMethod
- * @see app/Http/Controllers/PatientOperationsController.php:247
+ * @see app/Http/Controllers/PatientOperationsController.php:249
  * @route '/visits/{encounter}/documents/{document}'
  */
     const deleteMethodForm = (args: { encounter: number | { id: number }, document: string | number } | [encounter: number | { id: number }, document: string | number ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -245,7 +245,7 @@ deleteMethod.delete = (args: { encounter: number | { id: number }, document: str
 
             /**
 * @see \App\Http\Controllers\PatientOperationsController::deleteMethod
- * @see app/Http/Controllers/PatientOperationsController.php:247
+ * @see app/Http/Controllers/PatientOperationsController.php:249
  * @route '/visits/{encounter}/documents/{document}'
  */
         deleteMethodForm.delete = (args: { encounter: number | { id: number }, document: string | number } | [encounter: number | { id: number }, document: string | number ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({

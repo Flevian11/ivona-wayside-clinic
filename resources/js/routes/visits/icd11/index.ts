@@ -1,7 +1,7 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition } from './../../../wayfinder'
 /**
 * @see \App\Http\Controllers\PatientOperationsController::search
- * @see app/Http/Controllers/PatientOperationsController.php:290
+ * @see app/Http/Controllers/PatientOperationsController.php:292
  * @route '/visits/icd11/search'
  */
 export const search = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -16,7 +16,7 @@ search.definition = {
 
 /**
 * @see \App\Http\Controllers\PatientOperationsController::search
- * @see app/Http/Controllers/PatientOperationsController.php:290
+ * @see app/Http/Controllers/PatientOperationsController.php:292
  * @route '/visits/icd11/search'
  */
 search.url = (options?: RouteQueryOptions) => {
@@ -25,7 +25,7 @@ search.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\PatientOperationsController::search
- * @see app/Http/Controllers/PatientOperationsController.php:290
+ * @see app/Http/Controllers/PatientOperationsController.php:292
  * @route '/visits/icd11/search'
  */
 search.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -34,7 +34,7 @@ search.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 })
 /**
 * @see \App\Http\Controllers\PatientOperationsController::search
- * @see app/Http/Controllers/PatientOperationsController.php:290
+ * @see app/Http/Controllers/PatientOperationsController.php:292
  * @route '/visits/icd11/search'
  */
 search.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -44,7 +44,7 @@ search.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
     /**
 * @see \App\Http\Controllers\PatientOperationsController::search
- * @see app/Http/Controllers/PatientOperationsController.php:290
+ * @see app/Http/Controllers/PatientOperationsController.php:292
  * @route '/visits/icd11/search'
  */
     const searchForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -54,7 +54,7 @@ search.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
             /**
 * @see \App\Http\Controllers\PatientOperationsController::search
- * @see app/Http/Controllers/PatientOperationsController.php:290
+ * @see app/Http/Controllers/PatientOperationsController.php:292
  * @route '/visits/icd11/search'
  */
         searchForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -63,7 +63,7 @@ search.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
         })
             /**
 * @see \App\Http\Controllers\PatientOperationsController::search
- * @see app/Http/Controllers/PatientOperationsController.php:290
+ * @see app/Http/Controllers/PatientOperationsController.php:292
  * @route '/visits/icd11/search'
  */
         searchForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({

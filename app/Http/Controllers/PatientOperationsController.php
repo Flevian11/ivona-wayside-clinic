@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Encounter;
+use App\Models\PatientConsent;
 use App\Models\SystemSetting;
 use App\Models\PatientIntegrationTransaction;
 use App\Services\Integrations\EnvironmentAwareIntegrationService;
@@ -116,6 +117,7 @@ class PatientOperationsController extends Controller
                 'claim_submitted_at' => isset($encounter->claim_submitted_at)
                     ? $encounter->claim_submitted_at?->toIso8601String()
                     : null,
+                'consent_status' => PatientConsent::query()->where('encounter_id', $encounter->id)->where('consent_type', 'sha_claim')->where('status', 'granted')->whereNull('revoked_at')->where(fn ($q) => $q->whereNull('expires_at')->orWhere('expires_at', '>', now()))->latest('id')->value('status'),
                 'documents' => $documents->map(fn ($document) => [
                     'id' => $document->id,
                     'name' => $document->original_name,
@@ -1052,18 +1054,242 @@ class PatientOperationsController extends Controller
 
     public function completeVisit(Request $request, Encounter $encounter): RedirectResponse
     {
-        if (in_array($encounter->status, ['completed', 'cancelled'], true)) {
-            return back()->withErrors(['visit' => 'This visit is already completed or cancelled.']);
+        abort_unless($request->user()->can('appointments.manage'), 403);
+        if (in_array($encounter->status, ['completed', 'cancelled', 'terminated'], true)) {
+            return back()->withErrors(['visit' => 'This visit is already closed.']);
+        }
+        if (blank($encounter->clinical_assessment) || blank($encounter->icd11_code)) {
+            return back()->withErrors(['visit' => 'Complete the clinical assessment and select a valid ICD-11 diagnosis before finishing this visit.']);
+        }
+        $encounter->forceFill(['status' => 'completed', 'completed_at' => now(), 'finished_at' => now()])->save();
+        return redirect()->route('visits.show', $encounter)->with('success', 'Visit completed: '.$encounter->encounter_number.'.');
+    }
+
+    /** Start an encounter-scoped DHA claim authorization challenge. */
+    public function startShaClaimAuthorization(Request $request, Encounter $encounter, EnvironmentAwareIntegrationService $gateway)
+    {
+        abort_unless($request->user()->can('sha.claims.submit') || $request->user()->can('appointments.manage'), 403);
+        abort_unless($this->isShaEncounter($encounter), 422, 'This encounter is not marked as SHA-covered.');
+        abort_if(in_array($encounter->status, ['cancelled', 'terminated'], true), 409, 'A cancelled or terminated visit cannot be authorized for a claim.');
+        $patient = $encounter->patient;
+        abort_unless($patient && filled($patient->client_registry_id), 422, 'A verified DHA Client Registry ID is required before claim authorization.');
+        $interventions = array_values(array_filter(array_unique(array_filter([
+            (string) $encounter->sha_sub_benefit_code,
+            (string) $encounter->sha_benefit_code,
+        ]))));
+        abort_if($interventions === [], 422, 'Select a verified SHA benefit/sub-benefit before requesting claim authorization.');
+        $correlation = (string) Str::uuid();
+        try {
+            $response = $gateway->request('dha-hie', 'consent.send_otp', 'POST', '/claims/otp', [
+                'patient_id' => $patient->client_registry_id,
+                'service_type' => $encounter->visit_type === 'inpatient' ? 'INPATIENT' : 'OUTPATIENT',
+                'interventions' => $interventions,
+            ], ['X-Correlation-ID' => $correlation]);
+            $body = is_array($response['body'] ?? null) ? $response['body'] : [];
+            if (($response['status'] ?? 500) < 200 || ($response['status'] ?? 500) >= 300 || (($body['status'] ?? '') !== '' && !in_array(strtoupper((string) $body['status']), ['DEV_OTP_ISSUED','OTP_SENT','SENT','PENDING'], true))) {
+                return response()->json(['message' => 'DHA did not confirm an OTP challenge. No authorization was stored.'], 502);
+            }
+            $request->session()->put('visit_sha_claim_auth_'.$encounter->id, [
+                'correlation_id' => $correlation, 'patient_id' => $patient->client_registry_id,
+                'service_type' => $encounter->visit_type === 'inpatient' ? 'INPATIENT' : 'OUTPATIENT',
+                'interventions' => $interventions, 'started_at' => now()->timestamp,
+                'environment' => $response['environment'] ?? $gateway->environment(), 'mock' => (bool) ($response['mock'] ?? false),
+            ]);
+            return response()->json(['ok' => true, 'environment' => $response['environment'] ?? $gateway->environment(), 'mock' => (bool) ($response['mock'] ?? false), 'message' => ($response['mock'] ?? false) ? 'Development-only OTP challenge created; no real SMS was sent.' : 'OTP challenge request accepted by the configured DHA service.']);
+        } catch (\Throwable $exception) {
+            report($exception);
+            return response()->json(['message' => 'DHA authorization challenge failed. No mock fallback was used.'], 502);
+        }
+    }
+
+    /** Verify fresh authorization and persist the provider token encrypted against this encounter. */
+    public function authorizeShaClaim(Request $request, Encounter $encounter, EnvironmentAwareIntegrationService $gateway): RedirectResponse
+    {
+        abort_unless($request->user()->can('sha.claims.submit') || $request->user()->can('appointments.manage'), 403);
+        $data = $request->validate(['otp' => ['required','digits:6']]);
+        $challenge = $request->session()->get('visit_sha_claim_auth_'.$encounter->id);
+        abort_unless(is_array($challenge) && (int) ($challenge['started_at'] ?? 0) >= now()->subMinutes(10)->timestamp, 422, 'The authorization challenge is missing or expired. Request a new OTP.');
+        abort_unless(hash_equals((string) ($challenge['patient_id'] ?? ''), (string) $encounter->patient?->client_registry_id), 422, 'Authorization challenge does not match this encounter patient.');
+        try {
+            $response = $gateway->request('dha-hie', 'consent.authorize', 'POST', '/claims/authorize', [
+                'patient_id' => $challenge['patient_id'], 'service_type' => $challenge['service_type'],
+                'otp' => (string) $data['otp'], 'interventions' => $challenge['interventions'],
+            ], ['X-Correlation-ID' => $challenge['correlation_id']]);
+            $body = is_array($response['body'] ?? null) ? $response['body'] : [];
+            $providerData = is_array($body['data'] ?? null) ? $body['data'] : $body;
+            $status = strtoupper((string) ($providerData['status'] ?? ''));
+            $token = $providerData['token'] ?? $providerData['consent_token'] ?? null;
+            if (($response['status'] ?? 500) < 200 || ($response['status'] ?? 500) >= 300 || !in_array($status, ['AUTHORIZED','AUTHORIZED_PENDING_VISIT','DEV_AUTHORIZED'], true) || !is_string($token) || $token === '') {
+                return back()->withErrors(['authorization' => 'DHA did not return a confirmed authorization token. The claim remains unsubmitted.']);
+            }
+            DB::transaction(function () use ($request, $encounter, $challenge, $response, $providerData, $token): void {
+                PatientConsent::query()->where('encounter_id', $encounter->id)->where('consent_type', 'sha_claim')->where('status', 'granted')->update(['status' => 'superseded', 'updated_at' => now()]);
+                PatientConsent::query()->create([
+                    'patient_id' => $encounter->patient_id, 'encounter_id' => $encounter->id,
+                    'consent_type' => 'sha_claim', 'status' => 'granted', 'method' => 'otp',
+                    'provider' => 'dha-hie', 'provider_reference' => (string) ($providerData['guid'] ?? $challenge['correlation_id']),
+                    'consent_token' => $token, 'consent_token_hash' => hash('sha256', $token),
+                    'requested_at' => now()->setTimestamp((int) $challenge['started_at']), 'granted_at' => now(),
+                    'expires_at' => isset($providerData['expires_at']) ? \Illuminate\Support\Carbon::parse($providerData['expires_at']) : null,
+                    'captured_by' => $request->user()->id,
+                    'provider_metadata' => ['environment' => $response['environment'] ?? $challenge['environment'], 'mock' => (bool) ($response['mock'] ?? false), 'authorization_status' => $providerData['status'] ?? null, 'correlation_id' => $challenge['correlation_id']],
+                ]);
+                $encounter->forceFill(['claim_status' => 'authorization_ready'])->save();
+            });
+            $request->session()->forget('visit_sha_claim_auth_'.$encounter->id);
+            return back()->with('success', 'Encounter-specific SHA authorization was recorded securely. The claim has not yet been submitted.');
+        } catch (\Throwable $exception) {
+            report($exception);
+            return back()->withErrors(['authorization' => 'DHA authorization verification failed. No local authorization success was recorded.']);
+        }
+    }
+
+    public function submitShaClaim(Request $request, Encounter $encounter, EnvironmentAwareIntegrationService $gateway): RedirectResponse
+    {
+        abort_unless($request->user()->can('sha.claims.submit') || $request->user()->can('appointments.manage'), 403);
+        abort_unless($this->isShaEncounter($encounter), 422, 'This encounter is not marked as SHA-covered.');
+        abort_if(in_array($encounter->status, ['cancelled','terminated'], true), 409, 'Cancelled or terminated visits cannot be claimed.');
+        if (($encounter->claim_status ?? null) === 'submitted' || filled($encounter->claim_reference)) return back()->withErrors(['claim' => 'A claim reference already exists for this encounter. Check claim status before any retry.']);
+        $patient = $encounter->patient;
+        abort_unless($patient && filled($patient->client_registry_id), 422, 'A verified Client Registry ID is required.');
+        if (! filled($encounter->clinical_assessment) || ! filled($encounter->icd11_code)) {
+            return back()->withErrors(['claim' => 'Complete and save the clinical assessment and ICD-11 diagnosis before submitting this claim.']);
+        }
+        $items = is_array($encounter->billing_items) ? $encounter->billing_items : [];
+        $items = array_values(array_filter($items, fn ($item) => is_array($item) && filled($item['code'] ?? null) && filled($item['description'] ?? null) && (float) ($item['quantity'] ?? 0) > 0));
+        if ($items === []) {
+            return back()->withErrors(['claim' => 'Add and save at least one billable item with an approved tariff code, description, positive quantity and price before submitting this claim.']);
+        }
+        $consent = PatientConsent::query()->where('encounter_id', $encounter->id)->where('patient_id', $encounter->patient_id)->where('consent_type', 'sha_claim')->where('status', 'granted')->whereNull('revoked_at')->where(fn ($q) => $q->whereNull('expires_at')->orWhere('expires_at', '>', now()))->latest('id')->first();
+        if (! $consent || ! filled($consent->consent_token)) {
+            return back()->withErrors(['claim' => 'This encounter has no active, encounter-linked SHA authorization. Request and verify authorization before submitting.']);
+        }
+        // Development must exercise the complete local workflow without requiring real facility/practitioner credentials.
+        // The gateway's development branch is deterministic and never transmits this synthetic payload externally.
+        if ($gateway->isMockMode()) {
+            $correlation = (string) Str::uuid();
+            $bundleId = 'DEV-BUNDLE-' . Str::uuid();
+            $total = round(collect($items)->sum(fn ($item) => (float) $item['quantity'] * (float) ($item['unit_price'] ?? 0)), 2);
+            abort_if($total <= 0, 422, 'Claim total must be greater than zero.');
+            try {
+                $response = $gateway->request('dha-afyalink', 'claims.submit', 'POST', '/v1/shr-med/bundle', [
+                    'bundle_id' => $bundleId,
+                    'encounter_id' => $encounter->id,
+                    'patient_id' => (string) $patient->client_registry_id,
+                    'total' => $total,
+                    'line_count' => count($items),
+                    'consent_token' => '[SYNTHETIC-DEVELOPMENT-ONLY]',
+                ], ['X-Correlation-ID' => $correlation, 'Idempotency-Key' => $bundleId]);
+                $body = is_array($response['body'] ?? null) ? $response['body'] : [];
+                $data = is_array($body['data'] ?? null) ? $body['data'] : $body;
+                if (($response['mock'] ?? false) !== true || ($response['status'] ?? 500) < 200 || ($response['status'] ?? 500) >= 300) {
+                    throw new \RuntimeException('Development claim gateway did not return a synthetic success response.');
+                }
+                $reference = (string) ($data['claim_reference'] ?? $data['claim_id'] ?? $bundleId);
+                PatientIntegrationTransaction::query()->create([
+                    'correlation_id' => $correlation, 'patient_id' => $patient->id, 'encounter_id' => $encounter->id,
+                    'provider' => 'dha-afyalink', 'operation' => 'claims.submit', 'environment' => 'development',
+                    'status' => 'mocked', 'http_status' => 200, 'provider_reference' => $reference,
+                    'request_body_redacted' => ['bundle_id' => $bundleId, 'line_count' => count($items), 'total' => $total, 'consent_token' => '[REDACTED]'],
+                    'response_body_redacted' => ['mock' => true, 'status' => $data['status'] ?? 'DEV_MOCK_SUBMITTED', 'reference' => $reference],
+                    'requested_by' => $request->user()->id, 'completed_at' => now(),
+                ]);
+                $encounter->forceFill(['claim_status' => 'development_mock', 'claim_reference' => $reference, 'claim_submitted_at' => now()])->save();
+                return back()->with('success', 'Development claim simulation recorded. No claim was transmitted to SHA. Reference: ' . $reference);
+            } catch (\Throwable $exception) {
+                report($exception);
+                $encounter->forceFill(['claim_status' => 'failed'])->save();
+                return back()->withErrors(['claim' => 'The development claim simulation failed. Check the application log; no SHA claim was transmitted.']);
+            }
         }
 
-        $encounter->forceFill([
-            'status' => 'completed',
-            'completed_at' => now(),
-        ])->save();
+        $facilityId = (string) config('integrations.sha_facility_id', env('DHA_FACILITY_FID', ''));
+        $practitionerId = (string) config('integrations.sha_practitioner_id', env('DHA_PRACTITIONER_UID', ''));
+        $shaIdentifier = $patient->identifiers()->get()->first(function ($identifier) {
+            return in_array(strtolower(str_replace(['_', '-'], ' ', (string) $identifier->type)), ['sha number', 'shanumber', 'sha'], true) && filled($identifier->verified_at);
+        });
+        $shaNumber = $shaIdentifier ? (string) $shaIdentifier->identifierValue() : '';
+        $fhirPrefix = rtrim((string) config('integrations.fhir_prefix', env('DHA_FHIR_PREFIX', '')), '/');
+        abort_if($facilityId === '' || $practitionerId === '' || $shaNumber === '' || $fhirPrefix === '', 422, 'Configure the authority-issued facility FID, practitioner UID, patient SHA number and environment FHIR prefix before live claim submission.');
+        $claimId = (string) Str::uuid(); $bundleId = (string) Str::uuid();
+        $total = round(collect($items)->sum(fn ($item) => (float) $item['quantity'] * (float) ($item['unit_price'] ?? 0)), 2);
+        abort_if($total <= 0, 422, 'Claim total must be greater than zero.');
+        $patientId = (string) $patient->client_registry_id;
+        $coverageId = 'COV-'.substr(hash('sha256', $patientId.'|'.$encounter->id), 0, 20);
+        $patientUrl = $fhirPrefix.'/fhir/Patient/'.$patientId;
+        $orgUrl = $fhirPrefix.'/fhir/Organization/'.$facilityId;
+        $practitionerUrl = $fhirPrefix.'/fhir/Practitioner/'.$practitionerId;
+        $coverageUrl = $fhirPrefix.'/fhir/Coverage/'.$coverageId;
+        $claimUrl = $fhirPrefix.'/fhir/Claim/'.$claimId;
+        $claimItems = [];
+        foreach (array_values($items) as $index => $item) {
+            $quantity = (float) $item['quantity'];
+            $unitPrice = (float) ($item['unit_price'] ?? 0);
+            $claimItems[] = [
+                'sequence' => $index + 1,
+                'productOrService' => ['coding' => [['code' => (string) $item['code'], 'display' => (string) $item['description']]]],
+                'quantity' => ['value' => $quantity],
+                'unitPrice' => ['value' => $unitPrice, 'currency' => 'KES'],
+                'net' => ['value' => round($quantity * $unitPrice, 2), 'currency' => 'KES'],
+            ];
+        }
+        $claimResource = [
+            'resourceType' => 'Claim', 'id' => $claimId, 'status' => 'active', 'use' => 'claim',
+            'patient' => ['reference' => $patientUrl], 'provider' => ['reference' => $orgUrl],
+            'insurance' => [['sequence' => 1, 'focal' => true, 'coverage' => ['reference' => $coverageUrl]]],
+            'created' => now()->toDateString(), 'priority' => ['coding' => [['code' => 'normal']]],
+            'diagnosis' => [[
+                'sequence' => 1,
+                'diagnosisCodeableConcept' => ['coding' => [[
+                    'system' => $fhirPrefix.'/fhir/CodeSystem/icd-11',
+                    'code' => $encounter->icd11_code,
+                    'display' => $encounter->icd11_display,
+                ]]],
+            ]],
+            'item' => $claimItems,
+            'total' => ['value' => $total, 'currency' => 'KES'],
+        ];
+        $bundle = [
+            'resourceType' => 'Bundle', 'id' => $bundleId, 'type' => 'message',
+            'timestamp' => now()->toIso8601String(),
+            'meta' => ['profile' => [$fhirPrefix.'/fhir/StructureDefinition/bundle|1.0.0']],
+            'entry' => [
+                ['fullUrl' => $patientUrl, 'resource' => ['resourceType' => 'Patient', 'id' => $patientId, 'identifier' => [['system' => $fhirPrefix.'/fhir/identifier/shanumber', 'value' => $shaNumber]]]],
+                ['fullUrl' => $orgUrl, 'resource' => ['resourceType' => 'Organization', 'id' => $facilityId, 'active' => true, 'name' => (string) config('app.name')]],
+                ['fullUrl' => $practitionerUrl, 'resource' => ['resourceType' => 'Practitioner', 'id' => $practitionerId, 'active' => true, 'name' => [['text' => (string) ($request->user()->name ?? 'Authorized practitioner')]]]],
+                ['fullUrl' => $coverageUrl, 'resource' => ['resourceType' => 'Coverage', 'id' => $coverageId, 'status' => 'active', 'beneficiary' => ['reference' => $patientUrl, 'type' => 'Patient']]],
+                ['fullUrl' => $claimUrl, 'resource' => $claimResource],
+            ],
+        ];
+        $correlation = (string) Str::uuid();
+        try {
+            $response = $gateway->request('dha-afyalink', 'claims.submit', 'POST', '/v1/shr-med/bundle', $bundle, ['X-Correlation-ID' => $correlation, 'Idempotency-Key' => $bundleId]);
+            $body = is_array($response['body'] ?? null) ? $response['body'] : [];
+            $accepted = ($response['status'] ?? 500) >= 200 && ($response['status'] ?? 500) < 300;
+            $data = is_array($body['data'] ?? null) ? $body['data'] : $body;
+            $reference = $data['claim_id'] ?? $data['claim_reference'] ?? $data['bundle_id'] ?? $data['id'] ?? null;
+            PatientIntegrationTransaction::query()->create([
+                'correlation_id' => $correlation, 'patient_id' => $patient->id, 'encounter_id' => $encounter->id,
+                'provider' => 'dha-afyalink', 'operation' => 'claims.submit', 'environment' => $response['environment'] ?? $gateway->environment(),
+                'status' => $accepted ? (($response['mock'] ?? false) ? 'mocked' : 'succeeded') : 'failed', 'http_status' => $response['status'] ?? null,
+                'provider_reference' => is_scalar($reference) ? (string) $reference : null,
+                'request_body_redacted' => ['bundle_id' => $bundleId, 'claim_id' => $claimId, 'entry_count' => count($bundle['entry']), 'total' => $total, 'consent_token' => '[REDACTED]'],
+                'response_body_redacted' => ['mock' => (bool) ($response['mock'] ?? false), 'status' => $data['status'] ?? null, 'reference' => $reference],
+                'requested_by' => $request->user()->id, 'completed_at' => now(),
+            ]);
+            if (!$accepted) { $encounter->forceFill(['claim_status' => 'failed'])->save(); return back()->withErrors(['claim' => 'The configured claims provider rejected the submission. Check the integration transaction before retrying.']); }
+            $encounter->forceFill(['claim_status' => ($response['mock'] ?? false) ? 'development_mock' : 'submitted', 'claim_reference' => is_scalar($reference) ? (string) $reference : $claimId, 'claim_submitted_at' => now()])->save();
+            return back()->with('success', ($response['mock'] ?? false) ? 'Development claim simulation recorded. No claim was transmitted to SHA.' : 'Claim bundle submitted to the configured DHA AfyaLink endpoint. Provider reference: '.(string) ($reference ?? $claimId));
+        } catch (\Throwable $exception) {
+            report($exception);
+            $encounter->forceFill(['claim_status' => 'submission_unknown'])->save();
+            return back()->withErrors(['claim' => 'Claim submission outcome is unknown due to an integration failure. Check the provider status by the unique bundle ID before retrying to avoid duplicates.']);
+        }
+    }
 
-        return redirect()
-            ->route('visits.show', $encounter)
-            ->with('success', 'Visit completed: ' . $encounter->encounter_number . '.');
+    private function isShaEncounter(Encounter $encounter): bool
+    {
+        return strtolower((string) ($encounter->coverage_type ?: $encounter->payment_type)) === 'sha';
     }
 
     public function preauthorizations(): Response

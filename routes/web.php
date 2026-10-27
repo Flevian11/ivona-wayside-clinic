@@ -120,3 +120,7 @@ require __DIR__.'/developer-tools.php';
 require __DIR__.'/administration.php';
 
 require __DIR__.'/settings.php';
+
+require __DIR__.'/operations.php';
+
+require __DIR__.'/clinical-operations.php';

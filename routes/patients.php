@@ -2,9 +2,11 @@
 
 use App\Http\Controllers\PatientController;
 use App\Http\Controllers\PatientOperationsController;
+use App\Http\Controllers\ShaClaimsController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth', 'verified'])->group(function (): void {
+    Route::get('/operations/sha-claims', [ShaClaimsController::class, 'index'])->middleware('can:sha.claims.view')->name('operations.sha-claims.index');
     Route::get('/visits', [PatientOperationsController::class, 'visits'])->middleware('can:appointments.view')->name('visits.index');
     Route::get('/visits/{encounter}', [PatientOperationsController::class, 'showVisit'])->whereNumber('encounter')->middleware('can:appointments.view')->name('visits.show');
     Route::patch('/visits/{encounter}', [PatientOperationsController::class, 'updateVisit'])->whereNumber('encounter')->middleware('can:appointments.manage')->name('visits.update');
@@ -16,6 +18,9 @@ Route::middleware(['auth', 'verified'])->group(function (): void {
     Route::post('/visits/{encounter}/invoice/issue', [PatientOperationsController::class, 'issueInvoice'])->whereNumber('encounter')->middleware('can:appointments.manage')->name('visits.invoice.issue');
     Route::get('/visits/{encounter}/invoice.pdf', [PatientOperationsController::class, 'downloadInvoice'])->whereNumber('encounter')->middleware('can:appointments.view')->name('visits.invoice.pdf');
     Route::post('/visits/{encounter}/complete', [PatientOperationsController::class, 'completeVisit'])->whereNumber('encounter')->middleware('can:appointments.manage')->name('visits.complete');
+    Route::post('/visits/{encounter}/sha-claim/authorization/start', [PatientOperationsController::class, 'startShaClaimAuthorization'])->whereNumber('encounter')->name('visits.sha-claim.authorization.start');
+    Route::post('/visits/{encounter}/sha-claim/authorization', [PatientOperationsController::class, 'authorizeShaClaim'])->whereNumber('encounter')->name('visits.sha-claim.authorization');
+    Route::post('/visits/{encounter}/claim', [PatientOperationsController::class, 'submitShaClaim'])->whereNumber('encounter')->name('visits.sha-claim.submit');
     Route::get('/preauthorizations', [PatientOperationsController::class, 'preauthorizations'])->middleware('can:sha.services.verify')->name('preauthorizations.index');
     Route::get('/patients', [PatientController::class, 'index'])->middleware('can:patients.view')->name('patients.index');
     Route::post('/patients/duplicate-check', [PatientController::class, 'duplicateCheck'])->middleware('can:patients.create')->name('patients.duplicate-check');
@@ -32,3 +37,6 @@ Route::middleware(['auth', 'verified'])->group(function (): void {
     Route::post('/patients/{patient}/encounters', [PatientController::class, 'createVisit'])->whereNumber('patient')->middleware('can:appointments.manage')->name('patients.encounters.store');
     Route::post('/patients/{patient}/sha-eligibility', [PatientController::class, 'shaEligibility'])->whereNumber('patient')->middleware('can:sha.eligibility.verify')->name('patients.sha-eligibility');
 });
+
+
+require __DIR__.'/operations.php';

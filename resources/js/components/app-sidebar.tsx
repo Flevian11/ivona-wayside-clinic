@@ -76,17 +76,17 @@ export function AppSidebar() {
         { title: 'Preauthorizations', href: '/preauthorizations', icon: ShieldCheck, permission: 'sha.services.verify' },
         { title: 'Appointments & queue', href: '#appointments', icon: CalendarDays, comingSoon: true },
         { title: 'Clinical encounters', href: '#clinical-encounters', icon: Stethoscope, comingSoon: true },
-        { title: 'Nursing', href: '#nursing', icon: HeartPulse, comingSoon: true },
-        { title: 'Laboratory', href: '#laboratory', icon: FlaskConical, comingSoon: true },
-        { title: 'Pharmacy', href: '#pharmacy', icon: Pill, comingSoon: true },
+        { title: 'Nursing', href: '/nursing', icon: HeartPulse, permission: 'nursing_notes.manage' },
+        { title: 'Laboratory', href: '/laboratory', icon: FlaskConical, permission: 'lab.orders.view' },
+        { title: 'Pharmacy', href: '/pharmacy', icon: Pill, permission: 'pharmacy.prescriptions.view' },
     ];
 
     const operationsItems: NavItem[] = [
-        { title: 'Billing & payments', href: '#billing', icon: ReceiptText, comingSoon: true },
-        { title: 'SHA & claims', href: '#sha-claims', icon: ClipboardList, comingSoon: true },
-        { title: 'Inventory & stores', href: '#inventory', icon: Boxes, comingSoon: true },
-        { title: 'Procurement', href: '#procurement', icon: Package, comingSoon: true },
-        { title: 'Reports & analytics', href: '#reports', icon: Activity, comingSoon: true },
+        { title: 'Billing & payments', href: '/billing', icon: ReceiptText, permission: 'billing.invoices.view' },
+        { title: 'SHA & claims', href: '/operations/sha-claims', icon: ClipboardList, permission: 'sha.claims.view' },
+        { title: 'Inventory & stores', href: '/inventory', icon: Boxes, permission: 'inventory.view' },
+        { title: 'Procurement', href: '/procurement', icon: Package, permission: 'procurement.view' },
+        { title: 'Reports & analytics', href: '/reports', icon: Activity, permission: 'reports.operational.view' },
     ];
 
     const administrationItems: NavItem[] = [

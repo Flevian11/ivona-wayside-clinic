@@ -421,6 +421,17 @@ class EnvironmentAwareIntegrationService
             return ['status' => 'DEV_MOCK_SUBMITTED', 'claim_id' => 'DEV-CLAIM-' . $reference, 'claim_reference' => 'DEV-CLAIM-' . $reference, 'mock' => true, 'message' => 'Development-only claim simulation. No SHA claim was transmitted or accepted.'];
         }
 
+        if ($operation === 'consent.send_otp') {
+            return ['status' => 'DEV_OTP_ISSUED', 'challenge_id' => 'DEV-AUTH-' . $reference, 'mock' => true, 'message' => 'Synthetic development OTP challenge. No SMS was sent.'];
+        }
+        if ($operation === 'consent.authorize') {
+            $otp = (string) ($payload['otp'] ?? '');
+            if ($otp !== (string) (($fixtures['otp']['valid_test_code'] ?? '246810'))) {
+                return ['status' => 'DEV_AUTHORIZATION_DENIED', 'mock' => true, 'message' => 'Development OTP did not match the configured synthetic test code.'];
+            }
+            return ['status' => 'DEV_AUTHORIZED', 'token' => 'DEV-CONSENT-' . $reference, 'guid' => 'DEV-GUID-' . $reference, 'mock' => true, 'message' => 'Synthetic encounter authorization only; not DHA authorization.'];
+        }
+
         if ($operation === 'preauthorization.check') {
             return ['status' => 'DEV_REVIEW_REQUIRED', 'mock' => true, 'message' => 'Development-only simulation. No official preauthorization rules or provider endpoint were queried.'];
         }

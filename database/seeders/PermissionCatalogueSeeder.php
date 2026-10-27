@@ -52,7 +52,9 @@ class PermissionCatalogueSeeder extends Seeder
             'pharmacy.stock.manage' => ['Manage pharmacy stock', 'pharmacy'],
             'inventory.view' => ['View facility inventory', 'inventory'],
             'inventory.manage' => ['Manage inventory and stock movements', 'inventory'],
-            'procurement.manage' => ['Manage procurement workflows', 'inventory'],
+            'procurement.view' => ['View procurement requests', 'inventory'],
+            'procurement.manage' => ['Create and manage procurement requests', 'inventory'],
+            'procurement.approve' => ['Review and approve procurement requests', 'inventory'],
 
             // Billing and finance
             'billing.invoices.view' => ['View billing invoices', 'billing'],

@@ -3,9 +3,10 @@ import icd11 from './icd11'
 import documents from './documents'
 import benefits from './benefits'
 import invoice from './invoice'
+import shaClaim from './sha-claim'
 /**
 * @see \App\Http\Controllers\PatientOperationsController::index
- * @see app/Http/Controllers/PatientOperationsController.php:20
+ * @see app/Http/Controllers/PatientOperationsController.php:21
  * @route '/visits'
  */
 export const index = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -20,7 +21,7 @@ index.definition = {
 
 /**
 * @see \App\Http\Controllers\PatientOperationsController::index
- * @see app/Http/Controllers/PatientOperationsController.php:20
+ * @see app/Http/Controllers/PatientOperationsController.php:21
  * @route '/visits'
  */
 index.url = (options?: RouteQueryOptions) => {
@@ -29,7 +30,7 @@ index.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\PatientOperationsController::index
- * @see app/Http/Controllers/PatientOperationsController.php:20
+ * @see app/Http/Controllers/PatientOperationsController.php:21
  * @route '/visits'
  */
 index.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -38,7 +39,7 @@ index.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 })
 /**
 * @see \App\Http\Controllers\PatientOperationsController::index
- * @see app/Http/Controllers/PatientOperationsController.php:20
+ * @see app/Http/Controllers/PatientOperationsController.php:21
  * @route '/visits'
  */
 index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -48,7 +49,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
     /**
 * @see \App\Http\Controllers\PatientOperationsController::index
- * @see app/Http/Controllers/PatientOperationsController.php:20
+ * @see app/Http/Controllers/PatientOperationsController.php:21
  * @route '/visits'
  */
     const indexForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -58,7 +59,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
             /**
 * @see \App\Http\Controllers\PatientOperationsController::index
- * @see app/Http/Controllers/PatientOperationsController.php:20
+ * @see app/Http/Controllers/PatientOperationsController.php:21
  * @route '/visits'
  */
         indexForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -67,7 +68,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
         })
             /**
 * @see \App\Http\Controllers\PatientOperationsController::index
- * @see app/Http/Controllers/PatientOperationsController.php:20
+ * @see app/Http/Controllers/PatientOperationsController.php:21
  * @route '/visits'
  */
         indexForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -83,7 +84,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     index.form = indexForm
 /**
 * @see \App\Http\Controllers\PatientOperationsController::show
- * @see app/Http/Controllers/PatientOperationsController.php:71
+ * @see app/Http/Controllers/PatientOperationsController.php:72
  * @route '/visits/{encounter}'
  */
 export const show = (args: { encounter: number | { id: number } } | [encounter: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -98,7 +99,7 @@ show.definition = {
 
 /**
 * @see \App\Http\Controllers\PatientOperationsController::show
- * @see app/Http/Controllers/PatientOperationsController.php:71
+ * @see app/Http/Controllers/PatientOperationsController.php:72
  * @route '/visits/{encounter}'
  */
 show.url = (args: { encounter: number | { id: number } } | [encounter: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -131,7 +132,7 @@ show.url = (args: { encounter: number | { id: number } } | [encounter: number | 
 
 /**
 * @see \App\Http\Controllers\PatientOperationsController::show
- * @see app/Http/Controllers/PatientOperationsController.php:71
+ * @see app/Http/Controllers/PatientOperationsController.php:72
  * @route '/visits/{encounter}'
  */
 show.get = (args: { encounter: number | { id: number } } | [encounter: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -140,7 +141,7 @@ show.get = (args: { encounter: number | { id: number } } | [encounter: number | 
 })
 /**
 * @see \App\Http\Controllers\PatientOperationsController::show
- * @see app/Http/Controllers/PatientOperationsController.php:71
+ * @see app/Http/Controllers/PatientOperationsController.php:72
  * @route '/visits/{encounter}'
  */
 show.head = (args: { encounter: number | { id: number } } | [encounter: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -150,7 +151,7 @@ show.head = (args: { encounter: number | { id: number } } | [encounter: number |
 
     /**
 * @see \App\Http\Controllers\PatientOperationsController::show
- * @see app/Http/Controllers/PatientOperationsController.php:71
+ * @see app/Http/Controllers/PatientOperationsController.php:72
  * @route '/visits/{encounter}'
  */
     const showForm = (args: { encounter: number | { id: number } } | [encounter: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -160,7 +161,7 @@ show.head = (args: { encounter: number | { id: number } } | [encounter: number |
 
             /**
 * @see \App\Http\Controllers\PatientOperationsController::show
- * @see app/Http/Controllers/PatientOperationsController.php:71
+ * @see app/Http/Controllers/PatientOperationsController.php:72
  * @route '/visits/{encounter}'
  */
         showForm.get = (args: { encounter: number | { id: number } } | [encounter: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -169,7 +170,7 @@ show.head = (args: { encounter: number | { id: number } } | [encounter: number |
         })
             /**
 * @see \App\Http\Controllers\PatientOperationsController::show
- * @see app/Http/Controllers/PatientOperationsController.php:71
+ * @see app/Http/Controllers/PatientOperationsController.php:72
  * @route '/visits/{encounter}'
  */
         showForm.head = (args: { encounter: number | { id: number } } | [encounter: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -185,7 +186,7 @@ show.head = (args: { encounter: number | { id: number } } | [encounter: number |
     show.form = showForm
 /**
 * @see \App\Http\Controllers\PatientOperationsController::update
- * @see app/Http/Controllers/PatientOperationsController.php:161
+ * @see app/Http/Controllers/PatientOperationsController.php:163
  * @route '/visits/{encounter}'
  */
 export const update = (args: { encounter: number | { id: number } } | [encounter: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
@@ -200,7 +201,7 @@ update.definition = {
 
 /**
 * @see \App\Http\Controllers\PatientOperationsController::update
- * @see app/Http/Controllers/PatientOperationsController.php:161
+ * @see app/Http/Controllers/PatientOperationsController.php:163
  * @route '/visits/{encounter}'
  */
 update.url = (args: { encounter: number | { id: number } } | [encounter: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -233,7 +234,7 @@ update.url = (args: { encounter: number | { id: number } } | [encounter: number 
 
 /**
 * @see \App\Http\Controllers\PatientOperationsController::update
- * @see app/Http/Controllers/PatientOperationsController.php:161
+ * @see app/Http/Controllers/PatientOperationsController.php:163
  * @route '/visits/{encounter}'
  */
 update.patch = (args: { encounter: number | { id: number } } | [encounter: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
@@ -243,7 +244,7 @@ update.patch = (args: { encounter: number | { id: number } } | [encounter: numbe
 
     /**
 * @see \App\Http\Controllers\PatientOperationsController::update
- * @see app/Http/Controllers/PatientOperationsController.php:161
+ * @see app/Http/Controllers/PatientOperationsController.php:163
  * @route '/visits/{encounter}'
  */
     const updateForm = (args: { encounter: number | { id: number } } | [encounter: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -258,7 +259,7 @@ update.patch = (args: { encounter: number | { id: number } } | [encounter: numbe
 
             /**
 * @see \App\Http\Controllers\PatientOperationsController::update
- * @see app/Http/Controllers/PatientOperationsController.php:161
+ * @see app/Http/Controllers/PatientOperationsController.php:163
  * @route '/visits/{encounter}'
  */
         updateForm.patch = (args: { encounter: number | { id: number } } | [encounter: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -274,7 +275,7 @@ update.patch = (args: { encounter: number | { id: number } } | [encounter: numbe
     update.form = updateForm
 /**
 * @see \App\Http\Controllers\PatientOperationsController::complete
- * @see app/Http/Controllers/PatientOperationsController.php:1053
+ * @see app/Http/Controllers/PatientOperationsController.php:1055
  * @route '/visits/{encounter}/complete'
  */
 export const complete = (args: { encounter: number | { id: number } } | [encounter: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -289,7 +290,7 @@ complete.definition = {
 
 /**
 * @see \App\Http\Controllers\PatientOperationsController::complete
- * @see app/Http/Controllers/PatientOperationsController.php:1053
+ * @see app/Http/Controllers/PatientOperationsController.php:1055
  * @route '/visits/{encounter}/complete'
  */
 complete.url = (args: { encounter: number | { id: number } } | [encounter: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -322,7 +323,7 @@ complete.url = (args: { encounter: number | { id: number } } | [encounter: numbe
 
 /**
 * @see \App\Http\Controllers\PatientOperationsController::complete
- * @see app/Http/Controllers/PatientOperationsController.php:1053
+ * @see app/Http/Controllers/PatientOperationsController.php:1055
  * @route '/visits/{encounter}/complete'
  */
 complete.post = (args: { encounter: number | { id: number } } | [encounter: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -332,7 +333,7 @@ complete.post = (args: { encounter: number | { id: number } } | [encounter: numb
 
     /**
 * @see \App\Http\Controllers\PatientOperationsController::complete
- * @see app/Http/Controllers/PatientOperationsController.php:1053
+ * @see app/Http/Controllers/PatientOperationsController.php:1055
  * @route '/visits/{encounter}/complete'
  */
     const completeForm = (args: { encounter: number | { id: number } } | [encounter: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -342,7 +343,7 @@ complete.post = (args: { encounter: number | { id: number } } | [encounter: numb
 
             /**
 * @see \App\Http\Controllers\PatientOperationsController::complete
- * @see app/Http/Controllers/PatientOperationsController.php:1053
+ * @see app/Http/Controllers/PatientOperationsController.php:1055
  * @route '/visits/{encounter}/complete'
  */
         completeForm.post = (args: { encounter: number | { id: number } } | [encounter: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -360,6 +361,7 @@ documents: Object.assign(documents, documents),
 benefits: Object.assign(benefits, benefits),
 invoice: Object.assign(invoice, invoice),
 complete: Object.assign(complete, complete),
+shaClaim: Object.assign(shaClaim, shaClaim),
 }
 
 export default visits
