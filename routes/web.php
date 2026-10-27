@@ -124,3 +124,5 @@ require __DIR__.'/settings.php';
 require __DIR__.'/operations.php';
 
 require __DIR__.'/clinical-operations.php';
+
+require __DIR__.'/appointments.php';

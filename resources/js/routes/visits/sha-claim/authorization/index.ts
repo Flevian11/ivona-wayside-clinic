@@ -1,10 +1,10 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../../../../wayfinder'
 /**
 * @see \App\Http\Controllers\PatientOperationsController::start
- * @see app/Http/Controllers/PatientOperationsController.php:1069
+ * @see app/Http/Controllers/PatientOperationsController.php:0
  * @route '/visits/{encounter}/sha-claim/authorization/start'
  */
-export const start = (args: { encounter: number | { id: number } } | [encounter: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+export const start = (args: { encounter: string | number } | [encounter: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: start.url(args, options),
     method: 'post',
 })
@@ -16,17 +16,14 @@ start.definition = {
 
 /**
 * @see \App\Http\Controllers\PatientOperationsController::start
- * @see app/Http/Controllers/PatientOperationsController.php:1069
+ * @see app/Http/Controllers/PatientOperationsController.php:0
  * @route '/visits/{encounter}/sha-claim/authorization/start'
  */
-start.url = (args: { encounter: number | { id: number } } | [encounter: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
+start.url = (args: { encounter: string | number } | [encounter: string | number ] | string | number, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { encounter: args }
     }
 
-            if (typeof args === 'object' && !Array.isArray(args) && 'id' in args) {
-            args = { encounter: args.id }
-        }
     
     if (Array.isArray(args)) {
         args = {
@@ -37,9 +34,7 @@ start.url = (args: { encounter: number | { id: number } } | [encounter: number |
     args = applyUrlDefaults(args)
 
     const parsedArgs = {
-                        encounter: typeof args.encounter === 'object'
-                ? args.encounter.id
-                : args.encounter,
+                        encounter: args.encounter,
                 }
 
     return start.definition.url
@@ -49,30 +44,30 @@ start.url = (args: { encounter: number | { id: number } } | [encounter: number |
 
 /**
 * @see \App\Http\Controllers\PatientOperationsController::start
- * @see app/Http/Controllers/PatientOperationsController.php:1069
+ * @see app/Http/Controllers/PatientOperationsController.php:0
  * @route '/visits/{encounter}/sha-claim/authorization/start'
  */
-start.post = (args: { encounter: number | { id: number } } | [encounter: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+start.post = (args: { encounter: string | number } | [encounter: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: start.url(args, options),
     method: 'post',
 })
 
     /**
 * @see \App\Http\Controllers\PatientOperationsController::start
- * @see app/Http/Controllers/PatientOperationsController.php:1069
+ * @see app/Http/Controllers/PatientOperationsController.php:0
  * @route '/visits/{encounter}/sha-claim/authorization/start'
  */
-    const startForm = (args: { encounter: number | { id: number } } | [encounter: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    const startForm = (args: { encounter: string | number } | [encounter: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
         action: start.url(args, options),
         method: 'post',
     })
 
             /**
 * @see \App\Http\Controllers\PatientOperationsController::start
- * @see app/Http/Controllers/PatientOperationsController.php:1069
+ * @see app/Http/Controllers/PatientOperationsController.php:0
  * @route '/visits/{encounter}/sha-claim/authorization/start'
  */
-        startForm.post = (args: { encounter: number | { id: number } } | [encounter: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+        startForm.post = (args: { encounter: string | number } | [encounter: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
             action: start.url(args, options),
             method: 'post',
         })

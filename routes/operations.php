@@ -1,9 +1,13 @@
 <?php
 
+use App\Http\Controllers\BillingReportsController;
 use App\Http\Controllers\InventoryProcurementController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth', 'verified'])->group(function (): void {
+    Route::get('/billing', [BillingReportsController::class, 'billing'])->middleware('can:billing.invoices.view')->name('billing.index');
+    Route::get('/reports', [BillingReportsController::class, 'reports'])->middleware('can:reports.operational.view')->name('reports.index');
+
     Route::get('/inventory', [InventoryProcurementController::class, 'inventory'])->middleware('can:inventory.view')->name('inventory.index');
     Route::post('/inventory/items', [InventoryProcurementController::class, 'storeItem'])->middleware('can:inventory.manage')->name('inventory.items.store');
     Route::post('/inventory/items/{item}/movements', [InventoryProcurementController::class, 'adjustStock'])->whereNumber('item')->middleware('can:inventory.manage')->name('inventory.movements.store');

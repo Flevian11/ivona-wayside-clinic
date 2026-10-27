@@ -1,7 +1,7 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../../../wayfinder'
 /**
 * @see \App\Http\Controllers\PatientOperationsController::issue
- * @see app/Http/Controllers/PatientOperationsController.php:457
+ * @see app/Http/Controllers/PatientOperationsController.php:465
  * @route '/visits/{encounter}/invoice/issue'
  */
 export const issue = (args: { encounter: number | { id: number } } | [encounter: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -16,7 +16,7 @@ issue.definition = {
 
 /**
 * @see \App\Http\Controllers\PatientOperationsController::issue
- * @see app/Http/Controllers/PatientOperationsController.php:457
+ * @see app/Http/Controllers/PatientOperationsController.php:465
  * @route '/visits/{encounter}/invoice/issue'
  */
 issue.url = (args: { encounter: number | { id: number } } | [encounter: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -49,7 +49,7 @@ issue.url = (args: { encounter: number | { id: number } } | [encounter: number |
 
 /**
 * @see \App\Http\Controllers\PatientOperationsController::issue
- * @see app/Http/Controllers/PatientOperationsController.php:457
+ * @see app/Http/Controllers/PatientOperationsController.php:465
  * @route '/visits/{encounter}/invoice/issue'
  */
 issue.post = (args: { encounter: number | { id: number } } | [encounter: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -59,7 +59,7 @@ issue.post = (args: { encounter: number | { id: number } } | [encounter: number 
 
     /**
 * @see \App\Http\Controllers\PatientOperationsController::issue
- * @see app/Http/Controllers/PatientOperationsController.php:457
+ * @see app/Http/Controllers/PatientOperationsController.php:465
  * @route '/visits/{encounter}/invoice/issue'
  */
     const issueForm = (args: { encounter: number | { id: number } } | [encounter: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -69,7 +69,7 @@ issue.post = (args: { encounter: number | { id: number } } | [encounter: number 
 
             /**
 * @see \App\Http\Controllers\PatientOperationsController::issue
- * @see app/Http/Controllers/PatientOperationsController.php:457
+ * @see app/Http/Controllers/PatientOperationsController.php:465
  * @route '/visits/{encounter}/invoice/issue'
  */
         issueForm.post = (args: { encounter: number | { id: number } } | [encounter: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -80,7 +80,7 @@ issue.post = (args: { encounter: number | { id: number } } | [encounter: number 
     issue.form = issueForm
 /**
 * @see \App\Http\Controllers\PatientOperationsController::pdf
- * @see app/Http/Controllers/PatientOperationsController.php:516
+ * @see app/Http/Controllers/PatientOperationsController.php:524
  * @route '/visits/{encounter}/invoice.pdf'
  */
 export const pdf = (args: { encounter: number | { id: number } } | [encounter: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -95,7 +95,7 @@ pdf.definition = {
 
 /**
 * @see \App\Http\Controllers\PatientOperationsController::pdf
- * @see app/Http/Controllers/PatientOperationsController.php:516
+ * @see app/Http/Controllers/PatientOperationsController.php:524
  * @route '/visits/{encounter}/invoice.pdf'
  */
 pdf.url = (args: { encounter: number | { id: number } } | [encounter: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -128,7 +128,7 @@ pdf.url = (args: { encounter: number | { id: number } } | [encounter: number | {
 
 /**
 * @see \App\Http\Controllers\PatientOperationsController::pdf
- * @see app/Http/Controllers/PatientOperationsController.php:516
+ * @see app/Http/Controllers/PatientOperationsController.php:524
  * @route '/visits/{encounter}/invoice.pdf'
  */
 pdf.get = (args: { encounter: number | { id: number } } | [encounter: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -137,7 +137,7 @@ pdf.get = (args: { encounter: number | { id: number } } | [encounter: number | {
 })
 /**
 * @see \App\Http\Controllers\PatientOperationsController::pdf
- * @see app/Http/Controllers/PatientOperationsController.php:516
+ * @see app/Http/Controllers/PatientOperationsController.php:524
  * @route '/visits/{encounter}/invoice.pdf'
  */
 pdf.head = (args: { encounter: number | { id: number } } | [encounter: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -147,7 +147,7 @@ pdf.head = (args: { encounter: number | { id: number } } | [encounter: number | 
 
     /**
 * @see \App\Http\Controllers\PatientOperationsController::pdf
- * @see app/Http/Controllers/PatientOperationsController.php:516
+ * @see app/Http/Controllers/PatientOperationsController.php:524
  * @route '/visits/{encounter}/invoice.pdf'
  */
     const pdfForm = (args: { encounter: number | { id: number } } | [encounter: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -157,7 +157,7 @@ pdf.head = (args: { encounter: number | { id: number } } | [encounter: number | 
 
             /**
 * @see \App\Http\Controllers\PatientOperationsController::pdf
- * @see app/Http/Controllers/PatientOperationsController.php:516
+ * @see app/Http/Controllers/PatientOperationsController.php:524
  * @route '/visits/{encounter}/invoice.pdf'
  */
         pdfForm.get = (args: { encounter: number | { id: number } } | [encounter: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -166,7 +166,7 @@ pdf.head = (args: { encounter: number | { id: number } } | [encounter: number | 
         })
             /**
 * @see \App\Http\Controllers\PatientOperationsController::pdf
- * @see app/Http/Controllers/PatientOperationsController.php:516
+ * @see app/Http/Controllers/PatientOperationsController.php:524
  * @route '/visits/{encounter}/invoice.pdf'
  */
         pdfForm.head = (args: { encounter: number | { id: number } } | [encounter: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({

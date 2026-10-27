@@ -1,10 +1,10 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../../../wayfinder'
 /**
 * @see \App\Http\Controllers\PatientOperationsController::authorization
- * @see app/Http/Controllers/PatientOperationsController.php:1106
+ * @see app/Http/Controllers/PatientOperationsController.php:0
  * @route '/visits/{encounter}/sha-claim/authorization'
  */
-export const authorization = (args: { encounter: number | { id: number } } | [encounter: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+export const authorization = (args: { encounter: string | number } | [encounter: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: authorization.url(args, options),
     method: 'post',
 })
@@ -16,17 +16,14 @@ authorization.definition = {
 
 /**
 * @see \App\Http\Controllers\PatientOperationsController::authorization
- * @see app/Http/Controllers/PatientOperationsController.php:1106
+ * @see app/Http/Controllers/PatientOperationsController.php:0
  * @route '/visits/{encounter}/sha-claim/authorization'
  */
-authorization.url = (args: { encounter: number | { id: number } } | [encounter: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
+authorization.url = (args: { encounter: string | number } | [encounter: string | number ] | string | number, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { encounter: args }
     }
 
-            if (typeof args === 'object' && !Array.isArray(args) && 'id' in args) {
-            args = { encounter: args.id }
-        }
     
     if (Array.isArray(args)) {
         args = {
@@ -37,9 +34,7 @@ authorization.url = (args: { encounter: number | { id: number } } | [encounter: 
     args = applyUrlDefaults(args)
 
     const parsedArgs = {
-                        encounter: typeof args.encounter === 'object'
-                ? args.encounter.id
-                : args.encounter,
+                        encounter: args.encounter,
                 }
 
     return authorization.definition.url
@@ -49,30 +44,30 @@ authorization.url = (args: { encounter: number | { id: number } } | [encounter: 
 
 /**
 * @see \App\Http\Controllers\PatientOperationsController::authorization
- * @see app/Http/Controllers/PatientOperationsController.php:1106
+ * @see app/Http/Controllers/PatientOperationsController.php:0
  * @route '/visits/{encounter}/sha-claim/authorization'
  */
-authorization.post = (args: { encounter: number | { id: number } } | [encounter: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+authorization.post = (args: { encounter: string | number } | [encounter: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: authorization.url(args, options),
     method: 'post',
 })
 
     /**
 * @see \App\Http\Controllers\PatientOperationsController::authorization
- * @see app/Http/Controllers/PatientOperationsController.php:1106
+ * @see app/Http/Controllers/PatientOperationsController.php:0
  * @route '/visits/{encounter}/sha-claim/authorization'
  */
-    const authorizationForm = (args: { encounter: number | { id: number } } | [encounter: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    const authorizationForm = (args: { encounter: string | number } | [encounter: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
         action: authorization.url(args, options),
         method: 'post',
     })
 
             /**
 * @see \App\Http\Controllers\PatientOperationsController::authorization
- * @see app/Http/Controllers/PatientOperationsController.php:1106
+ * @see app/Http/Controllers/PatientOperationsController.php:0
  * @route '/visits/{encounter}/sha-claim/authorization'
  */
-        authorizationForm.post = (args: { encounter: number | { id: number } } | [encounter: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+        authorizationForm.post = (args: { encounter: string | number } | [encounter: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
             action: authorization.url(args, options),
             method: 'post',
         })
@@ -80,10 +75,10 @@ authorization.post = (args: { encounter: number | { id: number } } | [encounter:
     authorization.form = authorizationForm
 /**
 * @see \App\Http\Controllers\PatientOperationsController::submit
- * @see app/Http/Controllers/PatientOperationsController.php:1147
+ * @see app/Http/Controllers/PatientOperationsController.php:0
  * @route '/visits/{encounter}/claim'
  */
-export const submit = (args: { encounter: number | { id: number } } | [encounter: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+export const submit = (args: { encounter: string | number } | [encounter: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: submit.url(args, options),
     method: 'post',
 })
@@ -95,17 +90,14 @@ submit.definition = {
 
 /**
 * @see \App\Http\Controllers\PatientOperationsController::submit
- * @see app/Http/Controllers/PatientOperationsController.php:1147
+ * @see app/Http/Controllers/PatientOperationsController.php:0
  * @route '/visits/{encounter}/claim'
  */
-submit.url = (args: { encounter: number | { id: number } } | [encounter: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
+submit.url = (args: { encounter: string | number } | [encounter: string | number ] | string | number, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { encounter: args }
     }
 
-            if (typeof args === 'object' && !Array.isArray(args) && 'id' in args) {
-            args = { encounter: args.id }
-        }
     
     if (Array.isArray(args)) {
         args = {
@@ -116,9 +108,7 @@ submit.url = (args: { encounter: number | { id: number } } | [encounter: number 
     args = applyUrlDefaults(args)
 
     const parsedArgs = {
-                        encounter: typeof args.encounter === 'object'
-                ? args.encounter.id
-                : args.encounter,
+                        encounter: args.encounter,
                 }
 
     return submit.definition.url
@@ -128,30 +118,30 @@ submit.url = (args: { encounter: number | { id: number } } | [encounter: number 
 
 /**
 * @see \App\Http\Controllers\PatientOperationsController::submit
- * @see app/Http/Controllers/PatientOperationsController.php:1147
+ * @see app/Http/Controllers/PatientOperationsController.php:0
  * @route '/visits/{encounter}/claim'
  */
-submit.post = (args: { encounter: number | { id: number } } | [encounter: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+submit.post = (args: { encounter: string | number } | [encounter: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: submit.url(args, options),
     method: 'post',
 })
 
     /**
 * @see \App\Http\Controllers\PatientOperationsController::submit
- * @see app/Http/Controllers/PatientOperationsController.php:1147
+ * @see app/Http/Controllers/PatientOperationsController.php:0
  * @route '/visits/{encounter}/claim'
  */
-    const submitForm = (args: { encounter: number | { id: number } } | [encounter: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    const submitForm = (args: { encounter: string | number } | [encounter: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
         action: submit.url(args, options),
         method: 'post',
     })
 
             /**
 * @see \App\Http\Controllers\PatientOperationsController::submit
- * @see app/Http/Controllers/PatientOperationsController.php:1147
+ * @see app/Http/Controllers/PatientOperationsController.php:0
  * @route '/visits/{encounter}/claim'
  */
-        submitForm.post = (args: { encounter: number | { id: number } } | [encounter: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+        submitForm.post = (args: { encounter: string | number } | [encounter: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
             action: submit.url(args, options),
             method: 'post',
         })

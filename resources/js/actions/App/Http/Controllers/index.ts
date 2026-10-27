@@ -7,9 +7,11 @@ import Admin from './Admin'
 import ShaClaimsController from './ShaClaimsController'
 import PatientOperationsController from './PatientOperationsController'
 import PatientController from './PatientController'
+import BillingReportsController from './BillingReportsController'
 import InventoryProcurementController from './InventoryProcurementController'
 import Settings from './Settings'
 import ClinicalOperationsController from './ClinicalOperationsController'
+import AppointmentController from './AppointmentController'
 const Controllers = {
     Api: Object.assign(Api, Api),
 Auth: Object.assign(Auth, Auth),
@@ -20,9 +22,11 @@ Admin: Object.assign(Admin, Admin),
 ShaClaimsController: Object.assign(ShaClaimsController, ShaClaimsController),
 PatientOperationsController: Object.assign(PatientOperationsController, PatientOperationsController),
 PatientController: Object.assign(PatientController, PatientController),
+BillingReportsController: Object.assign(BillingReportsController, BillingReportsController),
 InventoryProcurementController: Object.assign(InventoryProcurementController, InventoryProcurementController),
 Settings: Object.assign(Settings, Settings),
 ClinicalOperationsController: Object.assign(ClinicalOperationsController, ClinicalOperationsController),
+AppointmentController: Object.assign(AppointmentController, AppointmentController),
 }
 
 export default Controllers

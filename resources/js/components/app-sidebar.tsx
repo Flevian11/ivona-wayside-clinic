@@ -74,8 +74,8 @@ export function AppSidebar() {
         { title: 'Patient records', href: '/patients', icon: Users, permission: 'patients.view' },
         { title: 'Visits', href: '/visits', icon: CalendarClock, permission: 'appointments.view' },
         { title: 'Preauthorizations', href: '/preauthorizations', icon: ShieldCheck, permission: 'sha.services.verify' },
-        { title: 'Appointments & queue', href: '#appointments', icon: CalendarDays, comingSoon: true },
-        { title: 'Clinical encounters', href: '#clinical-encounters', icon: Stethoscope, comingSoon: true },
+        { title: 'Appointments & queue', href: '/appointments', icon: CalendarDays, permission: 'appointments.view' },
+        { title: 'Clinical encounters', href: '/visits', icon: Stethoscope, permission: 'appointments.view' },
         { title: 'Nursing', href: '/nursing', icon: HeartPulse, permission: 'nursing_notes.manage' },
         { title: 'Laboratory', href: '/laboratory', icon: FlaskConical, permission: 'lab.orders.view' },
         { title: 'Pharmacy', href: '/pharmacy', icon: Pill, permission: 'pharmacy.prescriptions.view' },
@@ -116,16 +116,16 @@ export function AppSidebar() {
         { title: 'API activity history', href: '/developer-tools/activity', icon: Activity, permission: 'developer-tools.view' },
     ];
 
-    const SidebarGroupWrapper = ({ 
-        label, 
-        items, 
-        collapsible = false, 
-        defaultOpen = true 
-    }: { 
-        label: string; 
-        items: NavItem[]; 
-        collapsible?: boolean; 
-        defaultOpen?: boolean 
+    const SidebarGroupWrapper = ({
+        label,
+        items,
+        collapsible = false,
+        defaultOpen = true
+    }: {
+        label: string;
+        items: NavItem[];
+        collapsible?: boolean;
+        defaultOpen?: boolean
     }) => {
         const [isOpen, setIsOpen] = useState(defaultOpen);
         const visible = visibleItems(items);
@@ -136,7 +136,7 @@ export function AppSidebar() {
                 {visible.map((item) => {
                     const Icon = item.icon;
                     const isDisabled = item.comingSoon;
-                    
+
                     return (
                         <SidebarMenuItem key={item.title}>
                             {isDisabled ? (
@@ -188,9 +188,9 @@ export function AppSidebar() {
     };
 
     return (
-        <Sidebar 
-            collapsible="icon" 
-            variant="inset" 
+        <Sidebar
+            collapsible="icon"
+            variant="inset"
             className="border-emerald-100/50 dark:border-slate-800 bg-emerald-50/30 dark:bg-[#08131a]"
         >
             <SidebarHeader className="pt-2 pb-0">
@@ -212,8 +212,22 @@ export function AppSidebar() {
                 </SidebarMenu>
             </SidebarHeader>
 
-            <SidebarContent className="gap-0 overflow-y-auto overflow-x-hidden [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:'none'] px-0">
-                <SidebarGroupWrapper label="Workspace" items={workspaceItems} />
+            <SidebarContent
+                className="
+        min-h-0
+        flex-1
+        gap-0
+        overflow-x-hidden
+        overflow-y-auto
+        overscroll-y-contain
+        px-0
+        [scrollbar-width:thin]
+        [&::-webkit-scrollbar]:w-1
+        [&::-webkit-scrollbar-thumb]:rounded-full
+        [&::-webkit-scrollbar-thumb]:bg-emerald-600/30
+        hover:[&::-webkit-scrollbar-thumb]:bg-emerald-600/60
+    "
+            >                <SidebarGroupWrapper label="Workspace" items={workspaceItems} />
                 <SidebarGroupWrapper label="Patient care" items={patientItems} collapsible defaultOpen />
                 <SidebarGroupWrapper label="Operations" items={operationsItems} collapsible defaultOpen />
                 <SidebarGroupWrapper label="Administration" items={administrationItems} collapsible defaultOpen />
@@ -221,7 +235,7 @@ export function AppSidebar() {
                 <SidebarGroupWrapper label="My account" items={accountItems} collapsible defaultOpen={false} />
             </SidebarContent>
 
-            <SidebarFooter>
+            <SidebarFooter className="mt-auto shrink-0">
                 <NavUser />
             </SidebarFooter>
         </Sidebar>
