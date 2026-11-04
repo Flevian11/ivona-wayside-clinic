@@ -87,7 +87,7 @@ class FacilityBrandingUploadTest extends TestCase
         $identity = SystemSetting::query()->where('key', 'site.identity')->firstOrFail()->value;
         $this->assertSame('Ivona Wayside Clinic', $identity['name']);
         $this->assertStringStartsWith('/storage/site/branding/', $identity['logo_url']);
-        $this->assertNull($identity['favicon_url']);
+        $this->assertSame($identity['logo_url'], $identity['favicon_url'], 'Logo upload should also update the favicon.');
         $this->assertDatabaseHas('system_audit_logs', ['action' => 'settings.facility.logo.updated']);
     }
 
@@ -103,6 +103,51 @@ class FacilityBrandingUploadTest extends TestCase
         $identity = SystemSetting::query()->where('key', 'site.identity')->firstOrFail()->value;
         $this->assertStringStartsWith('/storage/site/branding/', $identity['favicon_url']);
         $this->assertDatabaseHas('system_audit_logs', ['action' => 'settings.facility.favicon.updated']);
+    }
+
+
+
+    public function test_facility_sections_save_independently_and_preserve_other_sections(): void
+    {
+        Storage::fake('public');
+        $admin = $this->settingsAdmin();
+
+        SystemSetting::query()->create([
+            'key' => 'site.identity',
+            'group' => 'site',
+            'is_public' => true,
+            'value' => [
+                'name' => 'Existing Clinic',
+                'phone' => '0700000000',
+                'social_links' => ['facebook' => 'https://facebook.com/existing'],
+                'public_links' => ['contact' => '/contact'],
+            ],
+        ]);
+
+        $this->actingAs($admin)->put(route('admin.administration.facility-settings.identity'), [
+            'name' => 'Updated Clinic',
+            'tagline' => 'Test tagline',
+            'description' => 'Clinic details',
+            'url' => 'https://clinic.example.test',
+        ])->assertRedirect()->assertSessionHasNoErrors();
+
+        $identity = SystemSetting::query()->where('key', 'site.identity')->firstOrFail()->value;
+        $this->assertSame('Updated Clinic', $identity['name']);
+        $this->assertSame('0700000000', $identity['phone']);
+        $this->assertSame('https://facebook.com/existing', $identity['social_links']['facebook']);
+        $this->assertSame('/contact', $identity['public_links']['contact']);
+
+        $this->actingAs($admin)->put(route('admin.administration.facility-settings.contact'), [
+            'phone' => '0711111111',
+            'email' => 'contact@example.test',
+            'address' => 'Clinic address',
+            'opening_hours' => 'Weekdays',
+        ])->assertRedirect()->assertSessionHasNoErrors();
+
+        $identity = SystemSetting::query()->where('key', 'site.identity')->firstOrFail()->value;
+        $this->assertSame('Updated Clinic', $identity['name']);
+        $this->assertSame('0711111111', $identity['phone']);
+        $this->assertSame('https://facebook.com/existing', $identity['social_links']['facebook']);
     }
 
 }

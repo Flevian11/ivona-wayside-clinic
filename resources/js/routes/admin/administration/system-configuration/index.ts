@@ -1,7 +1,7 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition } from './../../../../wayfinder'
 /**
 * @see \App\Http\Controllers\Admin\ClinicSettingsController::update
- * @see app/Http/Controllers/Admin/ClinicSettingsController.php:178
+ * @see app/Http/Controllers/Admin/ClinicSettingsController.php:287
  * @route '/admin/administration/system-configuration'
  */
 export const update = (options?: RouteQueryOptions): RouteDefinition<'put'> => ({
@@ -16,7 +16,7 @@ update.definition = {
 
 /**
 * @see \App\Http\Controllers\Admin\ClinicSettingsController::update
- * @see app/Http/Controllers/Admin/ClinicSettingsController.php:178
+ * @see app/Http/Controllers/Admin/ClinicSettingsController.php:287
  * @route '/admin/administration/system-configuration'
  */
 update.url = (options?: RouteQueryOptions) => {
@@ -25,7 +25,7 @@ update.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\Admin\ClinicSettingsController::update
- * @see app/Http/Controllers/Admin/ClinicSettingsController.php:178
+ * @see app/Http/Controllers/Admin/ClinicSettingsController.php:287
  * @route '/admin/administration/system-configuration'
  */
 update.put = (options?: RouteQueryOptions): RouteDefinition<'put'> => ({
@@ -35,7 +35,7 @@ update.put = (options?: RouteQueryOptions): RouteDefinition<'put'> => ({
 
     /**
 * @see \App\Http\Controllers\Admin\ClinicSettingsController::update
- * @see app/Http/Controllers/Admin/ClinicSettingsController.php:178
+ * @see app/Http/Controllers/Admin/ClinicSettingsController.php:287
  * @route '/admin/administration/system-configuration'
  */
     const updateForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -50,7 +50,7 @@ update.put = (options?: RouteQueryOptions): RouteDefinition<'put'> => ({
 
             /**
 * @see \App\Http\Controllers\Admin\ClinicSettingsController::update
- * @see app/Http/Controllers/Admin/ClinicSettingsController.php:178
+ * @see app/Http/Controllers/Admin/ClinicSettingsController.php:287
  * @route '/admin/administration/system-configuration'
  */
         updateForm.put = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({

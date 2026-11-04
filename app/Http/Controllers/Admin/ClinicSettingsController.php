@@ -23,6 +23,71 @@ class ClinicSettingsController extends Controller
         ]);
     }
 
+
+    public function updateFacilityIdentity(Request $request): RedirectResponse
+    {
+        $data = $request->validate([
+            'name' => ['required', 'string', 'max:160'],
+            'tagline' => ['nullable', 'string', 'max:200'],
+            'description' => ['nullable', 'string', 'max:2000'],
+            'url' => ['nullable', 'url', 'max:255'],
+        ]);
+
+        return $this->saveFacilitySection($request, $data, 'settings.facility.identity.updated', 'Facility identity saved.');
+    }
+
+    public function updateFacilityContact(Request $request): RedirectResponse
+    {
+        $data = $request->validate([
+            'phone' => ['nullable', 'string', 'max:50'],
+            'email' => ['nullable', 'email', 'max:255'],
+            'address' => ['nullable', 'string', 'max:500'],
+            'opening_hours' => ['nullable', 'string', 'max:255'],
+        ]);
+
+        return $this->saveFacilitySection($request, $data, 'settings.facility.contact.updated', 'Contact and visiting information saved.');
+    }
+
+    public function updateFacilitySocialLinks(Request $request): RedirectResponse
+    {
+        $data = $request->validate([
+            'social_links' => ['required', 'array'],
+            'social_links.whatsapp' => ['nullable', 'url', 'max:255'],
+            'social_links.facebook' => ['nullable', 'url', 'max:255'],
+            'social_links.instagram' => ['nullable', 'url', 'max:255'],
+            'social_links.linkedin' => ['nullable', 'url', 'max:255'],
+            'social_links.youtube' => ['nullable', 'url', 'max:255'],
+            'social_links.x' => ['nullable', 'url', 'max:255'],
+        ]);
+
+        return $this->saveFacilitySection($request, $data, 'settings.facility.social-links.updated', 'Social profiles saved.');
+    }
+
+    public function updateFacilityPublicLinks(Request $request): RedirectResponse
+    {
+        $data = $request->validate([
+            'public_links' => ['required', 'array'],
+            'public_links.contact' => ['nullable', 'string', 'max:255'],
+            'public_links.directions' => ['nullable', 'url', 'max:2048'],
+            'public_links.appointments' => ['nullable', 'url', 'max:2048'],
+            'public_links.website' => ['nullable', 'url', 'max:255'],
+            'public_links.whatsapp' => ['nullable', 'url', 'max:255'],
+            'public_links.google_maps' => ['nullable', 'url', 'max:2048'],
+        ]);
+
+        return $this->saveFacilitySection($request, $data, 'settings.facility.public-links.updated', 'Public links saved.');
+    }
+
+    /** Merge a section into the existing facility identity so independent saves preserve all other settings. */
+    private function saveFacilitySection(Request $request, array $section, string $auditAction, string $successMessage): RedirectResponse
+    {
+        $current = $this->settingValue('site.identity', $this->facilityDefaults());
+        $merged = array_replace_recursive($current, $section);
+        $this->saveSetting($request, 'site.identity', 'site', true, $merged, $auditAction);
+
+        return back()->with('success', $successMessage);
+    }
+
     public function updateFacility(Request $request): RedirectResponse
     {
         $data = $request->validate([
@@ -100,7 +165,51 @@ class ClinicSettingsController extends Controller
 
     public function updateLogo(Request $request): RedirectResponse
     {
-        return $this->updateBrandingAsset($request, 'logo_file', 'remove_logo', 'logo_url', ['nullable', 'image', 'mimes:png,jpg,jpeg,webp', 'max:4096'], 'settings.facility.logo.updated');
+        $request->validate([
+            'logo_file' => ['nullable', 'image', 'mimes:png,jpg,jpeg,webp', 'max:4096'],
+            'remove_logo' => ['sometimes', 'boolean'],
+        ]);
+
+        $remove = $request->boolean('remove_logo');
+        if (!$request->hasFile('logo_file') && !$remove) {
+            return back()->withErrors(['logo_file' => 'Choose an image or select Remove image before saving.']);
+        }
+
+        $current = $this->settingValue('site.identity', $this->facilityDefaults());
+        $oldUrls = array_values(array_unique(array_filter([
+            $current['logo_url'] ?? null,
+            $current['favicon_url'] ?? null,
+        ])));
+        $newPath = null;
+
+        try {
+            if ($remove) {
+                $current['logo_url'] = null;
+                $current['favicon_url'] = null;
+            } else {
+                $newPath = $request->file('logo_file')->storePublicly('site/branding', 'public');
+                $newUrl = '/storage/'.$newPath;
+                $current['logo_url'] = $newUrl;
+                // The uploaded clinic logo is the source image for the browser favicon as requested.
+                $current['favicon_url'] = $newUrl;
+            }
+
+            $this->saveSetting($request, 'site.identity', 'site', true, $current, 'settings.facility.logo.updated');
+        } catch (Throwable $exception) {
+            if ($newPath) {
+                Storage::disk('public')->delete($newPath);
+            }
+
+            throw $exception;
+        }
+
+        foreach ($oldUrls as $oldUrl) {
+            if ($oldUrl !== ($current['logo_url'] ?? null) && $oldUrl !== ($current['favicon_url'] ?? null)) {
+                $this->deleteManagedBrandingAsset($oldUrl);
+            }
+        }
+
+        return back()->with('success', $remove ? 'Clinic logo and favicon removed.' : 'Clinic logo and favicon updated.');
     }
 
     public function updateFavicon(Request $request): RedirectResponse
